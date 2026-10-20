@@ -468,6 +468,8 @@ document.addEventListener("DOMContentLoaded", () => {
       localStorage.setItem("dgmm_theme", mode);
       if (state.activeTab === "tab-overview" && typeof renderOverviewCharts === "function") {
         setTimeout(renderOverviewCharts, 50);
+      } else if (state.activeTab === "tab-admin" && typeof renderAdminTab === "function") {
+        setTimeout(renderAdminTab, 50);
       }
     }
     apply(saved);
@@ -1087,11 +1089,11 @@ document.addEventListener("DOMContentLoaded", () => {
         <td style="text-align: center; font-weight: 600;">${r.mm || '-'}</td>
         <td style="text-align: center;">${r.ssm_ml || '-'}</td>
         <td style="text-align: center;">${r.ssm_pl || '-'}</td>
-        <td style="text-align: center; font-weight: 700; color: var(--gold-dark); background: rgba(217, 119, 6, 0.04);">${r.total_ssm || '-'}</td>
+        <td class="matrix-cell-ssm">${r.total_ssm || '-'}</td>
         <td style="text-align: center;">${r.lsm_ml || '-'}</td>
         <td style="text-align: center;">${r.lsm_el || '-'}</td>
-        <td style="text-align: center; font-weight: 700; color: #2563EB; background: rgba(37, 99, 235, 0.04);">${r.total_lsm || '-'}</td>
-        <td style="text-align: center; font-weight: 800; color: #059669; background: rgba(16, 185, 129, 0.06); font-size: 0.88rem;">${r.grand_total}</td>
+        <td class="matrix-cell-lsm">${r.total_lsm || '-'}</td>
+        <td class="matrix-cell-grand">${r.grand_total}</td>
       </tr>
     `).join("");
   }
@@ -1730,7 +1732,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${r.lessee || '-'}</td>
                 <td>${formatDateDisplay(r.grantDate)}</td>
                 <td>${formatDateDisplay(r.expiryDate)}</td>
-                <td style="font-weight: 700; color: #166534;">${formatPKR(r.operativeBid)}</td>
+                <td class="currency-bid-val">${formatPKR(r.operativeBid)}</td>
                 ${actionBtn}
               </tr>
             `;
@@ -1781,7 +1783,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <td>${r.latrite || '-'}</td>
               <td>${r.celestite || '-'}</td>
               <td>${r.fullerEarth || '-'}</td>
-              <td style="font-weight: 700; color: #1E3A8A;">${r.total}</td>
+              <td class="table-total-val">${r.total}</td>
             </tr>
           `;
         }
@@ -2433,7 +2435,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (c.corners && c.corners.length > 0) {
         coordsTbody.innerHTML = c.corners.map(pt => `
           <tr>
-            <td><strong style="color: #2563EB;">${pt.pt || '-'}</strong></td>
+            <td><strong class="coord-point-tag">${pt.pt || '-'}</strong></td>
             <td><code>${pt.e ? pt.e.toLocaleString() : '-'}</code></td>
             <td><code>${pt.n ? pt.n.toLocaleString() : '-'}</code></td>
             <td style="font-family: monospace;">${pt.lat.toFixed(5)}° N</td>
@@ -2443,7 +2445,7 @@ document.addEventListener("DOMContentLoaded", () => {
       } else if (c.coords && c.coords.length > 0) {
         coordsTbody.innerHTML = c.coords.map((pt, idx) => `
           <tr>
-            <td><strong style="color: #2563EB;">P${idx + 1}</strong></td>
+            <td><strong class="coord-point-tag">P${idx + 1}</strong></td>
             <td>-</td>
             <td>-</td>
             <td style="font-family: monospace;">${pt[0].toFixed(5)}° N</td>
@@ -2682,7 +2684,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td>${p.district}</td>
           <td>${p.mineral}</td>
           <td>${formatNumber(p.acreage)} ac</td>
-          <td style="font-weight: 700; color: #15803D;">${formatPKR(p.royaltyPaidPKR)}</td>
+          <td class="currency-paid-val">${formatPKR(p.royaltyPaidPKR)}</td>
           <td>${formatNumber(p.productionTons)} Tons</td>
           <td><span class="badge-status-pill badge-granted">${p.status}</span></td>
         </tr>
@@ -2694,10 +2696,10 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td style="font-weight: 700; color: var(--text-main);">${f.office}</td>
           <td>${formatNumber(f.productionTons)}</td>
-          <td style="font-weight: 700; color: #166534;">${formatPKR(f.royaltyPKR)}</td>
+          <td class="currency-bid-val">${formatPKR(f.royaltyPKR)}</td>
           <td>${formatPKR(f.deadRentPKR)}</td>
           <td>${formatPKR(f.securityHeldPKR)}</td>
-          <td style="font-weight: 800; color: #1E3A8A;">${formatPKR(f.grandTotalPaidPKR)}</td>
+          <td class="currency-grandtotal-val" style="font-weight: 800;">${formatPKR(f.grandTotalPaidPKR)}</td>
           <td><strong>${f.shareOfTotalProduction}%</strong></td>
         </tr>
       `).join("");
@@ -3024,14 +3026,21 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!tbody) return;
     const cadreList = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.cadre) || [];
 
+    const isDark = document.body.classList.contains("dark-mode");
+
     tbody.innerHTML = cadreList.map(c => {
       const fillPct = c.s > 0 ? Math.round((c.f / c.s) * 100) : 0;
-      let pctBg = "rgba(5, 150, 105, 0.15)";
-      let pctColor = "#059669";
-      if (fillPct < 50) { pctBg = "rgba(220, 38, 38, 0.15)"; pctColor = "#DC2626"; }
-      else if (fillPct < 80) { pctBg = "rgba(217, 119, 6, 0.15)"; pctColor = "#D97706"; }
+      let pctBg = isDark ? "rgba(16, 185, 129, 0.2)" : "rgba(5, 150, 105, 0.15)";
+      let pctColor = isDark ? "#34D399" : "#059669";
+      if (fillPct < 50) {
+        pctBg = isDark ? "rgba(239, 68, 68, 0.22)" : "rgba(220, 38, 38, 0.15)";
+        pctColor = isDark ? "#F87171" : "#DC2626";
+      } else if (fillPct < 80) {
+        pctBg = isDark ? "rgba(245, 158, 11, 0.22)" : "rgba(217, 119, 6, 0.15)";
+        pctColor = isDark ? "#FBBF24" : "#D97706";
+      }
 
-      const bpsBadge = `<span class="badge-status-pill" style="background: ${c.bps >= 16 ? 'rgba(37,99,235,0.1)' : 'rgba(100,116,139,0.1)'}; color: ${c.bps >= 16 ? '#2563EB' : '#475569'}; font-weight: 700;">BS-${String(c.bps).padStart(2, '0')}</span>`;
+      const bpsBadge = `<span class="badge-status-pill" style="background: ${c.bps >= 16 ? (isDark ? 'rgba(59,130,246,0.2)' : 'rgba(37,99,235,0.1)') : (isDark ? 'rgba(148,163,184,0.15)' : 'rgba(100,116,139,0.1)')}; color: ${c.bps >= 16 ? (isDark ? '#60A5FA' : '#2563EB') : (isDark ? '#CBD5E1' : '#475569')}; font-weight: 700;">BS-${String(c.bps).padStart(2, '0')}</span>`;
 
       return `
         <tr>
@@ -3040,10 +3049,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <td style="font-weight: 600; color: var(--text-main);">${c.post}</td>
           <td style="text-align: center;">${bpsBadge}</td>
           <td style="text-align: center; font-weight: 700; color: var(--text-main);">${c.s}</td>
-          <td style="text-align: center; font-weight: 700; color: #059669;">${c.f}</td>
-          <td style="text-align: center; font-weight: 700; color: ${c.v > 0 ? '#DC2626' : '#94A3B8'};">${c.v}</td>
-          <td style="text-align: center;"><small>${c.hq.s} / <span style="color:#059669; font-weight:600;">${c.hq.f}</span> / <span style="color:${c.hq.v > 0 ? '#DC2626' : '#94A3B8'};">${c.hq.v}</span></small></td>
-          <td style="text-align: center;"><small>${c.field.s} / <span style="color:#059669; font-weight:600;">${c.field.f}</span> / <span style="color:${c.field.v > 0 ? '#DC2626' : '#94A3B8'};">${c.field.v}</span></small></td>
+          <td style="text-align: center; font-weight: 700;" class="stat-highlight-emerald">${c.f}</td>
+          <td style="text-align: center; font-weight: 700; color: ${c.v > 0 ? (isDark ? '#F87171' : '#DC2626') : '#94A3B8'};">${c.v}</td>
+          <td style="text-align: center;"><small>${c.hq.s} / <span class="stat-highlight-emerald">${c.hq.f}</span> / <span style="color:${c.hq.v > 0 ? (isDark ? '#F87171' : '#DC2626') : '#94A3B8'};">${c.hq.v}</span></small></td>
+          <td style="text-align: center;"><small>${c.field.s} / <span class="stat-highlight-emerald">${c.field.f}</span> / <span style="color:${c.field.v > 0 ? (isDark ? '#F87171' : '#DC2626') : '#94A3B8'};">${c.field.v}</span></small></td>
           <td style="text-align: center;">
             <span class="badge-status-pill" style="background: ${pctBg}; color: ${pctColor}; font-weight: 700;">${fillPct}%</span>
           </td>
@@ -3056,13 +3065,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const tbody = document.getElementById("adminOfficesTableBody");
     if (!tbody) return;
     const officesList = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices) || [];
+    const isDark = document.body.classList.contains("dark-mode");
 
     tbody.innerHTML = officesList.map((o, idx) => {
       const fillPct = o.total.s > 0 ? Math.round((o.total.f / o.total.s) * 100) : 0;
-      let pctBg = "rgba(5, 150, 105, 0.15)";
-      let pctColor = "#059669";
-      if (fillPct < 60) { pctBg = "rgba(220, 38, 38, 0.15)"; pctColor = "#DC2626"; }
-      else if (fillPct < 80) { pctBg = "rgba(217, 119, 6, 0.15)"; pctColor = "#D97706"; }
+      let pctBg = isDark ? "rgba(16, 185, 129, 0.2)" : "rgba(5, 150, 105, 0.15)";
+      let pctColor = isDark ? "#34D399" : "#059669";
+      if (fillPct < 60) {
+        pctBg = isDark ? "rgba(239, 68, 68, 0.22)" : "rgba(220, 38, 38, 0.15)";
+        pctColor = isDark ? "#F87171" : "#DC2626";
+      } else if (fillPct < 80) {
+        pctBg = isDark ? "rgba(245, 158, 11, 0.22)" : "rgba(217, 119, 6, 0.15)";
+        pctColor = isDark ? "#FBBF24" : "#D97706";
+      }
 
       const typeBadge = `<span class="badge-status-pill ${o.type === 'HQ' ? 'badge-granted' : 'badge-process'}">${o.type}</span>`;
 
@@ -3072,11 +3087,11 @@ document.addEventListener("DOMContentLoaded", () => {
           <td style="font-weight: 700; color: var(--text-main);">${o.office}</td>
           <td><code>${o.fundCentre}</code></td>
           <td>${typeBadge}</td>
-          <td style="text-align: center;"><small>${o.gazetted.s} / <span style="color:#059669; font-weight:600;">${o.gazetted.f}</span> / <span style="color:${o.gazetted.v > 0 ? '#DC2626' : '#94A3B8'};">${o.gazetted.v}</span></small></td>
-          <td style="text-align: center;"><small>${o.nonGazetted.s} / <span style="color:#059669; font-weight:600;">${o.nonGazetted.f}</span> / <span style="color:${o.nonGazetted.v > 0 ? '#DC2626' : '#94A3B8'};">${o.nonGazetted.v}</span></small></td>
+          <td style="text-align: center;"><small>${o.gazetted.s} / <span class="stat-highlight-emerald">${o.gazetted.f}</span> / <span style="color:${o.gazetted.v > 0 ? (isDark ? '#F87171' : '#DC2626') : '#94A3B8'};">${o.gazetted.v}</span></small></td>
+          <td style="text-align: center;"><small>${o.nonGazetted.s} / <span class="stat-highlight-emerald">${o.nonGazetted.f}</span> / <span style="color:${o.nonGazetted.v > 0 ? (isDark ? '#F87171' : '#DC2626') : '#94A3B8'};">${o.nonGazetted.v}</span></small></td>
           <td style="text-align: center; font-weight: 700; color: var(--text-main);">${o.total.s}</td>
-          <td style="text-align: center; font-weight: 700; color: #059669;">${o.total.f}</td>
-          <td style="text-align: center; font-weight: 700; color: ${o.total.v > 0 ? '#DC2626' : '#94A3B8'};">${o.total.v}</td>
+          <td style="text-align: center; font-weight: 700;" class="stat-highlight-emerald">${o.total.f}</td>
+          <td style="text-align: center; font-weight: 700; color: ${o.total.v > 0 ? (isDark ? '#F87171' : '#DC2626') : '#94A3B8'};">${o.total.v}</td>
           <td style="text-align: center;">
             <span class="badge-status-pill" style="background: ${pctBg}; color: ${pctColor}; font-weight: 700;">${fillPct}%</span>
           </td>
@@ -3281,61 +3296,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Lahore Region (LO004397)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">13 Filled / 21 Sanctioned (8 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">13 Filled / 21 Sanctioned (8 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 4 F / 5 S • Non-Gaz: 9 F / 16 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Multan (MN004562)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">16 Filled / 21 Sanctioned (5 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">16 Filled / 21 Sanctioned (5 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 4 S • Non-Gaz: 14 F / 17 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Gujranwala (GA004176)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">13 Filled / 20 Sanctioned (7 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">13 Filled / 20 Sanctioned (7 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 4 S • Non-Gaz: 11 F / 16 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Attock (AK004059)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">10 Filled / 16 Sanctioned (6 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">10 Filled / 16 Sanctioned (6 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 1 F / 3 S • Non-Gaz: 9 F / 13 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Bahawalpur (BR004207)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">10 Filled / 15 Sanctioned (5 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">10 Filled / 15 Sanctioned (5 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 1 F / 2 S • Non-Gaz: 9 F / 13 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">AD Chakwal (CH004024)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">11 Filled / 14 Sanctioned (3 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">11 Filled / 14 Sanctioned (3 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 3 F / 3 S • Non-Gaz: 8 F / 11 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Sialkot (ST004044)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">11 Filled / 14 Sanctioned (3 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">11 Filled / 14 Sanctioned (3 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 2 S • Non-Gaz: 9 F / 12 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Chiniot (CH004002)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">7 Filled / 11 Sanctioned (4 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">7 Filled / 11 Sanctioned (4 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 3 S • Non-Gaz: 5 F / 8 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Jhelum (JM004169)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">5 Filled / 11 Sanctioned (6 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">5 Filled / 11 Sanctioned (6 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 1 F / 2 S • Non-Gaz: 4 F / 9 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Sahiwal (SL004094)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">4 Filled / 7 Sanctioned (3 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">4 Filled / 7 Sanctioned (3 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 3 S • Non-Gaz: 2 F / 4 S</div>
           </div>
 
