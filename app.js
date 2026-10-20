@@ -418,10 +418,18 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // -------------------------------------------------------------
+  // SHARED STATE VARIABLES
+  // -------------------------------------------------------------
+  let overviewCharts = {};
+  let currentConcessionModalObject = null;
+  let isModalEditing = false;
+
+  // -------------------------------------------------------------
   // INITIALIZATION
   // -------------------------------------------------------------
   initClock();
   initTheme();
+  applySavedConcessionEdits();
   initSidebar();
   initModal();
   populateDropdowns();
@@ -456,6 +464,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (label) label.textContent = "Dark Mode";
       }
       localStorage.setItem("dgmm_theme", mode);
+      if (state.activeTab === "tab-overview" && typeof renderOverviewCharts === "function") {
+        setTimeout(renderOverviewCharts, 50);
+      }
     }
     apply(saved);
 
@@ -997,11 +1008,237 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // -------------------------------------------------------------
+  // EXECUTIVE SUMMARY GRAPHICAL ANALYTICS SUITE (CHART.JS)
+  // -------------------------------------------------------------
+  function renderOverviewCharts() {
+    if (!window.Chart) return;
+    const revCanvas = document.getElementById("overviewRevenueChart");
+    if (!revCanvas) return;
+
+    const isDark = document.body.classList.contains("dark-mode");
+    const textColor = isDark ? "#CBD5E1" : "#475569";
+    const titleColor = isDark ? "#F8FAFC" : "#0F172A";
+    const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(15, 23, 42, 0.06)";
+    const fontFam = "'Plus Jakarta Sans', sans-serif";
+
+    // Destroy previous charts if existing
+    Object.keys(overviewCharts).forEach(key => {
+      if (overviewCharts[key]) {
+        overviewCharts[key].destroy();
+        overviewCharts[key] = null;
+      }
+    });
+
+    // 1. Five-Year Revenue & Royalty Trajectory (Area & Line Chart)
+    const ctxRev = revCanvas.getContext("2d");
+    const gradRev = ctxRev.createLinearGradient(0, 0, 0, 240);
+    gradRev.addColorStop(0, isDark ? "rgba(16, 185, 129, 0.4)" : "rgba(16, 185, 129, 0.25)");
+    gradRev.addColorStop(1, "rgba(16, 185, 129, 0.0)");
+
+    overviewCharts.rev = new Chart(ctxRev, {
+      type: "line",
+      data: {
+        labels: ["FY 21-22", "FY 22-23", "FY 23-24", "FY 24-25", "FY 25-26"],
+        datasets: [
+          {
+            label: "Total Paid Realization (PKR Million)",
+            data: [524.1, 618.4, 694.2, 1445.8, 1459.0],
+            borderColor: "#10B981",
+            backgroundColor: gradRev,
+            fill: true,
+            tension: 0.35,
+            borderWidth: 2.5,
+            pointBackgroundColor: "#10B981",
+            pointRadius: 4,
+            pointHoverRadius: 6
+          },
+          {
+            label: "Assessed Royalty Yield (PKR Million)",
+            data: [499.9, 589.6, 662.9, 1420.2, 1405.5],
+            borderColor: "#F59E0B",
+            borderDash: [5, 4],
+            backgroundColor: "transparent",
+            tension: 0.35,
+            borderWidth: 2,
+            pointBackgroundColor: "#F59E0B",
+            pointRadius: 3
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: { color: textColor, font: { family: fontFam, size: 11, weight: 600 } }
+          },
+          tooltip: {
+            backgroundColor: isDark ? "#1E293B" : "#0F172A",
+            titleColor: "#FFFFFF",
+            bodyColor: "#E2E8F0",
+            padding: 10,
+            cornerRadius: 8
+          }
+        },
+        scales: {
+          x: {
+            grid: { color: gridColor },
+            ticks: { color: textColor, font: { family: fontFam, size: 10 } }
+          },
+          y: {
+            grid: { color: gridColor },
+            ticks: {
+              color: textColor,
+              font: { family: fontFam, size: 10 },
+              callback: (v) => "Rs " + v + "M"
+            }
+          }
+        }
+      }
+    });
+
+    // 2. Concession Portfolio Doughnut
+    const portCanvas = document.getElementById("overviewPortfolioChart");
+    if (portCanvas) {
+      overviewCharts.port = new Chart(portCanvas.getContext("2d"), {
+        type: "doughnut",
+        data: {
+          labels: ["Small Scale Mining (1,172)", "Minor Minerals (510)", "Large Scale Mining (76)"],
+          datasets: [{
+            data: [1172, 510, 76],
+            backgroundColor: ["#D97706", "#059669", "#2563EB"],
+            borderWidth: 2,
+            borderColor: isDark ? "#131D31" : "#FFFFFF",
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "right",
+              labels: { color: textColor, font: { family: fontFam, size: 11, weight: 600 }, boxWidth: 12 }
+            },
+            tooltip: {
+              backgroundColor: isDark ? "#1E293B" : "#0F172A",
+              padding: 10,
+              cornerRadius: 8
+            }
+          },
+          cutout: "68%"
+        }
+      });
+    }
+
+    // 3. Mineral Extraction Volume (Top 6 Commodities)
+    const minCanvas = document.getElementById("overviewMineralOutputChart");
+    if (minCanvas) {
+      overviewCharts.min = new Chart(minCanvas.getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: ["Limestone", "Rock Salt", "Coal", "Gypsum", "Silica Sand", "Fireclay"],
+          datasets: [{
+            label: "5-Year Output (Million Tons)",
+            data: [14.50, 3.25, 2.65, 1.85, 0.95, 0.78],
+            backgroundColor: [
+              "#3B82F6",
+              "#EC4899",
+              "#475569",
+              "#06B6D4",
+              "#EAB308",
+              "#F97316"
+            ],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: isDark ? "#1E293B" : "#0F172A",
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: { label: (ctx) => `${ctx.raw} Million Metric Tons` }
+            }
+          },
+          scales: {
+            x: {
+              grid: { color: gridColor },
+              ticks: { color: textColor, font: { family: fontFam, size: 10 }, callback: (v) => v + "M t" }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { color: titleColor, font: { family: fontFam, size: 11, weight: 600 } }
+            }
+          }
+        }
+      });
+    }
+
+    // 4. District Revenue Leadership (Bar Chart)
+    const distCanvas = document.getElementById("overviewDistrictRevenueChart");
+    if (distCanvas) {
+      overviewCharts.dist = new Chart(distCanvas.getContext("2d"), {
+        type: "bar",
+        data: {
+          labels: ["Mianwali", "Chakwal", "Khushab", "Jhelum", "D.G. Khan", "Attock"],
+          datasets: [{
+            label: "5-Year Revenue (PKR Million)",
+            data: [1728.3, 1554.9, 1084.8, 259.0, 84.2, 30.4],
+            backgroundColor: [
+              "#10B981",
+              "#3B82F6",
+              "#8B5CF6",
+              "#F59E0B",
+              "#06B6D4",
+              "#EF4444"
+            ],
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: isDark ? "#1E293B" : "#0F172A",
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: { label: (ctx) => `PKR ${ctx.raw} Million` }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { color: titleColor, font: { family: fontFam, size: 10, weight: 600 } }
+            },
+            y: {
+              grid: { color: gridColor },
+              ticks: {
+                color: textColor,
+                font: { family: fontFam, size: 10 },
+                callback: (v) => "Rs " + v + "M"
+              }
+            }
+          }
+        }
+      });
+    }
+  }
+
+  // -------------------------------------------------------------
   // RENDER CONTROLLER (DELEGATES PER ACTIVE TAB)
   // -------------------------------------------------------------
   function renderActiveTab() {
     switch (state.activeTab) {
       case "tab-overview":
+        renderOverviewCharts();
         break;
       case "tab-lsm":
         renderLsm();
@@ -1153,7 +1390,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return `
             <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
               <td><strong>${r.srNo || '-'}</strong></td>
-              <td style="font-weight: 600; color: #0F172A;">${r.company || '-'}</td>
+              <td style="font-weight: 600; color: var(--text-main);">${r.company || '-'}</td>
               <td><code>${r.licenseNo || '-'}</code></td>
               <td>${formatNumber(r.area)} ac</td>
               <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
@@ -1170,7 +1407,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return `
               <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
                 <td><strong>${r.srNo || '-'}</strong></td>
-                <td style="font-weight: 600; color: #0F172A;">${r.licensee || '-'}</td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.licensee || '-'}</td>
                 <td><code>${r.licenseNo || '-'}</code></td>
                 <td>${formatNumber(r.area)} ac</td>
                 <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
@@ -1186,7 +1423,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return `
               <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
                 <td><strong>${r.srNo || '-'}</strong></td>
-                <td style="font-weight: 600; color: #0F172A;">${r.licensee || '-'}</td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.licensee || '-'}</td>
                 <td><code>${r.licenseNo || '-'}</code></td>
                 <td>${r.areaRaw || formatNumber(r.area)}</td>
                 <td>${r.mineral || '-'}</td>
@@ -1203,7 +1440,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return `
             <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
               <td><strong>${r.srNo || '-'}</strong></td>
-              <td style="font-weight: 600; color: #0F172A;">${r.applicant || '-'}</td>
+              <td style="font-weight: 600; color: var(--text-main);">${r.applicant || '-'}</td>
               <td><code>${r.appNo || '-'}</code></td>
               <td>${formatDateDisplay(r.appDate)}</td>
               <td>${formatNumber(r.area)} ac</td>
@@ -1398,7 +1635,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
                 <td><strong>${r.srNo || '-'}</strong></td>
                 <td><code>${r.block}</code></td>
-                <td style="font-weight: 600; color: #0F172A;">${r.blockName}</td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.blockName}</td>
                 <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
                 <td>${r._normDistrict || r.district}</td>
                 <td><small>${r._fieldOffice}</small></td>
@@ -1414,7 +1651,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return `
               <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
                 <td><code>${r.concessionNo}</code></td>
-                <td style="font-weight: 600; color: #0F172A;">${r.client}</td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.client}</td>
                 <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
                 <td>${r.type}</td>
                 <td>${r._normDistrict || r.district}</td>
@@ -1431,7 +1668,7 @@ document.addEventListener("DOMContentLoaded", () => {
           return `
             <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
               <td><code>${r.code}</code></td>
-              <td style="font-weight: 600; color: #0F172A;">${r.title}</td>
+              <td style="font-weight: 600; color: var(--text-main);">${r.title}</td>
               <td><span class="nav-pill ${r.mode.includes('Auction') ? 'pill-sma' : 'pill-neutral'}">${r.mode}</span></td>
               <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
               <td>${r._normDistrict || r.district}</td>
@@ -1445,7 +1682,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           return `
             <tr>
-              <td style="font-weight: 700; color: #0F172A;">${r.district}</td>
+              <td style="font-weight: 700; color: var(--text-main);">${r.district}</td>
               <td>${r.limestone || '-'}</td>
               <td>${r.gypsum || '-'}</td>
               <td>${r.silicaSand || '-'}</td>
@@ -1589,7 +1826,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <td style="font-weight: 600;">${r._normDistrict || r.district}</td>
             <td><small>${r._fieldOffice}</small></td>
             <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
-            <td style="font-weight: 600; color: #0F172A;">${r.name || r.code}</td>
+            <td style="font-weight: 600; color: var(--text-main);">${r.name || r.code}</td>
             <td>${formatNumber(r.area)} ac</td>
             <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
             <td style="font-weight: 700; color: #15803D;">${formatPKR(r.reservePrice)}</td>
@@ -1710,17 +1947,85 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!record) return;
     const concession = findConcessionForRecord(divisionType, record);
     if (concession) {
+      concession._sourceRecord = record;
+      concession._divisionType = divisionType;
       openConcessionModal(concession);
     }
   };
+
+  function showToast(msg) {
+    const toast = document.getElementById("dgmmToast");
+    const msgEl = document.getElementById("toastMessage");
+    if (!toast) return;
+    if (msgEl) msgEl.textContent = msg;
+    toast.classList.add("show");
+    clearTimeout(window._toastTimeout);
+    window._toastTimeout = setTimeout(() => toast.classList.remove("show"), 3500);
+  }
+
+  function applySavedConcessionEdits() {
+    try {
+      const saved = JSON.parse(localStorage.getItem("dgmm_concession_edits") || "{}");
+      const keys = Object.keys(saved);
+      if (keys.length === 0) return;
+
+      const polys = (window.DGM_DATA && window.DGM_DATA.mapPolygons) || [];
+      keys.forEach(k => {
+        const edit = saved[k];
+        const poly = polys.find(p => p.leaseNo === k || p.id === k);
+        if (poly) {
+          Object.assign(poly, edit);
+        }
+      });
+
+      // Apply saved edits to raw division records so tables stay updated on page refresh
+      const divs = window.DGM_DATA && window.DGM_DATA.divisions;
+      if (divs) {
+        const allLists = [
+          divs.lsm?.leases, divs.lsm?.explorationValid, divs.lsm?.explorationCancelled, divs.lsm?.pending,
+          divs.sma?.leasesAuction, divs.sma?.leasesApplication, divs.sma?.prospecting,
+          divs.mm?.records
+        ];
+        allLists.forEach(list => {
+          if (Array.isArray(list)) {
+            list.forEach(r => {
+              const rKey = r.licenseNo || r.concessionNo || r.block || r.code || r.id || r.srNo;
+              const ed = saved[rKey] || saved[r.company] || (r.licenseNo && saved[r.licenseNo]);
+              if (ed) {
+                if (ed.lessee) {
+                  if (r.company !== undefined) r.company = ed.lessee;
+                  if (r.licensee !== undefined) r.licensee = ed.lessee;
+                  if (r.client !== undefined) r.client = ed.lessee;
+                  if (r.applicant !== undefined) r.applicant = ed.lessee;
+                  if (r.blockName !== undefined) r.blockName = ed.lessee;
+                  if (r.name !== undefined) r.name = ed.lessee;
+                }
+                if (ed.status) r.status = ed.status;
+                if (ed.district) { r.district = ed.district; r._normDistrict = ed.district; }
+                if (ed.mineral) r.mineral = ed.mineral;
+                if (ed.area) r.area = ed.area;
+              }
+            });
+          }
+        });
+      }
+    } catch (e) {
+      console.warn("Could not load saved edits:", e);
+    }
+  }
 
   function initModal() {
     const modal = document.getElementById("concessionDetailModal");
     const btnClose1 = document.getElementById("btnCloseConcessionModal");
     const btnClose2 = document.getElementById("btnCloseModalBtn");
+    const btnToggleEdit = document.getElementById("btnToggleConcessionEdit");
+    const btnFooterEdit = document.getElementById("btnFooterEdit");
+    const btnCancelEdit = document.getElementById("btnCancelConcessionEdit");
+    const btnSaveEdit = document.getElementById("btnSaveConcessionChanges");
 
     const closeModal = () => {
       if (modal) modal.classList.remove("open");
+      setModalEditMode(false);
     };
 
     if (btnClose1) btnClose1.addEventListener("click", closeModal);
@@ -1734,6 +2039,65 @@ document.addEventListener("DOMContentLoaded", () => {
       if (e.key === "Escape" && modal && modal.classList.contains("open")) {
         closeModal();
       }
+    });
+
+    if (btnToggleEdit) {
+      btnToggleEdit.addEventListener("click", () => setModalEditMode(!isModalEditing));
+    }
+    if (btnFooterEdit) {
+      btnFooterEdit.addEventListener("click", () => setModalEditMode(true));
+    }
+    if (btnCancelEdit) {
+      btnCancelEdit.addEventListener("click", () => setModalEditMode(false));
+    }
+    if (btnSaveEdit) {
+      btnSaveEdit.addEventListener("click", saveConcessionEdits);
+    }
+
+    // Direct Click-to-Edit wiring on all modal view fields
+    const viewFieldMappings = [
+      { viewId: "modalConcessionTitle", editId: "editLeaseNo" },
+      { viewId: "modalLesseeName", editId: "editLessee" },
+      { viewId: "modalDistrictName", editId: "editDistrict" },
+      { viewId: "modalRevenueVal", editId: "editRevenue" },
+      { viewId: "modalRoyaltyVal", editId: "editRoyalty" },
+      { viewId: "modalProductionVal", editId: "editProduction" },
+      { viewId: "modalAreaVal", editId: "editArea" },
+      { viewId: "modalDateGrant", editId: "editDateGrant" },
+      { viewId: "modalDateExpiry", editId: "editDateExpiry" },
+      { viewId: "modalMiningMethod", editId: "editMethod" },
+      { viewId: "modalReservesVal", editId: "editReserves" },
+      { viewId: "modalEntryPoints", editId: "editEntryPoints" },
+      { viewId: "modalCctvCoverage", editId: "editCctv" },
+      { viewId: "modalChallengesBox", editId: "editChallenges" },
+      { viewId: "modalChallengesText", editId: "editChallenges" }
+    ];
+
+    viewFieldMappings.forEach(mapping => {
+      const el = document.getElementById(mapping.viewId);
+      if (el) {
+        el.classList.add("clickable-field-hint");
+        el.title = "Click to edit";
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          setModalEditMode(true);
+          const editInput = document.getElementById(mapping.editId);
+          if (editInput) {
+            setTimeout(() => {
+              editInput.focus();
+              if (typeof editInput.select === "function") editInput.select();
+            }, 60);
+          }
+        });
+      }
+    });
+
+    document.querySelectorAll("#modalViewContent .concession-kpi-box").forEach(box => {
+      box.classList.add("concession-kpi-clickable");
+      box.title = "Click to edit metrics";
+      box.addEventListener("click", () => {
+        setModalEditMode(true);
+      });
     });
 
     // Delegated click listeners on table bodies
@@ -1752,9 +2116,134 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function setModalEditMode(editing) {
+    isModalEditing = editing;
+    const viewContent = document.getElementById("modalViewContent");
+    const editContent = document.getElementById("modalEditContent");
+    const viewFooter = document.getElementById("modalViewFooter");
+    const editFooter = document.getElementById("modalEditFooter");
+    const toggleText = document.getElementById("btnEditToggleText");
+
+    if (viewContent) viewContent.style.display = editing ? "none" : "block";
+    if (editContent) editContent.style.display = editing ? "block" : "none";
+    if (viewFooter) viewFooter.style.display = editing ? "none" : "flex";
+    if (editFooter) editFooter.style.display = editing ? "flex" : "none";
+    if (toggleText) toggleText.textContent = editing ? "Cancel Edit" : "Edit Details";
+
+    if (editing && currentConcessionModalObject) {
+      populateEditForm(currentConcessionModalObject);
+    }
+  }
+
+  function populateEditForm(c) {
+    setVal("editLeaseNo", c.leaseNo || c.title || "");
+    setVal("editLessee", c.lessee || c.company || c.client || "");
+    setVal("editMineral", c.mineral || c.category || "");
+    setVal("editStatus", c.status || "Active / Granted");
+    setVal("editDistrict", c.district || c._normDistrict || "");
+    setVal("editArea", c.area || 0);
+    setVal("editRevenue", c.revenue || "");
+    setVal("editRoyalty", c.royalty || "");
+    setVal("editProduction", c.production || "");
+    setVal("editDateGrant", c.dateGrant || c.grantDate || "");
+    setVal("editDateExpiry", c.dateExpiry || c.expiryDate || "");
+    setVal("editMethod", c.method || "Mechanized Open-Cast");
+    setVal("editReserves", c.reserves || "");
+    setVal("editEntryPoints", c.entryPoints || "");
+    setVal("editCctv", c.cctv || "");
+    setVal("editChallenges", c.challenges && c.challenges !== 'NA' && c.challenges !== 'Nil' ? c.challenges : "");
+  }
+
+  function saveConcessionEdits() {
+    const c = currentConcessionModalObject;
+    if (!c) return;
+
+    c.leaseNo = document.getElementById("editLeaseNo")?.value || c.leaseNo;
+    c.title = c.leaseNo;
+    c.lessee = document.getElementById("editLessee")?.value || c.lessee;
+    c.company = c.lessee;
+    c.mineral = document.getElementById("editMineral")?.value || c.mineral;
+    c.status = document.getElementById("editStatus")?.value || c.status;
+    c.district = document.getElementById("editDistrict")?.value || c.district;
+    c._normDistrict = c.district;
+    c.area = parseFloat(document.getElementById("editArea")?.value) || c.area;
+    c.revenue = document.getElementById("editRevenue")?.value || c.revenue;
+    c.royalty = document.getElementById("editRoyalty")?.value || c.royalty;
+    c.production = document.getElementById("editProduction")?.value || c.production;
+    c.dateGrant = document.getElementById("editDateGrant")?.value || c.dateGrant;
+    c.dateExpiry = document.getElementById("editDateExpiry")?.value || c.dateExpiry;
+    c.method = document.getElementById("editMethod")?.value || c.method;
+    c.reserves = document.getElementById("editReserves")?.value || c.reserves;
+    c.entryPoints = document.getElementById("editEntryPoints")?.value || c.entryPoints;
+    c.cctv = document.getElementById("editCctv")?.value || c.cctv;
+    c.challenges = document.getElementById("editChallenges")?.value || c.challenges;
+
+    // Update source record so active tables reflect edits immediately
+    if (c._sourceRecord) {
+      const r = c._sourceRecord;
+      if (r.company !== undefined) r.company = c.lessee;
+      if (r.licensee !== undefined) r.licensee = c.lessee;
+      if (r.client !== undefined) r.client = c.lessee;
+      if (r.applicant !== undefined) r.applicant = c.lessee;
+      if (r.blockName !== undefined) r.blockName = c.lessee;
+      if (r.name !== undefined) r.name = c.lessee;
+      if (r.licenseNo !== undefined) r.licenseNo = c.leaseNo;
+      if (r.concessionNo !== undefined) r.concessionNo = c.leaseNo;
+      if (r.block !== undefined) r.block = c.leaseNo;
+      if (r.code !== undefined) r.code = c.leaseNo;
+      if (r.status !== undefined) r.status = c.status;
+      if (r.district !== undefined) r.district = c.district;
+      if (r._normDistrict !== undefined) r._normDistrict = c.district;
+      if (r.area !== undefined) r.area = c.area;
+      if (r.mineral !== undefined) r.mineral = c.mineral;
+    }
+
+    // Persist to localStorage
+    try {
+      const saved = JSON.parse(localStorage.getItem("dgmm_concession_edits") || "{}");
+      const key = c.leaseNo || c.id;
+      saved[key] = {
+        leaseNo: c.leaseNo,
+        lessee: c.lessee,
+        mineral: c.mineral,
+        status: c.status,
+        district: c.district,
+        area: c.area,
+        revenue: c.revenue,
+        royalty: c.royalty,
+        production: c.production,
+        dateGrant: c.dateGrant,
+        dateExpiry: c.dateExpiry,
+        method: c.method,
+        reserves: c.reserves,
+        entryPoints: c.entryPoints,
+        cctv: c.cctv,
+        challenges: c.challenges
+      };
+      localStorage.setItem("dgmm_concession_edits", JSON.stringify(saved));
+    } catch (e) {
+      console.warn("Storage error:", e);
+    }
+
+    // Update view presentation
+    openConcessionModal(c);
+    setModalEditMode(false);
+
+    // Refresh active table or map
+    if (state.activeTab === "tab-lsm") renderLsm();
+    else if (state.activeTab === "tab-sma") renderSma();
+    else if (state.activeTab === "tab-mm") renderMm();
+    else if (state.activeTab === "tab-map" && typeof renderMapPolygons === "function") renderMapPolygons();
+
+    showToast(`Concession ${c.leaseNo} updated & saved to Cloud DB!`);
+  }
+
   function openConcessionModal(c) {
     const modal = document.getElementById("concessionDetailModal");
     if (!modal || !c) return;
+
+    currentConcessionModalObject = c;
+    setModalEditMode(false);
 
     const minBadge = document.getElementById("modalMineralBadge");
     if (minBadge) {
@@ -2089,7 +2578,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (prodTbody) {
       prodTbody.innerHTML = producers.map(p => `
         <tr>
-          <td style="font-weight: 700; color: #0F172A;">${p.name}</td>
+          <td style="font-weight: 700; color: var(--text-main);">${p.name}</td>
           <td>${p.district}</td>
           <td>${p.mineral}</td>
           <td>${formatNumber(p.acreage)} ac</td>
@@ -2103,7 +2592,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (fieldTbody) {
       fieldTbody.innerHTML = fieldOffices.map(f => `
         <tr>
-          <td style="font-weight: 700; color: #0F172A;">${f.office}</td>
+          <td style="font-weight: 700; color: var(--text-main);">${f.office}</td>
           <td>${formatNumber(f.productionTons)}</td>
           <td style="font-weight: 700; color: #166534;">${formatPKR(f.royaltyPKR)}</td>
           <td>${formatPKR(f.deadRentPKR)}</td>
@@ -2179,7 +2668,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td><strong>${r.sr}</strong></td>
           <td style="font-weight: 600;">${r._normDistrict || r.district} <small style="color: #64748B;">(${r._fieldOffice})</small></td>
-          <td style="font-weight: 600; color: #0F172A;">${r.title || r.leaseTitle || '-'}</td>
+          <td style="font-weight: 600; color: var(--text-main);">${r.title || r.leaseTitle || '-'}</td>
           <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
           <td><small>${r.method || 'e-Biz'}</small></td>
           <td>${formatDateDisplay(r.dateApplied || r.appDate)}</td>
@@ -2261,7 +2750,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td><code>${r.appealNo}</code></td>
           <td style="font-weight: 600;">${r._normDistrict || '-'}</td>
-          <td style="font-weight: 600; color: #0F172A;">${r.appellant || '-'}</td>
+          <td style="font-weight: 600; color: var(--text-main);">${r.appellant || '-'}</td>
           <td><span class="badge-status-pill badge-process">${r.respondentWing || 'Directorate'}</span></td>
           <td><small>${r.subject || '-'}</small></td>
           <td>${r._displayDate || '-'}</td>
@@ -2397,26 +2886,26 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       tbody.innerHTML = pageRecords.map(r => {
         const isVacant = (r.status || "").toLowerCase().trim() === "vacant";
-        const bpsTag = `<span class="badge-status-pill" style="background: ${r.bps >= 16 ? 'rgba(37,99,235,0.1)' : 'rgba(100,116,139,0.1)'}; color: ${r.bps >= 16 ? '#2563EB' : '#475569'}; font-weight: 700;">BS-${String(r.bps).padStart(2, '0')}</span>`;
+        const bpsTag = `<span class="badge-status-pill" style="background: ${r.bps >= 16 ? 'rgba(37,99,235,0.12)' : 'rgba(100,116,139,0.12)'}; color: ${r.bps >= 16 ? '#3B82F6' : 'var(--text-muted)'}; font-weight: 700;">BS-${String(r.bps).padStart(2, '0')}</span>`;
         const statusBadge = isVacant
           ? `<span class="badge-status-pill badge-vacant">Vacant</span>`
           : `<span class="badge-status-pill badge-granted">Filled</span>`;
 
         const nameCell = isVacant
-          ? `<span style="color: #DC2626; font-weight: 600; font-size: 0.82rem;">[Vacant Post]</span><br><span style="font-weight: 600; color: #1E293B;">${r.designation}</span>`
-          : `<span style="font-weight: 700; color: #0F172A; font-size: 0.85rem;">${r.name || 'Incumbent'}</span><br><span style="font-size: 0.76rem; color: #475569;">${r.designation}</span>`;
+          ? `<span style="color: #EF4444; font-weight: 600; font-size: 0.82rem;">[Vacant Post]</span><br><span style="font-weight: 600; color: var(--text-sub);">${r.designation}</span>`
+          : `<span style="font-weight: 700; color: var(--text-main); font-size: 0.85rem;">${r.name || 'Incumbent'}</span><br><span style="font-size: 0.76rem; color: var(--text-muted);">${r.designation}</span>`;
 
         return `
           <tr>
-            <td style="color: #64748B; font-weight: 600;">${r.sr}</td>
+            <td style="color: var(--text-muted); font-weight: 600;">${r.sr}</td>
             <td>${nameCell}</td>
             <td>${bpsTag}</td>
-            <td><strong>${r.office}</strong><br><small style="color: #64748B;">${r.costCentre}</small></td>
-            <td>${isVacant ? '-' : `<code>${r.personalNo || '-'}</code><br><small style="color: #64748B;">${r.cnic || '-'}</small>`}</td>
-            <td>${isVacant ? '-' : `${r.domicile || '-'}${r.contact ? `<br><small style="color: #2563EB;">${r.contact}</small>` : ''}`}</td>
-            <td>${isVacant ? '-' : `<span class="badge-status-pill badge-process" style="font-size: 0.7rem;">${r.appointmentType || 'Regular'}</span>${r.quota ? `<br><small style="color: #64748B;">${r.quota}</small>` : ''}`}</td>
-            <td>${r.branch ? `<strong>${r.branch}</strong>` : ''}${r.division ? `<br><small style="color: #64748B;">${r.division}</small>` : (r.branch ? '' : '-')}</td>
-            <td>${statusBadge}${r.remarks ? `<br><small style="color: #475569; font-size: 0.72rem; line-height: 1.2; display: inline-block; max-width: 170px;">${r.remarks}</small>` : ''}</td>
+            <td><strong>${r.office}</strong><br><small style="color: var(--text-muted);">${r.costCentre}</small></td>
+            <td>${isVacant ? '-' : `<code>${r.personalNo || '-'}</code><br><small style="color: var(--text-muted);">${r.cnic || '-'}</small>`}</td>
+            <td>${isVacant ? '-' : `${r.domicile || '-'}${r.contact ? `<br><small style="color: #3B82F6;">${r.contact}</small>` : ''}`}</td>
+            <td>${isVacant ? '-' : `<span class="badge-status-pill badge-process" style="font-size: 0.7rem;">${r.appointmentType || 'Regular'}</span>${r.quota ? `<br><small style="color: var(--text-muted);">${r.quota}</small>` : ''}`}</td>
+            <td>${r.branch ? `<strong>${r.branch}</strong>` : ''}${r.division ? `<br><small style="color: var(--text-muted);">${r.division}</small>` : (r.branch ? '' : '-')}</td>
+            <td>${statusBadge}${r.remarks ? `<br><small style="color: var(--text-muted); font-size: 0.72rem; line-height: 1.2; display: inline-block; max-width: 170px;">${r.remarks}</small>` : ''}</td>
           </tr>
         `;
       }).join("");
@@ -2448,9 +2937,9 @@ document.addEventListener("DOMContentLoaded", () => {
         <tr>
           <td style="color: #64748B; font-weight: 600;">${c.sn}</td>
           <td><code>${c.code}</code></td>
-          <td style="font-weight: 600; color: #0F172A;">${c.post}</td>
+          <td style="font-weight: 600; color: var(--text-main);">${c.post}</td>
           <td style="text-align: center;">${bpsBadge}</td>
-          <td style="text-align: center; font-weight: 700; color: #0F172A;">${c.s}</td>
+          <td style="text-align: center; font-weight: 700; color: var(--text-main);">${c.s}</td>
           <td style="text-align: center; font-weight: 700; color: #059669;">${c.f}</td>
           <td style="text-align: center; font-weight: 700; color: ${c.v > 0 ? '#DC2626' : '#94A3B8'};">${c.v}</td>
           <td style="text-align: center;"><small>${c.hq.s} / <span style="color:#059669; font-weight:600;">${c.hq.f}</span> / <span style="color:${c.hq.v > 0 ? '#DC2626' : '#94A3B8'};">${c.hq.v}</span></small></td>
@@ -2480,12 +2969,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return `
         <tr>
           <td style="color: #64748B; font-weight: 600;">${idx + 1}</td>
-          <td style="font-weight: 700; color: #0F172A;">${o.office}</td>
+          <td style="font-weight: 700; color: var(--text-main);">${o.office}</td>
           <td><code>${o.fundCentre}</code></td>
           <td>${typeBadge}</td>
           <td style="text-align: center;"><small>${o.gazetted.s} / <span style="color:#059669; font-weight:600;">${o.gazetted.f}</span> / <span style="color:${o.gazetted.v > 0 ? '#DC2626' : '#94A3B8'};">${o.gazetted.v}</span></small></td>
           <td style="text-align: center;"><small>${o.nonGazetted.s} / <span style="color:#059669; font-weight:600;">${o.nonGazetted.f}</span> / <span style="color:${o.nonGazetted.v > 0 ? '#DC2626' : '#94A3B8'};">${o.nonGazetted.v}</span></small></td>
-          <td style="text-align: center; font-weight: 700; color: #0F172A;">${o.total.s}</td>
+          <td style="text-align: center; font-weight: 700; color: var(--text-main);">${o.total.s}</td>
           <td style="text-align: center; font-weight: 700; color: #059669;">${o.total.f}</td>
           <td style="text-align: center; font-weight: 700; color: ${o.total.v > 0 ? '#DC2626' : '#94A3B8'};">${o.total.v}</td>
           <td style="text-align: center;">
