@@ -78,17 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const now = new Date();
       const options = {
         timeZone: "Asia/Karachi",
-        weekday: "short",
-        day: "2-digit",
-        month: "short",
-        year: "numeric",
         hour: "2-digit",
         minute: "2-digit",
         second: "2-digit",
         hour12: true
       };
       if (clockEl) {
-        clockEl.textContent = now.toLocaleString("en-PK", options) + " PKT";
+        clockEl.textContent = now.toLocaleTimeString("en-US", options) + " PKT";
       }
     }
     updateClock();
