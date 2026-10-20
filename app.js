@@ -1,1241 +1,960 @@
 // ===================================================================
 // GOVERNMENT OF THE PUNJAB — DIRECTORATE GENERAL OF MINES & MINERALS
-// EXECUTIVE OPERATIONS & MONITORING PORTAL (V3.0)
-// CLIENT APPLICATION LOGIC (app.js)
+// EXECUTIVE MONITORING & REVENUE OPERATIONS PORTAL
+// MASTER APPLICATION CONTROLLER (app.js)
 // ===================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-  // -----------------------------------------------------------------
-  // 1. STATE INITIALIZATION
-  // -----------------------------------------------------------------
-  const rawData = window.DGM_DATA || {};
+  const db = window.DGM_DATA || {};
+  const executive = db.executive || {};
+  const divisions = db.divisions || { lsm: {}, sma: {}, mm: {} };
 
-  // Load EPA Cases
-  let epaCases = [];
-  try {
-    const savedEpa = localStorage.getItem("dgmm_epa_v3");
-    if (savedEpa) {
-      epaCases = JSON.parse(savedEpa);
-    } else {
-      epaCases = rawData.epaCases || [];
-      localStorage.setItem("dgmm_epa_v3", JSON.stringify(epaCases));
+  // -------------------------------------------------------------
+  // STATE MANAGEMENT
+  // -------------------------------------------------------------
+  const state = {
+    activeTab: "tab-overview",
+    searchQuery: "",
+    
+    // LSM State
+    lsm: {
+      subTab: "leases",
+      page: 1,
+      pageSize: 15,
+      district: "ALL"
+    },
+
+    // SMA State
+    sma: {
+      subTab: "auction",
+      page: 1,
+      pageSize: 15,
+      district: "ALL",
+      mineral: "ALL"
+    },
+
+    // MM State
+    mm: {
+      subTab: "all",
+      page: 1,
+      pageSize: 15,
+      district: "ALL",
+      mineral: "ALL"
+    },
+
+    // EPA State
+    epa: {
+      page: 1,
+      pageSize: 15,
+      district: "ALL"
+    },
+
+    // Appeals State
+    appeals: {
+      page: 1,
+      pageSize: 15,
+      district: "ALL"
     }
-  } catch (e) {
-    epaCases = rawData.epaCases || [];
-  }
-
-  // Load Auction, Subletting, Renewals & Appeals Datasets
-  const auctionRecords = rawData.auctionRecords || [];
-  const sublettingCases = rawData.sublettingCases || [];
-  const renewalsDecided = rawData.renewalsDecided || [];
-  const appealsCases = rawData.appealsCases || [];
-
-  // Filter States
-  const mapFilters = {
-    mineral: "ALL",
-    zone: "ALL",
-    scale: "ALL"
   };
 
-  const epaFilters = {
-    district: "ALL",
-    chip: "ALL",
-    search: "",
-    page: 1,
-    rowsPerPage: 25
-  };
+  // -------------------------------------------------------------
+  // INITIALIZATION
+  // -------------------------------------------------------------
+  initClock();
+  initSidebar();
+  initBookmarkModal();
+  populateFilterDropdowns();
+  renderActiveTab();
+  initGlobalSearch();
+  initExport();
 
-  const appealsFilters = {
-    category: "ALL",
-    search: "",
-    page: 1,
-    rowsPerPage: 20
-  };
-
-  let punjabMap = null;
-  let mapMarkersLayer = null;
-  let recoveryChart = null;
-  let districtsChart = null;
-  let fiveYearChart = null;
-  let chartMode = "COMBINED";
-
-  // -----------------------------------------------------------------
-  // 2. LIVE PKT CLOCK INITIALIZATION
-  // -----------------------------------------------------------------
-  function updatePktClock() {
+  // -------------------------------------------------------------
+  // CLOCK CONTROLLER
+  // -------------------------------------------------------------
+  function initClock() {
     const clockEl = document.getElementById("livePktTime");
-    if (!clockEl) return;
-    const now = new Date();
-    const options = {
-      timeZone: "Asia/Karachi",
-      day: "2-digit",
-      month: "short",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true
-    };
-    try {
-      const formatter = new Intl.DateTimeFormat("en-GB", options);
-      clockEl.textContent = formatter.format(now) + " PKT";
-    } catch (e) {
-      clockEl.textContent = now.toUTCString();
+    function updateClock() {
+      const now = new Date();
+      // Pakistan Standard Time (UTC+5)
+      const options = {
+        timeZone: "Asia/Karachi",
+        weekday: "short",
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+      };
+      if (clockEl) {
+        clockEl.textContent = now.toLocaleString("en-PK", options) + " PKT";
+      }
     }
-  }
-  updatePktClock();
-  setInterval(updatePktClock, 1000);
-
-  // -----------------------------------------------------------------
-  // 3. TOAST NOTIFICATIONS & UTILITIES
-  // -----------------------------------------------------------------
-  function showToast(message, type = "success") {
-    const container = document.getElementById("toastContainer");
-    if (!container) return;
-    const toast = document.createElement("div");
-    toast.className = "toast";
-    let icon = "fa-circle-check";
-    if (type === "warning") icon = "fa-triangle-exclamation";
-    if (type === "error") icon = "fa-circle-xmark";
-    toast.innerHTML = `<i class="fa-solid ${icon}" style="color: var(--gold-primary);"></i> <span>${escapeHtml(message)}</span>`;
-    container.appendChild(toast);
-    setTimeout(() => {
-      toast.style.opacity = "0";
-      toast.style.transform = "translateX(50px)";
-      toast.style.transition = "all 0.3s ease";
-      setTimeout(() => toast.remove(), 300);
-    }, 4000);
+    updateClock();
+    setInterval(updateClock, 1000);
   }
 
-  function escapeHtml(text) {
-    if (!text) return "";
-    return String(text)
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;")
-      .replace(/'/g, "&#039;");
-  }
+  // -------------------------------------------------------------
+  // SIDEBAR & TAB SWITCHING
+  // -------------------------------------------------------------
+  function initSidebar() {
+    const navLinks = document.querySelectorAll(".sidebar-nav .nav-link");
+    const mobileToggle = document.getElementById("mobileMenuToggle");
+    const sidebar = document.getElementById("appSidebar");
+    const breadcrumbSection = document.getElementById("activeBreadcrumbSection");
+    const breadcrumbTitle = document.getElementById("activeBreadcrumbTitle");
 
-  // -----------------------------------------------------------------
-  // 4. TOP KPI CARDS RECALCULATION
-  // -----------------------------------------------------------------
-  function updateKpiCards() {
-    const totalEpa = epaCases.length;
-    const ebizCount = epaCases.filter(c => (c.method || "").toLowerCase().includes("biz")).length;
-    const manualCount = totalEpa - ebizCount;
+    const tabTitles = {
+      "tab-overview": { section: "Executive Cockpit", title: "Senior Management Executive Barometer" },
+      "tab-lsm": { section: "Operational Divisions", title: "Large Scale Mining (LSM) Division Directory" },
+      "tab-sma": { section: "Operational Divisions", title: "Small Scale Mining & Concessions (SMA / SSM)" },
+      "tab-mm": { section: "Operational Divisions", title: "Minor Minerals (MM) Division Master Register" },
+      "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map of Punjab Province" },
+      "tab-financials": { section: "Financial Intelligence", title: "5-Year Revenue, Royalty & Output Analytics" },
+      "tab-epa": { section: "Regulatory Clearances", title: "EPA Environmental Clearances (151 Concession Cases)" },
+      "tab-appeals": { section: "Legal Proceedings", title: "Appellate Authority Pendency Tracker" }
+    };
 
-    const elTotalEpa = document.getElementById("kpiStatTotalEpa");
-    const elEbiz = document.getElementById("kpiCountEbiz");
-    const elManual = document.getElementById("kpiCountManual");
-    const elBadgeEpa = document.getElementById("tabBadgeEpa");
-    const elPillAll = document.getElementById("pillAllCount");
+    navLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        const tabId = link.getAttribute("data-tab");
+        if (!tabId) return;
 
-    if (elTotalEpa) elTotalEpa.textContent = totalEpa;
-    if (elEbiz) elEbiz.textContent = ebizCount;
-    if (elManual) elManual.textContent = manualCount;
-    if (elBadgeEpa) elBadgeEpa.textContent = totalEpa;
-    if (elPillAll) elPillAll.textContent = totalEpa;
-  }
+        // Active link class
+        navLinks.forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
 
-  // -----------------------------------------------------------------
-  // 5. TAB 1: GIS MINERAL MAP OF PUNJAB (Leaflet.js)
-  // -----------------------------------------------------------------
-  function getMineralColor(mineral) {
-    const m = (mineral || "").toLowerCase();
-    if (m.includes("salt")) return "#E11D48"; // Rose / Pink
-    if (m.includes("coal")) return "#1E293B"; // Dark Slate
-    if (m.includes("limestone")) return "#475569"; // Slate
-    if (m.includes("ordinary sand") || m.includes("ord sand")) return "#D97706"; // Amber
-    if (m.includes("sandstone")) return "#B45309"; // Warm Ochre
-    if (m.includes("gypsum")) return "#0284C7"; // Sky Blue
-    if (m.includes("silica")) return "#0D9488"; // Teal
-    if (m.includes("gravel")) return "#78350F"; // Brown
-    if (m.includes("clay")) return "#7C3AED"; // Purple
-    return "#15803D"; // Green
-  }
+        // Active tab pane
+        document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
+        const targetPane = document.getElementById(tabId);
+        if (targetPane) targetPane.classList.add("active");
 
-  function initPunjabMap() {
-    if (punjabMap) return;
-    const mapContainer = document.getElementById("punjabMineralMap");
-    if (!mapContainer) return;
+        state.activeTab = tabId;
 
-    punjabMap = L.map("punjabMineralMap", {
-      center: [31.5, 72.8],
-      zoom: 7,
-      minZoom: 6,
-      maxZoom: 14
+        // Update breadcrumb
+        if (tabTitles[tabId]) {
+          breadcrumbSection.textContent = tabTitles[tabId].section;
+          breadcrumbTitle.textContent = tabTitles[tabId].title;
+        }
+
+        // Close mobile sidebar if open
+        if (sidebar.classList.contains("mobile-open")) {
+          sidebar.classList.remove("mobile-open");
+        }
+
+        renderActiveTab();
+      });
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://carto.com/">CARTO</a> &copy; OpenStreetMap contributors | DGM&M GIS',
-      subdomains: 'abcd',
-      maxZoom: 19
-    }).addTo(punjabMap);
-
-    mapMarkersLayer = L.layerGroup().addTo(punjabMap);
-    renderMapMarkers();
-    renderMapSidebarLegend();
+    if (mobileToggle) {
+      mobileToggle.addEventListener("click", () => {
+        sidebar.classList.toggle("mobile-open");
+      });
+    }
   }
 
-  function renderMapMarkers() {
-    if (!punjabMap || !mapMarkersLayer) return;
-    mapMarkersLayer.clearLayers();
+  // -------------------------------------------------------------
+  // BOOKMARK MODAL CONTROLLER
+  // -------------------------------------------------------------
+  function initBookmarkModal() {
+    const openBtn = document.getElementById("btnOpenBookmarkModal");
+    const closeBtn = document.getElementById("btnCloseBookmarkModal");
+    const overlay = document.getElementById("bookmarkModalOverlay");
+    const copyBtn = document.getElementById("btnCopyPortalUrl");
+    const urlInput = document.getElementById("portalCloudUrl");
 
-    const sites = rawData.geoMiningSites || [];
-    let visibleCount = 0;
+    if (openBtn && overlay) {
+      openBtn.addEventListener("click", () => overlay.classList.add("active"));
+    }
+    if (closeBtn && overlay) {
+      closeBtn.addEventListener("click", () => overlay.classList.remove("active"));
+    }
+    if (overlay) {
+      overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) overlay.classList.remove("active");
+      });
+    }
 
-    sites.forEach(site => {
-      if (mapFilters.mineral !== "ALL" && site.mineral !== mapFilters.mineral) return;
-      if (mapFilters.zone !== "ALL" && site.zoneGroup !== mapFilters.zone) return;
-      if (mapFilters.scale !== "ALL" && site.scale !== mapFilters.scale) return;
+    if (copyBtn && urlInput) {
+      copyBtn.addEventListener("click", () => {
+        urlInput.select();
+        navigator.clipboard.writeText(urlInput.value).then(() => {
+          copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
+          setTimeout(() => {
+            copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
+          }, 2000);
+        });
+      });
+    }
+  }
 
-      visibleCount++;
-      const color = getMineralColor(site.mineral);
+  // -------------------------------------------------------------
+  // POPULATE FILTER DROPDOWNS
+  // -------------------------------------------------------------
+  function populateFilterDropdowns() {
+    // Collect unique districts from all sources
+    const allDistricts = new Set();
+    const allMinerals = new Set();
 
+    (divisions.lsm?.leases || []).forEach(l => { if (l.district) allDistricts.add(l.district); if (l.mineral) allMinerals.add(l.mineral); });
+    (divisions.sma?.auctionConcessions || []).forEach(c => { if (c.district) allDistricts.add(c.district); if (c.mineral) allMinerals.add(c.mineral); });
+    (divisions.mm?.blocks || []).forEach(b => { if (b.district) allDistricts.add(b.district); if (b.mineral) allMinerals.add(b.mineral); });
+
+    const sortedDistricts = Array.from(allDistricts).sort();
+    const sortedMinerals = Array.from(allMinerals).sort();
+
+    // Populate selects helper
+    function fillSelect(selectId, items, placeholder = "All") {
+      const el = document.getElementById(selectId);
+      if (!el) return;
+      const current = el.value;
+      el.innerHTML = `<option value="ALL">${placeholder}</option>`;
+      items.forEach(item => {
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        el.appendChild(opt);
+      });
+      el.value = current || "ALL";
+    }
+
+    fillSelect("lsmDistrictFilter", sortedDistricts, "All Districts");
+    fillSelect("smaDistrictFilter", sortedDistricts, "All Districts");
+    fillSelect("smaMineralFilter", sortedMinerals, "All Minerals");
+    fillSelect("mmDistrictFilter", sortedDistricts, "All Districts");
+    fillSelect("mmMineralFilter", sortedMinerals, "All Minerals");
+    fillSelect("mapMineralFilter", sortedMinerals, "All Minerals");
+    fillSelect("epaDistrictSelect", sortedDistricts, "All Districts");
+    fillSelect("appealsDistrictSelect", sortedDistricts, "All Districts");
+  }
+
+  // -------------------------------------------------------------
+  // RENDER CONTROLLER (DELEGATES PER ACTIVE TAB)
+  // -------------------------------------------------------------
+  function renderActiveTab() {
+    switch (state.activeTab) {
+      case "tab-overview":
+        // Overview cards are static HTML seeded from executive
+        break;
+      case "tab-lsm":
+        renderLsm();
+        break;
+      case "tab-sma":
+        renderSma();
+        break;
+      case "tab-mm":
+        renderMm();
+        break;
+      case "tab-map":
+        renderMap();
+        break;
+      case "tab-financials":
+        renderFinancials();
+        break;
+      case "tab-epa":
+        renderEpa();
+        break;
+      case "tab-appeals":
+        renderAppeals();
+        break;
+    }
+  }
+
+  // -------------------------------------------------------------
+  // LSM DIVISION RENDERER
+  // -------------------------------------------------------------
+  function renderLsm() {
+    const thead = document.getElementById("lsmTableHead");
+    const tbody = document.getElementById("lsmTableBody");
+    const pageInfo = document.getElementById("lsmPageInfo");
+    const lsmData = divisions.lsm || {};
+
+    let records = [];
+    let headers = [];
+
+    if (state.lsm.subTab === "leases") {
+      headers = ["Sr", "Company Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "Grant Date", "Expiry Date", "Status"];
+      records = lsmData.leases || [];
+    } else if (state.lsm.subTab === "expl-valid") {
+      headers = ["Sr", "Licensee Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "From", "To", "Status"];
+      records = lsmData.explorationValid || [];
+    } else if (state.lsm.subTab === "expl-cancelled") {
+      headers = ["Sr", "Licensee Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "Period", "Status", "Remarks"];
+      records = lsmData.explorationCancelled || [];
+    } else if (state.lsm.subTab === "pending") {
+      headers = ["Sr", "Applicant Name", "Application #", "Date", "Area (Acres)", "Category", "District", "Mineral", "Location", "Status"];
+      records = lsmData.pendingApplications || [];
+    }
+
+    // Filter by district
+    if (state.lsm.district !== "ALL") {
+      records = records.filter(r => (r.district || "").toLowerCase() === state.lsm.district.toLowerCase());
+    }
+
+    // Filter by search query
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
+    }
+
+    // Render Table Head
+    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+
+    // Pagination
+    const total = records.length;
+    const start = (state.lsm.page - 1) * state.lsm.pageSize;
+    const pageRecords = records.slice(start, start + state.lsm.pageSize);
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found matching filters.</td></tr>`;
+    } else {
+      tbody.innerHTML = pageRecords.map(r => {
+        if (state.lsm.subTab === "leases") {
+          return `
+            <tr>
+              <td><strong>${r.srNo || '-'}</strong></td>
+              <td style="font-weight: 600; color: #1E293B;">${r.company || '-'}</td>
+              <td><code>${r.licenseNo || '-'}</code></td>
+              <td>${formatNumber(r.area)}</td>
+              <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
+              <td>${r.district || '-'}</td>
+              <td><small>${r.location || '-'}</small></td>
+              <td>${r.grantDate || '-'}</td>
+              <td>${r.expiryDate || '-'}</td>
+              <td><span class="badge-status-pill badge-granted">${r.status || 'Valid'}</span></td>
+            </tr>
+          `;
+        } else if (state.lsm.subTab === "expl-valid") {
+          return `
+            <tr>
+              <td><strong>${r.srNo || '-'}</strong></td>
+              <td style="font-weight: 600;">${r.licensee || '-'}</td>
+              <td><code>${r.licenseNo || '-'}</code></td>
+              <td>${formatNumber(r.area)}</td>
+              <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
+              <td>${r.district || '-'}</td>
+              <td><small>${r.location || '-'}</small></td>
+              <td>${r.from || '-'}</td>
+              <td>${r.to || '-'}</td>
+              <td><span class="badge-status-pill badge-granted">${r.status || 'Valid'}</span></td>
+            </tr>
+          `;
+        } else if (state.lsm.subTab === "expl-cancelled") {
+          return `
+            <tr>
+              <td><strong>${r.srNo || '-'}</strong></td>
+              <td style="font-weight: 600;">${r.licensee || '-'}</td>
+              <td><code>${r.licenseNo || '-'}</code></td>
+              <td>${r.areaRaw || formatNumber(r.area)}</td>
+              <td>${r.mineral || '-'}</td>
+              <td>${r.district || '-'}</td>
+              <td><small>${r.location || '-'}</small></td>
+              <td>${r.from} to ${r.to}</td>
+              <td><span class="badge-status-pill badge-cancelled">Cancelled</span></td>
+              <td><small style="color: #64748B;">${r.remarks || '-'}</small></td>
+            </tr>
+          `;
+        } else {
+          return `
+            <tr>
+              <td><strong>${r.srNo || '-'}</strong></td>
+              <td style="font-weight: 600;">${r.applicant || '-'}</td>
+              <td><code>${r.appNo || '-'}</code></td>
+              <td>${r.appDate || '-'}</td>
+              <td>${formatNumber(r.area)}</td>
+              <td><strong>${r.category || '-'}</strong></td>
+              <td>${r.district || '-'}</td>
+              <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
+              <td><small>${r.location || '-'}</small></td>
+              <td><span class="badge-status-pill badge-vacant">${r.status || 'Under Process'}</span></td>
+            </tr>
+          `;
+        }
+      }).join("");
+    }
+
+    // Page Info & Buttons
+    const end = Math.min(start + state.lsm.pageSize, total);
+    pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`;
+    document.getElementById("btnPrevLsm").disabled = state.lsm.page <= 1;
+    document.getElementById("btnNextLsm").disabled = end >= total;
+  }
+
+  // LSM Controls Event Listeners
+  document.querySelectorAll("[data-lsm-sub]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-lsm-sub]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.lsm.subTab = btn.getAttribute("data-lsm-sub");
+      state.lsm.page = 1;
+      renderLsm();
+    });
+  });
+
+  document.getElementById("lsmDistrictFilter")?.addEventListener("change", (e) => {
+    state.lsm.district = e.target.value;
+    state.lsm.page = 1;
+    renderLsm();
+  });
+
+  document.getElementById("btnPrevLsm")?.addEventListener("click", () => {
+    if (state.lsm.page > 1) { state.lsm.page--; renderLsm(); }
+  });
+  document.getElementById("btnNextLsm")?.addEventListener("click", () => {
+    state.lsm.page++; renderLsm();
+  });
+
+  // -------------------------------------------------------------
+  // SMA DIVISION RENDERER
+  // -------------------------------------------------------------
+  function renderSma() {
+    const thead = document.getElementById("smaTableHead");
+    const tbody = document.getElementById("smaTableBody");
+    const pageInfo = document.getElementById("smaPageInfo");
+    const smaData = divisions.sma || {};
+
+    let records = [];
+    let headers = [];
+
+    if (state.sma.subTab === "auction") {
+      headers = ["Sr", "Block Code", "Block Name", "Mineral", "District", "Status", "Lessee Name", "Grant Date", "Expiry Date", "Operative Bid (PKR)", "Reserve Price (PKR)"];
+      records = smaData.auctionConcessions || [];
+    } else if (state.sma.subTab === "application") {
+      headers = ["Concession #", "Client / Lessee", "Branch", "Mineral", "Type", "District", "Acreage", "Grant Date", "Expiry Date", "Status"];
+      records = smaData.applicationConcessions || [];
+    } else if (state.sma.subTab === "matrix") {
+      headers = ["District", "Limestone", "Gypsum", "Silica Sand", "Coal", "Fireclay", "Bentonite", "Iron Ore", "Bauxite", "Latrite", "Celestite", "Fuller Earth", "Total Concessions"];
+      records = smaData.districtMatrix || [];
+    }
+
+    if (state.sma.subTab !== "matrix") {
+      if (state.sma.district !== "ALL") {
+        records = records.filter(r => (r.district || "").toLowerCase() === state.sma.district.toLowerCase());
+      }
+      if (state.sma.mineral !== "ALL") {
+        records = records.filter(r => (r.mineral || "").toLowerCase() === state.sma.mineral.toLowerCase());
+      }
+      if (state.searchQuery) {
+        const q = state.searchQuery.toLowerCase();
+        records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
+      }
+    }
+
+    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+
+    // Pagination (except matrix which is 8 rows)
+    const isMatrix = state.sma.subTab === "matrix";
+    const total = records.length;
+    const start = isMatrix ? 0 : (state.sma.page - 1) * state.sma.pageSize;
+    const pageRecords = isMatrix ? records : records.slice(start, start + state.sma.pageSize);
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
+    } else {
+      tbody.innerHTML = pageRecords.map(r => {
+        if (state.sma.subTab === "auction") {
+          return `
+            <tr>
+              <td><strong>${r.srNo}</strong></td>
+              <td><code>${r.block}</code></td>
+              <td style="font-weight: 600;">${r.blockName}</td>
+              <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+              <td>${r.district}</td>
+              <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
+              <td>${r.lessee || '-'}</td>
+              <td>${r.grantDate || '-'}</td>
+              <td>${r.expiryDate || '-'}</td>
+              <td style="font-weight: 700; color: #166534;">${formatPKR(r.operativeBid)}</td>
+              <td style="color: #64748B;">${formatPKR(r.reservePrice)}</td>
+            </tr>
+          `;
+        } else if (state.sma.subTab === "application") {
+          return `
+            <tr>
+              <td><code>${r.concessionNo}</code></td>
+              <td style="font-weight: 600;">${r.client}</td>
+              <td><span class="nav-pill pill-sma">${r.branch}</span></td>
+              <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+              <td>${r.type}</td>
+              <td>${r.district}</td>
+              <td>${formatNumber(r.acreage)} ac</td>
+              <td>${r.grantDate || '-'}</td>
+              <td>${r.expiryDate || '-'}</td>
+              <td><span class="badge-status-pill badge-granted">${r.status}</span></td>
+            </tr>
+          `;
+        } else {
+          return `
+            <tr>
+              <td style="font-weight: 700; color: #0F172A;">${r.district}</td>
+              <td>${r.limestone || '-'}</td>
+              <td>${r.gypsum || '-'}</td>
+              <td>${r.silicaSand || '-'}</td>
+              <td>${r.coal || '-'}</td>
+              <td>${r.fireclay || '-'}</td>
+              <td>${r.bentonite || '-'}</td>
+              <td>${r.ironOre || '-'}</td>
+              <td>${r.bauxite || '-'}</td>
+              <td>${r.latrite || '-'}</td>
+              <td>${r.celestite || '-'}</td>
+              <td>${r.fullerEarth || '-'}</td>
+              <td style="font-weight: 700; color: #1E3A8A;">${r.total}</td>
+            </tr>
+          `;
+        }
+      }).join("");
+    }
+
+    const end = Math.min(start + state.sma.pageSize, total);
+    pageInfo.textContent = isMatrix ? `Total Districts: ${total}` : (total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`);
+    document.getElementById("btnPrevSma").disabled = isMatrix || state.sma.page <= 1;
+    document.getElementById("btnNextSma").disabled = isMatrix || end >= total;
+  }
+
+  // SMA Controls
+  document.querySelectorAll("[data-sma-sub]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-sma-sub]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.sma.subTab = btn.getAttribute("data-sma-sub");
+      state.sma.page = 1;
+      renderSma();
+    });
+  });
+
+  document.getElementById("smaDistrictFilter")?.addEventListener("change", (e) => {
+    state.sma.district = e.target.value;
+    state.sma.page = 1;
+    renderSma();
+  });
+  document.getElementById("smaMineralFilter")?.addEventListener("change", (e) => {
+    state.sma.mineral = e.target.value;
+    state.sma.page = 1;
+    renderSma();
+  });
+
+  document.getElementById("btnPrevSma")?.addEventListener("click", () => {
+    if (state.sma.page > 1) { state.sma.page--; renderSma(); }
+  });
+  document.getElementById("btnNextSma")?.addEventListener("click", () => {
+    state.sma.page++; renderSma();
+  });
+
+  // -------------------------------------------------------------
+  // MM DIVISION RENDERER
+  // -------------------------------------------------------------
+  function renderMm() {
+    const thead = document.getElementById("mmTableHead");
+    const tbody = document.getElementById("mmTableBody");
+    const pageInfo = document.getElementById("mmPageInfo");
+    const mmData = divisions.mm || {};
+
+    let records = mmData.blocks || [];
+    if (state.mm.subTab === "upcoming") {
+      records = mmData.upcomingAuctions || [];
+    } else if (state.mm.subTab === "vacant") {
+      records = (mmData.blocks || []).filter(b => b.status === "Vacant");
+    }
+
+    if (state.mm.district !== "ALL") {
+      records = records.filter(r => (r.district || "").toLowerCase() === state.mm.district.toLowerCase());
+    }
+    if (state.mm.mineral !== "ALL") {
+      records = records.filter(r => (r.mineral || "").toLowerCase() === state.mm.mineral.toLowerCase());
+    }
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
+    }
+
+    const headers = ["ID", "District", "Mineral", "Block Title", "Area (Acres)", "Status", "Reserve Price (PKR)", "Auction Dates (1st / 2nd / 3rd)", "Remarks"];
+    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+
+    const total = records.length;
+    const start = (state.mm.page - 1) * state.mm.pageSize;
+    const pageRecords = records.slice(start, start + state.mm.pageSize);
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
+    } else {
+      tbody.innerHTML = pageRecords.map(r => `
+        <tr>
+          <td><strong>${r.id}</strong></td>
+          <td style="font-weight: 600;">${r.district}</td>
+          <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+          <td style="font-weight: 600; color: #0F172A;">${r.name || r.code}</td>
+          <td>${formatNumber(r.area)} ac</td>
+          <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
+          <td style="font-weight: 700; color: #15803D;">${formatPKR(r.reservePrice)}</td>
+          <td><small>${r.firstAuctionDate ? `${r.firstAuctionDate} / ${r.secondAuctionDate}` : '-'}</small></td>
+          <td><small style="color: #64748B;">${r.remarks ? r.remarks.slice(0, 75) + '...' : '-'}</small></td>
+        </tr>
+      `).join("");
+    }
+
+    const end = Math.min(start + state.mm.pageSize, total);
+    pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`;
+    document.getElementById("btnPrevMm").disabled = state.mm.page <= 1;
+    document.getElementById("btnNextMm").disabled = end >= total;
+  }
+
+  // MM Controls
+  document.querySelectorAll("[data-mm-sub]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-mm-sub]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.mm.subTab = btn.getAttribute("data-mm-sub");
+      state.mm.page = 1;
+      renderMm();
+    });
+  });
+
+  document.getElementById("mmDistrictFilter")?.addEventListener("change", (e) => {
+    state.mm.district = e.target.value;
+    state.mm.page = 1;
+    renderMm();
+  });
+  document.getElementById("mmMineralFilter")?.addEventListener("change", (e) => {
+    state.mm.mineral = e.target.value;
+    state.mm.page = 1;
+    renderMm();
+  });
+
+  document.getElementById("btnPrevMm")?.addEventListener("click", () => {
+    if (state.mm.page > 1) { state.mm.page--; renderMm(); }
+  });
+  document.getElementById("btnNextMm")?.addEventListener("click", () => {
+    state.mm.page++; renderMm();
+  });
+
+  // -------------------------------------------------------------
+  // GIS MAP RENDERER (LEAFLET.JS)
+  // -------------------------------------------------------------
+  let mapInstance = null;
+  let mapMarkers = [];
+
+  function renderMap() {
+    if (!window.L) return;
+    const mapContainer = document.getElementById("punjabGisMap");
+    if (!mapContainer) return;
+
+    if (!mapInstance) {
+      mapInstance = L.map("punjabGisMap", {
+        center: [31.5204, 72.7],
+        zoom: 7,
+        zoomControl: true
+      });
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '&copy; Government of the Punjab | Mines & Minerals',
+        maxZoom: 18
+      }).addTo(mapInstance);
+    }
+
+    // Refresh map size
+    setTimeout(() => mapInstance.invalidateSize(), 200);
+
+    // Clear existing markers
+    mapMarkers.forEach(m => mapInstance.removeLayer(m));
+    mapMarkers = [];
+
+    const sites = db.geoMiningSites || [];
+    const filterMineral = document.getElementById("mapMineralFilter")?.value || "ALL";
+
+    const mineralColors = {
+      "Rock Salt": "#E11D48",
+      "Limestone": "#2563EB",
+      "Coal": "#1E293B",
+      "Silica Sand": "#F59E0B",
+      "Gypsum": "#0D9488",
+      "Ordinary Sand": "#10B981"
+    };
+
+    // Populate Floating Legend
+    const legendEl = document.getElementById("mapLegendPills");
+    if (legendEl && legendEl.children.length === 0) {
+      legendEl.innerHTML = Object.entries(mineralColors).map(([min, col]) => `
+        <span class="legend-pill" style="background: ${col}18; color: ${col};">
+          <span class="legend-dot" style="background: ${col};"></span> ${min}
+        </span>
+      `).join("");
+    }
+
+    const filteredSites = filterMineral === "ALL" 
+      ? sites 
+      : sites.filter(s => (s.mineral || "").toLowerCase().includes(filterMineral.toLowerCase()));
+
+    filteredSites.forEach(site => {
+      const color = mineralColors[site.mineral] || "#6366F1";
       const marker = L.circleMarker([site.lat, site.lng], {
-        radius: site.scale === "LSM" ? 11 : 8,
+        radius: 8,
         fillColor: color,
         color: "#FFFFFF",
         weight: 2,
         opacity: 1,
-        fillOpacity: 0.85
+        fillOpacity: 0.9
       });
 
-      const popupContent = `
-        <div style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.82rem; min-width: 240px; line-height: 1.4;">
-          <div style="font-weight: 800; color: #092617; font-size: 0.92rem; border-bottom: 2px solid #C8A355; padding-bottom: 0.3rem; margin-bottom: 0.4rem;">
-            ${escapeHtml(site.name)}
-          </div>
-          <div style="margin-bottom: 0.2rem;"><strong>District:</strong> ${escapeHtml(site.district)} (${escapeHtml(site.division)})</div>
-          <div style="margin-bottom: 0.2rem;"><strong>Mineral:</strong> <span style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-weight: 700; color: ${color};">${escapeHtml(site.mineral)}</span></div>
-          <div style="margin-bottom: 0.2rem;"><strong>Scale:</strong> ${escapeHtml(site.scale)} (${escapeHtml(site.concessionType)})</div>
-          <div style="margin-bottom: 0.2rem;"><strong>Lessee/Operator:</strong> ${escapeHtml(site.lessee)}</div>
-          <div style="margin-bottom: 0.2rem;"><strong>Annual Output:</strong> ${escapeHtml(site.annualOutput)}</div>
-          <div style="margin-bottom: 0.2rem; font-size: 0.74rem; color: #64748B; font-family: monospace;"><strong>GPS Ref:</strong> ${escapeHtml(site.gridRef || `${site.lat}, ${site.lng}`)}</div>
-          <div style="background: #F8FAF8; padding: 0.35rem 0.5rem; border-radius: 4px; border: 1px solid #E2E8F0; font-size: 0.72rem; color: #334155; margin-top: 0.3rem;">
-            ${escapeHtml(site.notes || "")}
+      marker.bindPopup(`
+        <div style="font-family: inherit; font-size: 0.85rem; min-width: 200px;">
+          <div style="font-weight: 700; color: #0F172A; font-size: 0.95rem; margin-bottom: 0.25rem;">${site.title}</div>
+          <div style="margin-bottom: 0.4rem;"><span class="badge-status-pill badge-process" style="background: ${color}20; color: ${color};">${site.mineral}</span></div>
+          <div style="font-size: 0.78rem; color: #475569;">
+            <div><strong>District:</strong> ${site.district} (${site.division})</div>
+            <div><strong>Coordinates:</strong> ${site.lat.toFixed(4)}, ${site.lng.toFixed(4)}</div>
+            ${site.northing ? `<div><strong>UTM:</strong> N: ${site.northing} | E: ${site.easting}</div>` : ''}
+            <div><strong>Deposit Details:</strong> ${site.details || 'Active mining lease'}</div>
           </div>
         </div>
-      `;
+      `);
 
-      marker.bindPopup(popupContent);
-      mapMarkersLayer.addLayer(marker);
+      marker.addTo(mapInstance);
+      mapMarkers.push(marker);
     });
 
-    const countEl = document.getElementById("mapActivePointsCount");
-    if (countEl) countEl.textContent = `${visibleCount} Mining Sites Displayed`;
-  }
-
-  function renderMapSidebarLegend() {
-    const container = document.getElementById("mapLegendContainer");
-    if (!container) return;
-    const sites = rawData.geoMiningSites || [];
-
-    const mineralCounts = {};
-    sites.forEach(s => {
-      mineralCounts[s.mineral] = (mineralCounts[s.mineral] || 0) + 1;
-    });
-
-    container.innerHTML = Object.keys(mineralCounts).map(min => {
-      const color = getMineralColor(min);
-      return `
-        <div class="legend-item" data-mineral="${escapeHtml(min)}">
-          <div style="display: flex; align-items: center;">
-            <span class="legend-dot" style="background-color: ${color};"></span>
-            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-primary);">${escapeHtml(min)}</span>
-          </div>
-          <span class="pill-count">${mineralCounts[min]} Hubs</span>
-        </div>
-      `;
-    }).join("");
-
-    container.querySelectorAll(".legend-item").forEach(item => {
-      item.onclick = () => {
-        container.querySelectorAll(".legend-item").forEach(i => i.classList.remove("active"));
-        item.classList.add("active");
-        mapFilters.mineral = item.dataset.mineral;
-        document.getElementById("mapFilterMineral").value = item.dataset.mineral;
-        renderMapMarkers();
-      };
+    document.getElementById("btnResetMapView")?.addEventListener("click", () => {
+      mapInstance.setView([31.5204, 72.7], 7);
     });
   }
 
-  document.getElementById("mapFilterMineral")?.addEventListener("change", (e) => {
-    mapFilters.mineral = e.target.value;
-    renderMapMarkers();
-  });
-  document.getElementById("mapFilterZone")?.addEventListener("change", (e) => {
-    mapFilters.zone = e.target.value;
-    renderMapMarkers();
-  });
-  document.getElementById("mapFilterScale")?.addEventListener("change", (e) => {
-    mapFilters.scale = e.target.value;
-    renderMapMarkers();
-  });
-  document.getElementById("btnResetMapView")?.addEventListener("click", () => {
-    mapFilters.mineral = "ALL";
-    mapFilters.zone = "ALL";
-    mapFilters.scale = "ALL";
-    document.getElementById("mapFilterMineral").value = "ALL";
-    document.getElementById("mapFilterZone").value = "ALL";
-    document.getElementById("mapFilterScale").value = "ALL";
-    document.querySelectorAll(".legend-item").forEach(i => i.classList.remove("active"));
-    if (punjabMap) punjabMap.setView([31.5, 72.8], 7);
-    renderMapMarkers();
-  });
+  document.getElementById("mapMineralFilter")?.addEventListener("change", renderMap);
 
-  // -----------------------------------------------------------------
-  // 6. TAB 2: FINANCIAL INTELLIGENCE & 5-YEAR MULTI-YEAR TRENDS
-  // -----------------------------------------------------------------
-  function initFiveYearFinancialChart() {
-    const ctx = document.getElementById("chartFiveYearFinancials")?.getContext("2d");
-    if (!ctx) return;
-    if (fiveYearChart) fiveYearChart.destroy();
+  // -------------------------------------------------------------
+  // FINANCIALS RENDERER
+  // -------------------------------------------------------------
+  function renderFinancials() {
+    const prodTbody = document.getElementById("producersTableBody");
+    const fieldTbody = document.getElementById("fieldOfficesTableBody");
 
-    const data5Y = rawData.fiveYearSummary || {};
-    const trends = data5Y.yearlyTrends || [];
+    const producers = db.majorProducers || [];
+    const summary = db.fiveYearSummary || {};
+    const fieldOffices = summary.fieldOffices || [];
 
-    fiveYearChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: trends.map(t => "FY " + t.fy),
-        datasets: [
-          {
-            label: "Royalty Collected (PKR Millions)",
-            data: trends.map(t => Math.round(t.royaltyPKR / 1000000)),
-            backgroundColor: "rgba(20, 83, 45, 0.85)",
-            borderColor: "#0E3D25",
-            borderWidth: 1,
-            borderRadius: 4,
-            yAxisID: "y"
-          },
-          {
-            label: "Production (Million Metric Tons)",
-            data: trends.map(t => +(t.productionTons / 1000000).toFixed(2)),
-            type: "line",
-            borderColor: "#C8A355",
-            backgroundColor: "rgba(200, 163, 85, 0.2)",
-            borderWidth: 3,
-            pointRadius: 5,
-            pointBackgroundColor: "#C8A355",
-            yAxisID: "y1"
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { position: "top", labels: { boxWidth: 12, font: { family: "Plus Jakarta Sans", size: 11 } } },
-          tooltip: {
-            callbacks: {
-              label: (ctx) => {
-                if (ctx.dataset.yAxisID === "y1") {
-                  return `Production: ${ctx.raw} Million Tons`;
-                }
-                return `Royalty: Rs. ${ctx.raw.toLocaleString()} Million`;
-              }
-            }
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: { display: true, text: "Royalty (PKR Millions)", font: { size: 10 } },
-            ticks: { callback: v => "Rs. " + v + "M" },
-            grid: { color: "#F1F5F9" }
-          },
-          y1: {
-            beginAtZero: true,
-            position: "right",
-            title: { display: true, text: "Production (M Tons)", font: { size: 10 } },
-            ticks: { callback: v => v + "M T" },
-            grid: { display: false }
-          },
-          x: { grid: { display: false } }
-        }
-      }
-    });
-
-    renderMajorProducers();
-    renderFieldOfficesFinancialTable();
-  }
-
-  function renderMajorProducers() {
-    const list = document.getElementById("majorProducersList");
-    if (!list) return;
-    const producers = rawData.majorProducers || [];
-
-    list.innerHTML = producers.map(p => `
-      <div style="background: #F8FAF8; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); padding: 0.75rem 1rem;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-          <div>
-            <strong style="color: var(--punjab-green-darkest); font-size: 0.85rem;">${escapeHtml(p.company)}</strong>
-            <div style="font-size: 0.72rem; color: var(--text-muted);"><i class="fa-solid fa-location-dot"></i> ${escapeHtml(p.plantLocation)} | Area: ${p.totalLeasedArea} Acres</div>
-          </div>
-          <span class="badge-priority prio-high" style="font-size: 0.7rem;">${escapeHtml(p.mineral)}</span>
-        </div>
-        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem; font-size: 0.76rem; border-top: 1px dashed var(--border-medium); padding-top: 0.35rem;">
-          <span>5-Year Output: <strong>${(p.fiveYearProductionTons / 1000000).toFixed(2)}M Tons</strong></span>
-          <span style="color: var(--punjab-green-dark);">5-Year Royalty: <strong>Rs. ${(p.fiveYearRoyaltyPKR / 1000000).toFixed(1)}M</strong></span>
-        </div>
-      </div>
-    `).join("");
-  }
-
-  function renderFieldOfficesFinancialTable() {
-    const tbody = document.getElementById("fieldOfficesFinancialTableBody");
-    if (!tbody) return;
-    const offices = rawData.fiveYearSummary?.fieldOffices || [];
-
-    tbody.innerHTML = offices.map(o => `
-      <tr>
-        <td><strong style="color: var(--punjab-green-darkest);">${escapeHtml(o.office)}</strong></td>
-        <td><span class="pill-count">${o.leases}</span></td>
-        <td style="font-family: monospace;">${(o.production5Y).toLocaleString()}</td>
-        <td style="font-family: monospace; font-weight: 700; color: var(--punjab-green-dark);">Rs. ${(o.royalty5Y).toLocaleString()}</td>
-        <td style="font-family: monospace;">Rs. ${(o.totalPaid5Y).toLocaleString()}</td>
-        <td style="font-family: monospace; color: var(--text-muted);">Rs. ${(o.securities).toLocaleString()}</td>
-        <td><span style="font-size: 0.72rem; color: var(--text-secondary);">${escapeHtml(o.primaryMinerals.join(", "))}</span></td>
-        <td><span class="badge-status badge-completed">${o.revenueSharePercent}%</span></td>
-      </tr>
-    `).join("");
-  }
-
-  document.getElementById("btnDismissAuditAlert")?.addEventListener("click", () => {
-    document.getElementById("btnDismissAuditAlert").parentElement.parentElement.style.display = "none";
-  });
-
-  // -----------------------------------------------------------------
-  // 7. TAB 3: LICENSING, RENEWALS & E-AUCTIONS INTELLIGENCE
-  // -----------------------------------------------------------------
-  function renderAuctionsTable() {
-    const tbody = document.getElementById("auctionTableBody");
-    if (!tbody) return;
-
-    if (auctionRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2rem; color: var(--text-muted);">No auction records available.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = auctionRecords.map((a, i) => {
-      const bidVal = parseFloat(a.bidReceived) || 0;
-      const reserveVal = parseFloat(a.reservePrice) || 0;
-      const incVal = parseFloat(a.increasePercentage) || 0;
-
-      let incBadge = `<span class="badge-status badge-completed">+${(incVal * 100).toFixed(1)}%</span>`;
-      if (incVal > 2) {
-        incBadge = `<span class="badge-status badge-completed" style="background: #ECFDF5; color: #047857; font-weight: 800;">+${(incVal * 100).toFixed(0)}% Surge</span>`;
-      }
-
-      return `
+    if (prodTbody) {
+      prodTbody.innerHTML = producers.map(p => `
         <tr>
-          <td style="font-family: monospace; color: var(--text-muted);">${a.sr || (i + 1)}</td>
-          <td><span class="badge-wing">${escapeHtml(a.fieldOffice || "Chiniot")}</span></td>
-          <td><strong style="color: var(--punjab-green-darkest); font-size: 0.88rem;">${escapeHtml(a.blockName || "-")}</strong></td>
-          <td style="font-family: monospace;">Rs. ${parseFloat(a.lastOperativeBid || 0).toLocaleString()}</td>
-          <td style="font-family: monospace; color: var(--text-muted);">Rs. ${reserveVal.toLocaleString()}</td>
-          <td style="font-family: monospace; font-weight: 700; color: #047857; font-size: 0.88rem;">Rs. ${bidVal.toLocaleString()}</td>
-          <td>${incBadge}</td>
-          <td><span class="badge-status badge-completed"><i class="fa-solid fa-check"></i> Bid Fetched</span></td>
+          <td style="font-weight: 700; color: #0F172A;">${p.name}</td>
+          <td>${p.district}</td>
+          <td>${p.mineral}</td>
+          <td>${formatNumber(p.acreage)} ac</td>
+          <td style="font-weight: 700; color: #15803D;">${formatPKR(p.royaltyPaidPKR)}</td>
+          <td>${formatNumber(p.productionTons)} Tons</td>
+          <td><span class="badge-status-pill badge-granted">${p.status}</span></td>
         </tr>
-      `;
-    }).join("");
-  }
-
-  function renderSublettingTable() {
-    const tbody = document.getElementById("sublettingTableBody");
-    if (!tbody) return;
-
-    if (sublettingCases.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No subletting violations pending.</td></tr>`;
-      return;
+      `).join("");
     }
 
-    tbody.innerHTML = sublettingCases.map(s => `
-      <tr>
-        <td><strong>${escapeHtml(s.district || "Chakwal")}</strong></td>
-        <td><span class="badge-priority prio-urgent" style="font-family: monospace;">${escapeHtml(s.leaseNo || "-")}</span></td>
-        <td><div style="font-size: 0.76rem; font-weight: 600;">${escapeHtml(s.company || "-")}</div></td>
-        <td style="font-size: 0.74rem; font-family: monospace;">${escapeHtml(s.inspectionDate || "-")}</td>
-        <td><span class="badge-priority prio-urgent">${escapeHtml(s.violation || "Rule-160")}</span></td>
-      </tr>
-    `).join("");
-  }
-
-  function renderRenewalsTable() {
-    const tbody = document.getElementById("renewalsTableBody");
-    if (!tbody) return;
-
-    if (renewalsDecided.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 2rem; color: var(--text-muted);">No decided renewals.</td></tr>`;
-      return;
+    if (fieldTbody) {
+      fieldTbody.innerHTML = fieldOffices.map(f => `
+        <tr>
+          <td style="font-weight: 700; color: #0F172A;">${f.office}</td>
+          <td>${formatNumber(f.productionTons)}</td>
+          <td style="font-weight: 700; color: #166534;">${formatPKR(f.royaltyPKR)}</td>
+          <td>${formatPKR(f.deadRentPKR)}</td>
+          <td>${formatPKR(f.securityHeldPKR)}</td>
+          <td style="font-weight: 800; color: #1E3A8A;">${formatPKR(f.grandTotalPaidPKR)}</td>
+          <td><strong>${f.shareOfTotalProduction}%</strong></td>
+        </tr>
+      `).join("");
     }
-
-    tbody.innerHTML = renewalsDecided.slice(0, 30).map(r => `
-      <tr>
-        <td><strong style="font-family: monospace; font-size: 0.76rem; color: var(--punjab-green-darkest);">${escapeHtml(r.leaseNo || "-")}</strong></td>
-        <td><div style="font-size: 0.76rem; color: var(--text-secondary); max-width: 220px;">${escapeHtml(r.company || "-")}</div></td>
-        <td style="font-family: monospace;">${escapeHtml(r.areaAcres || "-")}</td>
-        <td style="font-size: 0.74rem; font-family: monospace;">${escapeHtml(r.renewalWef || "-")}</td>
-        <td style="font-size: 0.74rem; font-family: monospace; color: #047857; font-weight: 600;">${escapeHtml(r.newExpiry || "-")}</td>
-      </tr>
-    `).join("");
   }
 
-  // -----------------------------------------------------------------
-  // 8. TAB 4: EPA CLEARANCES TRACKER
-  // -----------------------------------------------------------------
-  function renderDistrictBadges() {
-    const container = document.getElementById("districtBadgesContainer");
-    if (!container) return;
-    const districtsList = rawData.epaDistricts || [];
-
-    const countsMap = {};
-    epaCases.forEach(c => {
-      const d = (c.district || "Unknown").trim();
-      countsMap[d] = (countsMap[d] || 0) + 1;
-    });
-
-    container.innerHTML = districtsList.map(d => {
-      const count = countsMap[d.district] || d.count || 0;
-      const isActive = epaFilters.district === d.district ? "active" : "";
-      return `
-        <button class="district-pill-btn ${isActive}" data-district="${escapeHtml(d.district)}">
-          <span>${escapeHtml(d.district)}</span>
-          <span class="pill-count">${count}</span>
-        </button>
-      `;
-    }).join("");
-
-    container.querySelectorAll(".district-pill-btn").forEach(btn => {
-      btn.onclick = () => {
-        container.querySelectorAll(".district-pill-btn").forEach(b => b.classList.remove("active"));
-        document.getElementById("pillDistrictAll")?.classList.remove("active");
-        btn.classList.add("active");
-        epaFilters.district = btn.dataset.district;
-        epaFilters.page = 1;
-        renderEpaTable();
-      };
-    });
-  }
-
-  document.getElementById("pillDistrictAll")?.addEventListener("click", () => {
-    document.querySelectorAll(".district-pill-btn").forEach(b => b.classList.remove("active"));
-    document.getElementById("pillDistrictAll").classList.add("active");
-    epaFilters.district = "ALL";
-    epaFilters.page = 1;
-    renderEpaTable();
-  });
-
-  document.querySelectorAll("#epaFilterChipsRow .filter-chip-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll("#epaFilterChipsRow .filter-chip-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      epaFilters.chip = btn.dataset.filter;
-      epaFilters.page = 1;
-      renderEpaTable();
-    });
-  });
-
-  document.getElementById("epaRowsPerPageSelect")?.addEventListener("change", (e) => {
-    epaFilters.rowsPerPage = e.target.value === "ALL" ? 99999 : parseInt(e.target.value, 10);
-    epaFilters.page = 1;
-    renderEpaTable();
-  });
-
-  function getFilteredEpaCases() {
-    return epaCases.filter(c => {
-      if (epaFilters.district !== "ALL") {
-        if ((c.district || "").toLowerCase() !== epaFilters.district.toLowerCase()) return false;
-      }
-      if (epaFilters.chip === "EBIZ") {
-        if (!(c.method || "").toLowerCase().includes("biz")) return false;
-      } else if (epaFilters.chip === "MANUAL") {
-        if ((c.method || "").toLowerCase().includes("biz")) return false;
-      } else if (epaFilters.chip === "DAEC") {
-        const text = `${c.delayReason || ""} ${c.reminder || ""}`.toLowerCase();
-        if (!text.includes("committee") && !text.includes("meeting") && !text.includes("daec") && !text.includes("dc")) return false;
-      } else if (epaFilters.chip === "INSPECTION") {
-        const text = `${c.delayReason || ""}`.toLowerCase();
-        if (!text.includes("inspector") && !text.includes("inspection") && !text.includes("site")) return false;
-      } else if (epaFilters.chip === "SAND") {
-        const mineral = (c.mineral || "").toLowerCase();
-        if (!mineral.includes("sand")) return false;
-      }
-      if (epaFilters.search) {
-        const q = epaFilters.search.toLowerCase();
-        const text = `${c.title || ""} ${c.district || ""} ${c.mineral || ""} ${c.delayReason || ""} ${c.fieldOffice || ""}`.toLowerCase();
-        if (!text.includes(q)) return false;
-      }
-      return true;
-    });
-  }
-
-  function renderEpaTable() {
+  // -------------------------------------------------------------
+  // EPA CLEARANCES RENDERER
+  // -------------------------------------------------------------
+  function renderEpa() {
     const tbody = document.getElementById("epaTableBody");
-    if (!tbody) return;
-    const filtered = getFilteredEpaCases();
+    const pageInfo = document.getElementById("epaPageInfo");
+    let records = db.epaCases || [];
 
-    document.getElementById("epaFilteredCountLabel").textContent = `Showing ${filtered.length} of ${epaCases.length} records`;
-
-    const totalPages = Math.ceil(filtered.length / epaFilters.rowsPerPage) || 1;
-    if (epaFilters.page > totalPages) epaFilters.page = totalPages;
-
-    const startIdx = (epaFilters.page - 1) * epaFilters.rowsPerPage;
-    const paged = filtered.slice(startIdx, startIdx + epaFilters.rowsPerPage);
-
-    if (paged.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="10" style="text-align: center; padding: 2.5rem; color: var(--text-muted);"><i class="fa-solid fa-leaf" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>No pending EPA cases found matching current criteria.</td></tr>`;
-      renderEpaPagination(0, 0, 0);
-      return;
+    if (state.epa.district !== "ALL") {
+      records = records.filter(r => (r.district || "").toLowerCase() === state.epa.district.toLowerCase());
+    }
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
     }
 
-    tbody.innerHTML = paged.map((c, idx) => {
-      const isEbiz = (c.method || "").toLowerCase().includes("biz");
-      const methodBadge = isEbiz
-        ? `<span class="badge-method-ebiz"><i class="fa-solid fa-globe"></i> e-Biz</span>`
-        : `<span class="badge-method-manual"><i class="fa-solid fa-file-lines"></i> Manual</span>`;
+    const total = records.length;
+    const start = (state.epa.page - 1) * state.epa.pageSize;
+    const pageRecords = records.slice(start, start + state.epa.pageSize);
 
-      let statusBadge = `<span class="badge-status badge-partially">Under Process</span>`;
-      const reasonLower = (c.delayReason || "").toLowerCase();
-      if (reasonLower.includes("committee") || reasonLower.includes("meeting") || reasonLower.includes("daec")) {
-        statusBadge = `<span class="badge-status badge-urgent"><i class="fa-solid fa-users"></i> Awaiting DAEC</span>`;
-      } else if (reasonLower.includes("inspection") || reasonLower.includes("assigned")) {
-        statusBadge = `<span class="badge-status badge-in-progress"><i class="fa-solid fa-magnifying-glass-location"></i> Site Insp.</span>`;
-      }
-
-      const globalIdx = startIdx + idx;
-
-      return `
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
+    } else {
+      tbody.innerHTML = pageRecords.map(r => `
         <tr>
-          <td style="font-family: monospace; color: var(--text-muted);">${c.sr || (globalIdx + 1)}</td>
-          <td><strong style="color: var(--punjab-green-darkest);">${escapeHtml(c.district || "-")}</strong></td>
-          <td><span style="font-size: 0.74rem; color: var(--text-secondary);">${escapeHtml(c.fieldOffice || c.division || "-")}</span></td>
-          <td>
-            <div style="font-weight: 700; color: #1E293B;">${escapeHtml(c.title || "Concession Block")}</div>
-            <div style="font-size: 0.7rem; color: var(--text-muted);">${escapeHtml(c.leaseNo ? `Lease: ${c.leaseNo}` : "")}</div>
-          </td>
-          <td><span class="badge-wing" style="background: #FAF5FF; border-color: #E9D5FF; color: #7E22CE;">${escapeHtml(c.mineral || "-")}</span></td>
-          <td>${methodBadge}</td>
-          <td style="font-size: 0.76rem; font-family: monospace;">${escapeHtml(c.dateApplied || "-")}</td>
-          <td>
-            <div style="font-size: 0.76rem; color: var(--text-secondary); max-width: 320px; line-height: 1.35;">
-              ${escapeHtml(c.delayReason || "Case under active procedural scrutiny in district EPA office.")}
-            </div>
-          </td>
-          <td>${statusBadge}</td>
-          <td style="text-align: center;">
-            <button class="btn-epa-detail" data-idx="${globalIdx}" title="View Case Dossier" style="background: none; border: 1px solid var(--border-medium); border-radius: 4px; padding: 0.3rem 0.55rem; cursor: pointer; color: var(--punjab-green-dark);">
-              <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </button>
-          </td>
+          <td><strong>${r.sr}</strong></td>
+          <td style="font-weight: 600;">${r.district} <small style="color: #64748B;">(${r.division})</small></td>
+          <td style="font-weight: 600; color: #0F172A;">${r.leaseTitle}</td>
+          <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+          <td><small>${r.method || 'e-Biz Portal'}</small></td>
+          <td>${r.appDate || '-'}</td>
+          <td><small style="color: #64748B;">${r.reasonForDelay || '-'}</small></td>
+          <td><span class="badge-status-pill badge-vacant">${r.daecStatus || 'Pending Meeting'}</span></td>
         </tr>
-      `;
-    }).join("");
-
-    renderEpaPagination(filtered.length, startIdx, paged.length);
-    attachEpaActionListeners(filtered);
-  }
-
-  function renderEpaPagination(total, start, count) {
-    const info = document.getElementById("epaPaginationInfo");
-    const container = document.getElementById("epaPaginationBtns");
-    if (!info || !container) return;
-
-    if (total === 0) {
-      info.textContent = "0 records";
-      container.innerHTML = "";
-      return;
+      `).join("");
     }
 
-    const totalPages = Math.ceil(total / epaFilters.rowsPerPage);
-    info.textContent = `Showing ${start + 1} to ${start + count} of ${total} cases (Page ${epaFilters.page} of ${totalPages})`;
-
-    let btns = "";
-    if (epaFilters.page > 1) btns += `<button class="filter-chip-btn" id="btnEpaPrev">&larr; Prev</button>`;
-    if (epaFilters.page < totalPages) btns += `<button class="filter-chip-btn" id="btnEpaNext">Next &rarr;</button>`;
-    container.innerHTML = btns;
-
-    document.getElementById("btnEpaPrev")?.addEventListener("click", () => { epaFilters.page--; renderEpaTable(); });
-    document.getElementById("btnEpaNext")?.addEventListener("click", () => { epaFilters.page++; renderEpaTable(); });
+    const end = Math.min(start + state.epa.pageSize, total);
+    pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`;
+    document.getElementById("btnPrevEpa").disabled = state.epa.page <= 1;
+    document.getElementById("btnNextEpa").disabled = end >= total;
   }
 
-  function attachEpaActionListeners(filteredList) {
-    document.querySelectorAll(".btn-epa-detail").forEach(btn => {
-      btn.onclick = () => {
-        const idx = parseInt(btn.dataset.idx, 10);
-        const item = filteredList[idx];
-        if (item) openEpaModal(item);
-      };
-    });
-  }
-
-  const modalEpa = document.getElementById("modalEpaDetail");
-  function openEpaModal(item) {
-    const content = document.getElementById("epaModalContent");
-    if (!content) return;
-
-    content.innerHTML = `
-      <div style="background: #F8FAF8; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; display: flex; flex-direction: column; gap: 0.85rem;">
-        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
-          <div>
-            <span class="gov-punjab-label" style="color: var(--gold-dark);">REGULATORY CASE RECORD</span>
-            <h2 style="font-size: 1.15rem; font-weight: 800; color: var(--punjab-green-darkest); margin-top: 0.2rem;">${escapeHtml(item.title || "Concession Area")}</h2>
-            <div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem;">District: <strong>${escapeHtml(item.district || "-")}</strong> | Field Office: <strong>${escapeHtml(item.fieldOffice || "-")}</strong></div>
-          </div>
-          <span class="badge-priority prio-high" style="font-size: 0.76rem;">Sr #${escapeHtml(item.sr || "-")}</span>
-        </div>
-
-        <div class="form-grid-2col" style="margin-top: 0.5rem; font-size: 0.82rem;">
-          <div><strong>Mineral:</strong> ${escapeHtml(item.mineral || "-")}</div>
-          <div><strong>Application Method:</strong> ${escapeHtml(item.method || "-")}</div>
-          <div><strong>Application Date:</strong> ${escapeHtml(item.dateApplied || "-")}</div>
-          <div><strong>Lease Reference:</strong> ${escapeHtml(item.leaseNo || "Under Assignment")}</div>
-        </div>
-
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
-          <strong style="color: #991B1B; font-size: 0.78rem; text-transform: uppercase;">Bottleneck / Justification for Delay:</strong>
-          <p style="font-size: 0.85rem; color: var(--text-primary); margin-top: 0.35rem; line-height: 1.4; background: #FFFFFF; border: 1px solid var(--border-medium); border-radius: 6px; padding: 0.75rem;">
-            ${escapeHtml(item.delayReason || "Case is under review at District Environmental Protection Agency.")}
-          </p>
-        </div>
-
-        <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.75rem;">
-          <strong style="color: var(--punjab-green-dark); font-size: 0.78rem; text-transform: uppercase;">Reminders & Follow-up Log:</strong>
-          <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 0.25rem;">
-            ${escapeHtml(item.reminder || "No formal reminders recorded in this quarter.")}
-          </p>
-        </div>
-
-        <div style="background: var(--punjab-green-surface); border: 1px solid var(--punjab-green-border); border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; color: var(--punjab-green-darkest);">
-          <strong><i class="fa-solid fa-lightbulb"></i> Recommended Action:</strong> Escalate to the Deputy Commissioner / DAEC Chair for immediate agenda inclusion in the upcoming bi-monthly District Committee session.
-        </div>
-      </div>
-    `;
-
-    modalEpa.classList.add("active");
-  }
-
-  document.getElementById("btnCloseEpaModal")?.addEventListener("click", () => modalEpa.classList.remove("active"));
-  document.getElementById("btnCloseEpaFooter")?.addEventListener("click", () => modalEpa.classList.remove("active"));
-
-  // -----------------------------------------------------------------
-  // 9. TAB 5: APPELLATE AUTHORITY & FIELD OFFICE TARGETS
-  // -----------------------------------------------------------------
-  function initPerformanceCharts() {
-    const regData = rawData.regionalPerformance || [];
-    const concData = rawData.concessions || {};
-
-    const ctxRecovery = document.getElementById("chartLsmSsmRecovery")?.getContext("2d");
-    if (ctxRecovery) {
-      if (recoveryChart) recoveryChart.destroy();
-      const labels = regData.map(r => r.region);
-      let datasets = [];
-
-      if (chartMode === "COMBINED") {
-        datasets = [
-          {
-            label: "Total Target (PKR M)",
-            data: regData.map(r => r.lsmTarget + r.ssmTarget),
-            backgroundColor: "rgba(200, 163, 85, 0.75)",
-            borderColor: "#C8A355",
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: "Actual Recovery (PKR M)",
-            data: regData.map(r => r.lsmActual + r.ssmActual),
-            backgroundColor: "rgba(20, 83, 45, 0.85)",
-            borderColor: "#0E3D25",
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-      } else if (chartMode === "LSM") {
-        datasets = [
-          {
-            label: "LSM Target (PKR M)",
-            data: regData.map(r => r.lsmTarget),
-            backgroundColor: "rgba(200, 163, 85, 0.75)",
-            borderColor: "#C8A355",
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: "LSM Actual Recovery (PKR M)",
-            data: regData.map(r => r.lsmActual),
-            backgroundColor: "rgba(20, 83, 45, 0.85)",
-            borderColor: "#0E3D25",
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-      } else {
-        datasets = [
-          {
-            label: "SSM Target (PKR M)",
-            data: regData.map(r => r.ssmTarget),
-            backgroundColor: "rgba(148, 163, 184, 0.75)",
-            borderColor: "#94A3B8",
-            borderWidth: 1,
-            borderRadius: 4
-          },
-          {
-            label: "SSM Actual Recovery (PKR M)",
-            data: regData.map(r => r.ssmActual),
-            backgroundColor: "rgba(37, 99, 235, 0.85)",
-            borderColor: "#1D4ED8",
-            borderWidth: 1,
-            borderRadius: 4
-          }
-        ];
-      }
-
-      recoveryChart = new Chart(ctxRecovery, {
-        type: "bar",
-        data: { labels, datasets },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: "top", labels: { boxWidth: 12, font: { family: "Plus Jakarta Sans", size: 11 } } },
-            tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: Rs. ${ctx.raw.toLocaleString()} Million` } }
-          },
-          scales: {
-            y: { beginAtZero: true, ticks: { callback: v => "Rs. " + v + "M" }, grid: { color: "#F1F5F9" } },
-            x: { grid: { display: false } }
-          }
-        }
-      });
-    }
-
-    const ctxDistricts = document.getElementById("chartTopDistrictsRevenue")?.getContext("2d");
-    if (ctxDistricts) {
-      if (districtsChart) districtsChart.destroy();
-      const topDists = concData.topDistrictsReservePrice || [];
-
-      districtsChart = new Chart(ctxDistricts, {
-        type: "bar",
-        data: {
-          labels: topDists.map(d => d.district),
-          datasets: [{
-            label: "Reserve Price Benchmark (PKR M)",
-            data: topDists.map(d => d.amountM),
-            backgroundColor: [
-              "#092617", "#0E3D25", "#14532D", "#C8A355", "#D8B467",
-              "#2563EB", "#3B82F6", "#64748B", "#94A3B8", "#CBD5E1"
-            ],
-            borderRadius: 4
-          }]
-        },
-        options: {
-          indexAxis: "y",
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false },
-            tooltip: { callbacks: { label: (ctx) => `Benchmark: Rs. ${ctx.raw.toLocaleString()} Million` } }
-          },
-          scales: {
-            x: { beginAtZero: true, ticks: { callback: v => v + "M" }, grid: { color: "#F1F5F9" } },
-            y: { grid: { display: false } }
-          }
-        }
-      });
-    }
-  }
-
-  document.getElementById("btnToggleChartCombined")?.addEventListener("click", (e) => {
-    chartMode = "COMBINED";
-    updateChartToggleActive(e.target);
-    initPerformanceCharts();
+  document.getElementById("epaDistrictSelect")?.addEventListener("change", (e) => {
+    state.epa.district = e.target.value;
+    state.epa.page = 1;
+    renderEpa();
   });
-  document.getElementById("btnToggleChartLsm")?.addEventListener("click", (e) => {
-    chartMode = "LSM";
-    updateChartToggleActive(e.target);
-    initPerformanceCharts();
+  document.getElementById("btnPrevEpa")?.addEventListener("click", () => {
+    if (state.epa.page > 1) { state.epa.page--; renderEpa(); }
   });
-  document.getElementById("btnToggleChartSsm")?.addEventListener("click", (e) => {
-    chartMode = "SSM";
-    updateChartToggleActive(e.target);
-    initPerformanceCharts();
+  document.getElementById("btnNextEpa")?.addEventListener("click", () => {
+    state.epa.page++; renderEpa();
   });
 
-  function updateChartToggleActive(activeBtn) {
-    document.querySelectorAll("#btnToggleChartCombined, #btnToggleChartLsm, #btnToggleChartSsm").forEach(b => b.classList.remove("active"));
-    activeBtn.classList.add("active");
-  }
-
-  // -----------------------------------------------------------------
-  // 10. APPEALS LOG TABLE
-  // -----------------------------------------------------------------
-  function getFilteredAppeals() {
-    return appealsCases.filter(a => {
-      if (appealsFilters.category === "MINOR" && a.category !== "Minor Minerals") return false;
-      if (appealsFilters.category === "SSM" && a.category !== "Small Scale Mining") return false;
-      if (appealsFilters.category === "HIGH_RECOVERY") {
-        const text = `${a.impugnedAction || ""} ${a.subject || ""}`.toLowerCase();
-        if (!text.includes("crore") && !text.includes("4,65") && !text.includes("52,50") && !text.includes("recovery")) return false;
-      }
-      if (appealsFilters.search) {
-        const q = appealsFilters.search.toLowerCase();
-        const text = `${a.appealNo || ""} ${a.appellant || ""} ${a.subject || ""} ${a.impugnedAction || ""}`.toLowerCase();
-        if (!text.includes(q)) return false;
-      }
-      return true;
-    });
-  }
-
-  function renderAppealsTable() {
+  // -------------------------------------------------------------
+  // APPEALS DOCKET RENDERER
+  // -------------------------------------------------------------
+  function renderAppeals() {
     const tbody = document.getElementById("appealsTableBody");
-    if (!tbody) return;
-    const filtered = getFilteredAppeals();
+    const pageInfo = document.getElementById("appealsPageInfo");
+    let records = db.appealsCases || [];
 
-    const totalPages = Math.ceil(filtered.length / appealsFilters.rowsPerPage) || 1;
-    if (appealsFilters.page > totalPages) appealsFilters.page = totalPages;
-
-    const startIdx = (appealsFilters.page - 1) * appealsFilters.rowsPerPage;
-    const paged = filtered.slice(startIdx, startIdx + appealsFilters.rowsPerPage);
-
-    if (paged.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 2.5rem; color: var(--text-muted);"><i class="fa-solid fa-scale-balanced" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>No pending appeals matching this filter.</td></tr>`;
-      renderAppealsPagination(0, 0, 0);
-      return;
+    if (state.appeals.district !== "ALL") {
+      records = records.filter(r => (r.district || "").toLowerCase() === state.appeals.district.toLowerCase());
+    }
+    if (state.searchQuery) {
+      const q = state.searchQuery.toLowerCase();
+      records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
     }
 
-    tbody.innerHTML = paged.map((a, idx) => {
-      const globalIdx = startIdx + idx;
-      let statusBadge = `<span class="badge-status badge-in-progress">Pending Hearing</span>`;
-      if ((a.status || "").toLowerCase().includes("decided")) {
-        statusBadge = `<span class="badge-status badge-completed">Decided</span>`;
-      }
+    const total = records.length;
+    const start = (state.appeals.page - 1) * state.appeals.pageSize;
+    const pageRecords = records.slice(start, start + state.appeals.pageSize);
 
-      let issuePill = `<span class="badge-priority prio-medium">${escapeHtml(a.issue || "Dispute")}</span>`;
-      if ((a.issue || "").toLowerCase().includes("recovery")) {
-        issuePill = `<span class="badge-priority prio-urgent">Recovery</span>`;
-      } else if ((a.issue || "").toLowerCase().includes("refund")) {
-        issuePill = `<span class="badge-priority prio-high">Refund</span>`;
-      }
-
-      return `
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
+    } else {
+      tbody.innerHTML = pageRecords.map(r => `
         <tr>
-          <td style="font-family: monospace; color: var(--text-muted);">${a.sr || (globalIdx + 1)}</td>
-          <td><strong style="color: var(--punjab-green-darkest); font-family: monospace; font-size: 0.76rem;">${escapeHtml(a.appealNo || "DGMM-APPEAL")}</strong></td>
-          <td><span class="badge-wing">${escapeHtml(a.category || "General")}</span></td>
-          <td>
-            <div style="font-weight: 700; color: #1E293B;">${escapeHtml(a.subject || "-")}</div>
-            <div style="font-size: 0.7rem; color: var(--text-muted);">Year: ${escapeHtml(a.year || "-")}</div>
-          </td>
-          <td><strong style="color: #334155;">${escapeHtml(a.appellant || "-")}</strong></td>
-          <td>${issuePill}</td>
-          <td>
-            <div style="font-size: 0.74rem; color: var(--text-secondary); max-width: 340px; line-height: 1.35;">
-              ${escapeHtml(a.impugnedAction || "-")}
-            </div>
-          </td>
-          <td>${statusBadge}</td>
+          <td><code>${r.appealNo}</code></td>
+          <td style="font-weight: 600;">${r.district}</td>
+          <td style="font-weight: 600; color: #0F172A;">${r.appellant}</td>
+          <td><span class="badge-status-pill badge-process">${r.respondentWing || 'Directorate'}</span></td>
+          <td><small>${r.subject || '-'}</small></td>
+          <td>${r.hearingDate || '-'}</td>
+          <td><span class="badge-status-pill badge-vacant">${r.status || 'Pending'}</span></td>
         </tr>
-      `;
-    }).join("");
-
-    renderAppealsPagination(filtered.length, startIdx, paged.length);
-  }
-
-  function renderAppealsPagination(total, start, count) {
-    const info = document.getElementById("appealsPaginationInfo");
-    const container = document.getElementById("appealsPaginationBtns");
-    if (!info || !container) return;
-
-    if (total === 0) {
-      info.textContent = "0 records";
-      container.innerHTML = "";
-      return;
+      `).join("");
     }
 
-    const totalPages = Math.ceil(total / appealsFilters.rowsPerPage);
-    info.textContent = `Showing ${start + 1} to ${start + count} of ${total} appeals (Page ${appealsFilters.page} of ${totalPages})`;
-
-    let btns = "";
-    if (appealsFilters.page > 1) btns += `<button class="filter-chip-btn" id="btnAppealsPrev">&larr; Prev</button>`;
-    if (appealsFilters.page < totalPages) btns += `<button class="filter-chip-btn" id="btnAppealsNext">Next &rarr;</button>`;
-    container.innerHTML = btns;
-
-    document.getElementById("btnAppealsPrev")?.addEventListener("click", () => { appealsFilters.page--; renderAppealsTable(); });
-    document.getElementById("btnAppealsNext")?.addEventListener("click", () => { appealsFilters.page++; renderAppealsTable(); });
+    const end = Math.min(start + state.appeals.pageSize, total);
+    pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`;
+    document.getElementById("btnPrevAppeals").disabled = state.appeals.page <= 1;
+    document.getElementById("btnNextAppeals").disabled = end >= total;
   }
 
-  document.getElementById("btnAppealsFilterAll")?.addEventListener("click", (e) => {
-    appealsFilters.category = "ALL";
-    updateAppealsBtnActive(e.target);
-    appealsFilters.page = 1;
-    renderAppealsTable();
+  document.getElementById("appealsDistrictSelect")?.addEventListener("change", (e) => {
+    state.appeals.district = e.target.value;
+    state.appeals.page = 1;
+    renderAppeals();
   });
-  document.getElementById("btnAppealsFilterMinor")?.addEventListener("click", (e) => {
-    appealsFilters.category = "MINOR";
-    updateAppealsBtnActive(e.target);
-    appealsFilters.page = 1;
-    renderAppealsTable();
+  document.getElementById("btnPrevAppeals")?.addEventListener("click", () => {
+    if (state.appeals.page > 1) { state.appeals.page--; renderAppeals(); }
   });
-  document.getElementById("btnAppealsFilterSsm")?.addEventListener("click", (e) => {
-    appealsFilters.category = "SSM";
-    updateAppealsBtnActive(e.target);
-    appealsFilters.page = 1;
-    renderAppealsTable();
-  });
-  document.getElementById("btnAppealsFilterHighRecovery")?.addEventListener("click", (e) => {
-    appealsFilters.category = "HIGH_RECOVERY";
-    updateAppealsBtnActive(e.target);
-    appealsFilters.page = 1;
-    renderAppealsTable();
+  document.getElementById("btnNextAppeals")?.addEventListener("click", () => {
+    state.appeals.page++; renderAppeals();
   });
 
-  function updateAppealsBtnActive(btn) {
-    document.querySelectorAll("#btnAppealsFilterAll, #btnAppealsFilterMinor, #btnAppealsFilterSsm, #btnAppealsFilterHighRecovery").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  }
+  // -------------------------------------------------------------
+  // GLOBAL CROSS-SEARCH CONTROLLER
+  // -------------------------------------------------------------
+  function initGlobalSearch() {
+    const input = document.getElementById("globalOmniSearch");
+    if (!input) return;
 
-  // -----------------------------------------------------------------
-  // 11. TAB SWITCHING
-  // -----------------------------------------------------------------
-  document.querySelectorAll(".nav-tab-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      document.querySelectorAll(".nav-tab-btn").forEach(b => b.classList.remove("active"));
-      document.querySelectorAll(".tab-content-panel").forEach(p => p.classList.remove("active"));
-
-      btn.classList.add("active");
-      const targetId = btn.dataset.tab;
-      const targetPanel = document.getElementById(targetId);
-      if (targetPanel) {
-        targetPanel.classList.add("active");
-      }
-
-      if (targetId === "tab-map") {
-        setTimeout(() => {
-          initPunjabMap();
-          if (punjabMap) punjabMap.invalidateSize();
-        }, 100);
-      } else if (targetId === "tab-financials") {
-        setTimeout(initFiveYearFinancialChart, 80);
-      } else if (targetId === "tab-auctions") {
-        renderAuctionsTable();
-        renderSublettingTable();
-        renderRenewalsTable();
-      } else if (targetId === "tab-performance") {
-        setTimeout(initPerformanceCharts, 80);
-      }
+    let debounceTimer;
+    input.addEventListener("input", (e) => {
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        state.searchQuery = e.target.value.trim();
+        renderActiveTab();
+      }, 250);
     });
-  });
-
-  // KPI Quick Clicks
-  document.getElementById("kpiCardFinancials")?.addEventListener("click", () => {
-    document.querySelector(".nav-tab-btn[data-tab='tab-financials']")?.click();
-  });
-  document.getElementById("kpiCardOutput")?.addEventListener("click", () => {
-    document.querySelector(".nav-tab-btn[data-tab='tab-financials']")?.click();
-  });
-  document.getElementById("kpiCardLeases")?.addEventListener("click", () => {
-    document.querySelector(".nav-tab-btn[data-tab='tab-map']")?.click();
-  });
-  document.getElementById("kpiCardEpa")?.addEventListener("click", () => {
-    document.querySelector(".nav-tab-btn[data-tab='tab-epa']")?.click();
-  });
-
-  // -----------------------------------------------------------------
-  // 12. GLOBAL OMNI-SEARCH
-  // -----------------------------------------------------------------
-  const omniSearch = document.getElementById("globalOmniSearch");
-  omniSearch?.addEventListener("input", (e) => {
-    const val = e.target.value.trim();
-    epaFilters.search = val;
-    appealsFilters.search = val;
-    epaFilters.page = 1;
-    appealsFilters.page = 1;
-
-    renderEpaTable();
-    renderAppealsTable();
-  });
-
-  window.addEventListener("keydown", (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === "k") {
-      e.preventDefault();
-      omniSearch?.focus();
-    }
-  });
-
-  // -----------------------------------------------------------------
-  // 13. EXPORT FUNCTIONALITY (CSV & PDF PRINT)
-  // -----------------------------------------------------------------
-  const exportToggle = document.getElementById("btnExportMenuToggle");
-  const exportMenu = document.getElementById("exportDropdownMenu");
-
-  exportToggle?.addEventListener("click", (e) => {
-    e.stopPropagation();
-    exportMenu.style.display = exportMenu.style.display === "block" ? "none" : "block";
-  });
-
-  window.addEventListener("click", () => {
-    if (exportMenu) exportMenu.style.display = "none";
-  });
-
-  function downloadCsv(filename, headers, rows) {
-    const csvContent = [
-      headers.join(","),
-      ...rows.map(row => row.map(val => `"${String(val || "").replace(/"/g, '""')}"`).join(","))
-    ].join("\r\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-    showToast(`Exported ${filename} successfully.`);
   }
 
-  document.getElementById("btnExportAuctionsCsv")?.addEventListener("click", () => {
-    const headers = ["Sr", "Field Office", "Block Name", "Last Operative Bid", "Reserve Price", "Bid Received", "Increase %"];
-    const rows = auctionRecords.map(a => [a.sr, a.fieldOffice, a.blockName, a.lastOperativeBid, a.reservePrice, a.bidReceived, a.increasePercentage]);
-    downloadCsv(`DGMM_Auctions_Report_${new Date().toISOString().split("T")[0]}.csv`, headers, rows);
-  });
+  // -------------------------------------------------------------
+  // EXPORT ACTIVE DATA CONTROLLER (SHEETJS)
+  // -------------------------------------------------------------
+  function initExport() {
+    const exportBtn = document.getElementById("btnExportActiveTable");
+    if (!exportBtn || !window.XLSX) return;
 
-  document.getElementById("btnExportEpaCsv")?.addEventListener("click", () => {
-    const headers = ["Sr", "District", "Field Office", "Division", "Title", "Mineral", "Method", "Date Applied", "Delay Reason", "Reminders"];
-    const rows = epaCases.map(c => [c.sr, c.district, c.fieldOffice, c.division, c.title, c.mineral, c.method, c.dateApplied, c.delayReason, c.reminder]);
-    downloadCsv(`DGMM_EPA_Pending_Clearances_${new Date().toISOString().split("T")[0]}.csv`, headers, rows);
-  });
+    exportBtn.addEventListener("click", () => {
+      let exportData = [];
+      let filename = `DGMM_${state.activeTab}_Export.xlsx`;
 
-  document.getElementById("btnExportAppealsCsv")?.addEventListener("click", () => {
-    const headers = ["Sr", "Appeal No", "Category", "Subject", "Appellant", "Issue", "Impugned Action", "Status", "Year"];
-    const rows = appealsCases.map(a => [a.sr, a.appealNo, a.category, a.subject, a.appellant, a.issue, a.impugnedAction, a.status, a.year]);
-    downloadCsv(`DGMM_Appeals_Log_${new Date().toISOString().split("T")[0]}.csv`, headers, rows);
-  });
-
-  document.getElementById("btnPrintBriefing")?.addEventListener("click", () => {
-    window.print();
-  });
-
-  // -----------------------------------------------------------------
-  // 14. EXCEL & CSV IMPORT (SheetJS)
-  // -----------------------------------------------------------------
-  const modalImport = document.getElementById("modalImport");
-  const dropZone = document.getElementById("dropZone");
-  const fileInput = document.getElementById("fileInputExcel");
-
-  document.getElementById("btnOpenImport")?.addEventListener("click", () => modalImport.classList.add("active"));
-  document.getElementById("btnCloseImportModal")?.addEventListener("click", () => modalImport.classList.remove("active"));
-  document.getElementById("btnCancelImport")?.addEventListener("click", () => modalImport.classList.remove("active"));
-
-  dropZone?.addEventListener("click", () => fileInput.click());
-  dropZone?.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = "var(--punjab-green-dark)";
-    dropZone.style.background = "#EAF4EE";
-  });
-  dropZone?.addEventListener("dragleave", () => {
-    dropZone.style.borderColor = "var(--punjab-green-border)";
-    dropZone.style.background = "#F8FAF8";
-  });
-  dropZone?.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropZone.style.borderColor = "var(--punjab-green-border)";
-    dropZone.style.background = "#F8FAF8";
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      handleImportedFile(e.dataTransfer.files[0]);
-    }
-  });
-
-  fileInput?.addEventListener("change", (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      handleImportedFile(e.target.files[0]);
-    }
-  });
-
-  function handleImportedFile(file) {
-    const feedback = document.getElementById("importStatusFeedback");
-    feedback.style.display = "block";
-    feedback.style.background = "#FEF3C7";
-    feedback.style.color = "#92400E";
-    feedback.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Parsing <strong>${escapeHtml(file.name)}</strong>...`;
-
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[firstSheetName];
-        const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
-        if (!json || json.length === 0) {
-          throw new Error("No readable records found in the selected sheet.");
-        }
-
-        const newEpa = json.map((row, i) => ({
-          sr: row["Sr. No"] || row["Sr"] || (epaCases.length + i + 1),
-          fieldOffice: row["Field Office"] || row["Office"] || "",
-          division: row["Division"] || "",
-          district: row["District"] || "Punjab",
-          leaseNo: row["Lease No."] || row["Lease"] || "",
-          title: row["Title of Concession"] || row["Concession"] || row["Zone"] || `Imported Zone ${i + 1}`,
-          mineral: row["Mineral"] || "Ordinary Sand",
-          dateApplied: row["Date Applied"] || row["Date"] || "",
-          method: row["Method of Application"] || row["Method"] || "e-Biz",
-          reminder: row["Any Reminder"] || row["Reminder"] || "",
-          delayReason: row["Reason for Delay"] || row["Bottleneck"] || row["Status"] || ""
-        }));
-        epaCases = [...newEpa, ...epaCases];
-        localStorage.setItem("dgmm_epa_v3", JSON.stringify(epaCases));
-        renderDistrictBadges();
-        renderEpaTable();
-        updateKpiCards();
-        feedback.style.background = "#DCFCE7";
-        feedback.style.color = "#14532D";
-        feedback.innerHTML = `<i class="fa-solid fa-check"></i> Successfully imported <strong>${newEpa.length}</strong> records!`;
-        showToast(`Imported ${newEpa.length} records.`);
-        setTimeout(() => modalImport.classList.remove("active"), 2000);
-      } catch (err) {
-        feedback.style.background = "#FEE2E2";
-        feedback.style.color = "#991B1B";
-        feedback.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Error parsing file: ${escapeHtml(err.message)}`;
+      switch (state.activeTab) {
+        case "tab-lsm":
+          exportData = state.lsm.subTab === "leases" ? divisions.lsm.leases : divisions.lsm.pendingApplications;
+          filename = `DGMM_LSM_${state.lsm.subTab}.xlsx`;
+          break;
+        case "tab-sma":
+          exportData = state.sma.subTab === "auction" ? divisions.sma.auctionConcessions : divisions.sma.applicationConcessions;
+          filename = `DGMM_SMA_${state.sma.subTab}.xlsx`;
+          break;
+        case "tab-mm":
+          exportData = divisions.mm.blocks;
+          filename = "DGMM_MM_Blocks.xlsx";
+          break;
+        case "tab-financials":
+          exportData = db.majorProducers;
+          filename = "DGMM_Cement_Producers_Royalty_Audit.xlsx";
+          break;
+        case "tab-epa":
+          exportData = db.epaCases;
+          filename = "DGMM_EPA_Clearances.xlsx";
+          break;
+        case "tab-appeals":
+          exportData = db.appealsCases;
+          filename = "DGMM_Appeals_Docket.xlsx";
+          break;
+        default:
+          exportData = divisions.mm.blocks;
+          filename = "DGMM_Executive_Export.xlsx";
       }
-    };
-    reader.readAsArrayBuffer(file);
+
+      if (!exportData || exportData.length === 0) {
+        alert("No data available to export in the current view.");
+        return;
+      }
+
+      const ws = XLSX.utils.json_to_sheet(exportData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "DGM&M Export");
+      XLSX.writeFile(wb, filename);
+    });
   }
 
-  // Refresh
-  document.getElementById("btnQuickRefresh")?.addEventListener("click", () => {
-    updateKpiCards();
-    renderDistrictBadges();
-    renderEpaTable();
-    initPerformanceCharts();
-    renderAppealsTable();
-    renderAuctionsTable();
-    renderSublettingTable();
-    renderRenewalsTable();
-    if (punjabMap) renderMapMarkers();
-    showToast("Dashboard synchronized with verified datasets.");
-  });
+  // -------------------------------------------------------------
+  // HELPERS
+  // -------------------------------------------------------------
+  function formatNumber(num) {
+    if (num === null || num === undefined || isNaN(num)) return "0";
+    return Number(num).toLocaleString("en-PK", { maximumFractionDigits: 2 });
+  }
 
-  // -----------------------------------------------------------------
-  // 15. INITIAL RENDERS
-  // -----------------------------------------------------------------
-  updateKpiCards();
-  renderDistrictBadges();
-  renderEpaTable();
-  initPerformanceCharts();
-  renderAppealsTable();
-  renderAuctionsTable();
-  renderSublettingTable();
-  renderRenewalsTable();
-
-  // Initialize Map
-  setTimeout(() => {
-    initPunjabMap();
-    if (punjabMap) punjabMap.invalidateSize();
-  }, 150);
+  function formatPKR(val) {
+    if (val === null || val === undefined || isNaN(val) || Number(val) === 0) return "Rs 0";
+    const num = Number(val);
+    if (num >= 1e9) {
+      return `Rs ${(num / 1e9).toFixed(2)}B`;
+    } else if (num >= 1e6) {
+      return `Rs ${(num / 1e6).toFixed(2)}M`;
+    }
+    return `Rs ${num.toLocaleString("en-PK")}`;
+  }
 });
