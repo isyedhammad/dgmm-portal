@@ -423,6 +423,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let overviewCharts = {};
   let currentConcessionModalObject = null;
   let isModalEditing = false;
+  let matrixFilters = { district: "ALL", mineral: "ALL" };
 
   // -------------------------------------------------------------
   // INITIALIZATION
@@ -436,6 +437,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindFilterListeners();
   initGlobalSearch();
   initExport();
+  initCadastreMatrix();
   renderLsm();
   renderSma();
   renderMm();
@@ -1010,6 +1012,90 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------------------------------
   // EXECUTIVE SUMMARY GRAPHICAL ANALYTICS SUITE (CHART.JS)
   // -------------------------------------------------------------
+
+  // -------------------------------------------------------------
+  // DISTRICT & MINERAL CADASTRE MATRIX RENDERER
+  // -------------------------------------------------------------
+  function initCadastreMatrix() {
+    const distSelect = document.getElementById("matrixDistrictSelect");
+    const minSelect = document.getElementById("matrixMineralSelect");
+    const matrixData = (window.DGM_DATA && window.DGM_DATA.districtSummaryMatrix);
+    if (!matrixData || !matrixData.districts) return;
+
+    if (distSelect && distSelect.options.length <= 1) {
+      matrixData.districts.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d.district;
+        opt.textContent = `${d.district} (${d.total.grand_total} Titles)`;
+        distSelect.appendChild(opt);
+      });
+      distSelect.addEventListener("change", (e) => {
+        matrixFilters.district = e.target.value;
+        renderCadastreMatrix();
+      });
+    }
+
+    if (minSelect && minSelect.options.length <= 1) {
+      const allMinerals = new Set();
+      matrixData.districts.forEach(d => {
+        d.items.forEach(it => {
+          if (it.mineral && it.mineral !== 'Unspecified') allMinerals.add(it.mineral);
+        });
+      });
+      Array.from(allMinerals).sort().forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        minSelect.appendChild(opt);
+      });
+      minSelect.addEventListener("change", (e) => {
+        matrixFilters.mineral = e.target.value;
+        renderCadastreMatrix();
+      });
+    }
+
+    renderCadastreMatrix();
+  }
+
+  function renderCadastreMatrix() {
+    const tbody = document.getElementById("matrixTableBody");
+    const counter = document.getElementById("matrixCounter");
+    const matrixData = (window.DGM_DATA && window.DGM_DATA.districtSummaryMatrix);
+    if (!tbody || !matrixData || !matrixData.districts) return;
+
+    let rows = [];
+    matrixData.districts.forEach(d => {
+      if (matrixFilters.district !== "ALL" && d.district !== matrixFilters.district) return;
+      d.items.forEach(it => {
+        if (matrixFilters.mineral !== "ALL" && it.mineral.toLowerCase() !== matrixFilters.mineral.toLowerCase()) return;
+        rows.push(it);
+      });
+    });
+
+    if (rows.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align:center; padding: 2rem; color: #94A3B8;">No concessions matching the selected district and mineral filters.</td></tr>';
+      if (counter) counter.textContent = "0 concession records";
+      return;
+    }
+
+    if (counter) counter.textContent = `Showing ${rows.length} mineral cadastre records across Punjab`;
+
+    tbody.innerHTML = rows.map(r => `
+      <tr>
+        <td style="font-weight: 700; color: var(--text-main); font-size: 0.85rem;">${r.district}</td>
+        <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+        <td style="text-align: center; font-weight: 600;">${r.mm || '-'}</td>
+        <td style="text-align: center;">${r.ssm_ml || '-'}</td>
+        <td style="text-align: center;">${r.ssm_pl || '-'}</td>
+        <td style="text-align: center; font-weight: 700; color: var(--gold-dark); background: rgba(217, 119, 6, 0.04);">${r.total_ssm || '-'}</td>
+        <td style="text-align: center;">${r.lsm_ml || '-'}</td>
+        <td style="text-align: center;">${r.lsm_el || '-'}</td>
+        <td style="text-align: center; font-weight: 700; color: #2563EB; background: rgba(37, 99, 235, 0.04);">${r.total_lsm || '-'}</td>
+        <td style="text-align: center; font-weight: 800; color: #059669; background: rgba(16, 185, 129, 0.06); font-size: 0.88rem;">${r.grand_total}</td>
+      </tr>
+    `).join("");
+  }
+
   function renderOverviewCharts() {
     if (!window.Chart) return;
     const revCanvas = document.getElementById("overviewRevenueChart");
@@ -1104,9 +1190,9 @@ document.addEventListener("DOMContentLoaded", () => {
       overviewCharts.port = new Chart(portCanvas.getContext("2d"), {
         type: "doughnut",
         data: {
-          labels: ["Small Scale Mining (1,172)", "Minor Minerals (510)", "Large Scale Mining (76)"],
+          labels: ["Small Scale Mining (1,172)", "Minor Minerals (510)", "Large Scale Mining (126)"],
           datasets: [{
-            data: [1172, 510, 76],
+            data: [1172, 510, 126],
             backgroundColor: ["#D97706", "#059669", "#2563EB"],
             borderWidth: 2,
             borderColor: isDark ? "#131D31" : "#FFFFFF",
@@ -1239,6 +1325,7 @@ document.addEventListener("DOMContentLoaded", () => {
     switch (state.activeTab) {
       case "tab-overview":
         renderOverviewCharts();
+        renderCadastreMatrix();
         break;
       case "tab-lsm":
         renderLsm();
@@ -1749,10 +1836,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const mmData = divisions.mm || {};
 
     let records = mmData.blocks || [];
-    if (state.mm.subTab === "upcoming") {
-      records = mmData.upcomingAuctions || [];
-    } else if (state.mm.subTab === "vacant") {
-      records = (mmData.blocks || []).filter(b => b.status === "Vacant");
+    if (state.mm.subTab === "granted") {
+      records = (mmData.blocks || []).filter(b => (b.status || "").toLowerCase() === "granted");
+    } else if (state.mm.subTab === "vacant" || state.mm.subTab === "upcoming") {
+      records = (mmData.blocks || []).filter(b => (b.status || "").toLowerCase() === "vacant");
     }
 
     const totalUnfiltered = records.length;
@@ -1807,7 +1894,7 @@ document.addEventListener("DOMContentLoaded", () => {
       counterBadge.innerHTML = `<i class="fa-solid fa-layer-group"></i> Showing ${records.length} of ${totalUnfiltered} records`;
     }
 
-    const headers = ["ID", "District", "Field Office", "Mineral", "Block / Zone Title", "Area (Acres)", "Status", "Reserve Price (PKR)", "Auction Dates (1st / 2nd / 3rd)", "Remarks", "Action"];
+    const headers = ["Lease / Block Name", "Lessee / Concessionaire", "District", "Field Office", "Mineral", "Area (Acres)", "Status", "Operative Bid / Reserve (PKR)", "Tenure / Auction Dates", "Action"];
     thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
 
     const total = records.length;
@@ -1815,23 +1902,32 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageRecords = records.slice(start, start + state.mm.pageSize);
 
     if (pageRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found matching filter criteria.</td></tr>`;
     } else {
       tbody.innerHTML = pageRecords.map((r, idx) => {
         const globalIdx = start + idx;
         const actionBtn = `<td><button class="btn-concession-view" onclick="event.stopPropagation(); window.openConcessionDetails('mm', ${globalIdx});" title="View Concession Financial & Production Intelligence"><i class="fa-solid fa-chart-line"></i> Details</button></td>`;
+        const isGranted = (r.status || "").toLowerCase() === "granted";
         return `
           <tr class="concession-clickable-row" data-concession-type="mm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-            <td><strong>${r.id}</strong></td>
+            <td>
+              <strong style="color: var(--text-main); font-size: 0.88rem;">${r.blockName || r.name || r.code}</strong>
+              <br><code style="font-size: 0.72rem; color: var(--text-muted);">${r.code || r.block}</code>
+            </td>
+            <td>
+              ${r.lessee ? `<span style="font-weight: 600; color: var(--text-main);">${r.lessee}</span>` : `<span style="color: var(--text-muted); font-style: italic;">Vacant / Available</span>`}
+            </td>
             <td style="font-weight: 600;">${r._normDistrict || r.district}</td>
-            <td><small>${r._fieldOffice}</small></td>
+            <td><small>${r._fieldOffice || '-'}</small></td>
             <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
-            <td style="font-weight: 600; color: var(--text-main);">${r.name || r.code}</td>
             <td>${formatNumber(r.area)} ac</td>
-            <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
-            <td style="font-weight: 700; color: #15803D;">${formatPKR(r.reservePrice)}</td>
-            <td><small>${r.firstAuctionDate ? `${r.firstAuctionDate} / ${r.secondAuctionDate || '-'}` : '-'}</small></td>
-            <td><small style="color: #64748B;">${r.remarks ? r.remarks.slice(0, 60) + '...' : '-'}</small></td>
+            <td><span class="badge-status-pill ${isGranted ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
+            <td style="font-weight: 700; color: #10B981;">${formatPKR(r.operativeBid || r.reservePrice)}</td>
+            <td>
+              <small style="color: var(--text-sub); line-height: 1.25; display: inline-block;">
+                ${r.grantDate && r.expiryDate ? `${formatDateDisplay(r.grantDate)} to ${formatDateDisplay(r.expiryDate)}` : (r.firstAuctionDate ? `Auction: ${r.firstAuctionDate}` : '-')}
+              </small>
+            </td>
             ${actionBtn}
           </tr>
         `;
@@ -1902,11 +1998,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const estRev = record.operativeBid || record.reservePrice || (match && match.revenue) || (estRoyalty + Math.round(area * 150));
 
     if (match) {
+      const bestLeaseNo = record.blockName ? `${record.blockName} (${record.code || record.block})` : (match.leaseNo !== 'NA' ? match.leaseNo : (record.title || record.licenseNo || record.code || 'Mining Concession'));
+      const bestLessee = record.lessee || match.lessee || record.company || record.licensee || 'Concessionaire / Lease Holder';
       return {
         ...match,
         ...record,
+        leaseNo: bestLeaseNo,
+        lessee: bestLessee,
         area: area,
-        revenue: typeof match.revenue === 'number' ? `PKR ${match.revenue.toLocaleString()}` : (match.revenue || `PKR ${Number(estRev).toLocaleString()}`),
+        revenue: record.operativeBid ? `PKR ${Number(record.operativeBid).toLocaleString()}` : (typeof match.revenue === 'number' ? `PKR ${match.revenue.toLocaleString()}` : (match.revenue || `PKR ${Number(estRev).toLocaleString()}`)),
         royalty: `PKR ${estRoyalty.toLocaleString()} (@ Rs ${royaltyRate}/ton)`,
         production: typeof match.production === 'number' ? `${match.production.toLocaleString()} Metric Tons` : (match.production || `${estProdTons.toLocaleString()} Metric Tons`),
       };
@@ -1914,16 +2014,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const divTitle = divisionType === 'lsm' ? 'Large Scale Mining' : divisionType === 'sma' ? 'Small Scale Mining' : 'Minor Minerals';
     return {
-      id: `${divisionType}-${record.id || record.srNo || Math.floor(Math.random() * 10000)}`,
+      id: `${divisionType}-${record.code || record.block || record.id || record.srNo || Math.floor(Math.random() * 10000)}`,
       sr: record.srNo || record.id || 1,
       division: divTitle,
       mineral: mineralName,
       category: mineralName,
-      color: '#2563EB',
-      strokeColor: '#1D4ED8',
+      color: divisionType === 'mm' ? '#059669' : '#2563EB',
+      strokeColor: divisionType === 'mm' ? '#047857' : '#1D4ED8',
       district: record._normDistrict || record.district || 'Punjab',
-      leaseNo: record.licenseNo || record.concessionNo || record.block || record.appNo || record.code || `CON-${record.srNo || record.id || 'GEN'}`,
-      lessee: record.company || record.licensee || record.applicant || record.client || record.lessee || record.blockName || record.name || 'Concessionaire / Lease Holder',
+      leaseNo: record.blockName ? `${record.blockName} (${record.code || record.block})` : (record.licenseNo || record.concessionNo || record.block || record.appNo || record.code || `CON-${record.srNo || record.id || 'GEN'}`),
+      lessee: record.lessee || record.company || record.licensee || record.applicant || record.client || record.blockName || record.name || 'Concessionaire / Lease Holder',
       dateGrant: record.grantDate || record.from || record.appDate || '2021-07-01',
       dateExpiry: record.expiryDate || record.to || '2031-06-30',
       area: area,

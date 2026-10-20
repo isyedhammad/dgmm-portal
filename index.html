@@ -72,18 +72,18 @@
             <span>Large Scale Mining</span>
           </div>
           <div style="display: flex; align-items: center; gap: 0.35rem;">
-            <span class="nav-pill pill-lsm">76 Leases</span>
+            <span class="nav-pill pill-lsm">126 Titles</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
         <div class="sidebar-submenu" id="submenuLsm">
           <button class="submenu-item active" data-lsm-sub="leases" id="menuItemLsmLeases">
             <span>Mining Leases</span>
-            <span class="submenu-pill">76</span>
+            <span class="submenu-pill">75</span>
           </button>
           <button class="submenu-item" data-lsm-sub="exploration" id="menuItemLsmExploration">
             <span>Exploration Licenses</span>
-            <span class="submenu-pill">52</span>
+            <span class="submenu-pill">51</span>
           </button>
         </div>
       </div>
@@ -238,10 +238,10 @@
                 <i class="fa-solid fa-layer-group"></i>
               </div>
             </div>
-            <div class="kpi-value">1,758</div>
+            <div class="kpi-value">1,808</div>
             <div class="kpi-subtext">
               <span class="kpi-badge kpi-badge-emerald"><i class="fa-solid fa-circle-check"></i> 84.8% Granted</span>
-              <span>76 LSM • 1,172 SSM • 510 MM</span>
+              <span>126 LSM • 1,172 SSM • 510 MM</span>
             </div>
           </div>
 
@@ -306,16 +306,16 @@
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
-                <span>Mining Leases</span>
-                <strong>76 Active Leases</strong>
+                <span>Mining Leases (ML)</span>
+                <strong>75 Active Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Exploration Licenses</span>
-                <strong>27 Valid • 25 Cancelled</strong>
+                <span>Exploration Licenses (EL)</span>
+                <strong>51 Titles (126 Total LSM)</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Pending Applications</span>
-                <strong>156 Cases under Scrutiny</strong>
+                <span>Pending Scrutiny</span>
+                <strong>156 Cases Processed</strong>
               </div>
             </div>
           </div>
@@ -366,12 +366,12 @@
                 <strong>510 Blocks</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Upcoming 2026 Auctions</span>
-                <strong>104 Ready for Bidding</strong>
+                <span>Granted Concessions</span>
+                <strong>460 Operational Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Ordinary Sand Footprint</span>
-                <strong>4.98M Acres (321 blocks)</strong>
+                <span>Vacant for Auction</span>
+                <strong>50 Ready for Bidding</strong>
               </div>
             </div>
           </div>
@@ -437,6 +437,78 @@
             </div>
           </div>
 
+        </div>
+
+        <!-- =====================================================
+             PROVINCIAL CONCESSION CADASTRE MATRIX (DISTRICT & MINERAL BREAKDOWN)
+             ===================================================== -->
+        <div class="card-section" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title"><i class="fa-solid fa-table-cells" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> District & Mineral Concession Cadastre Matrix</h3>
+              <span class="card-subtitle">Official verified provincial reconciliation across Large Scale Mining, Small Scale Mining, and Minor Minerals</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span class="badge-status-pill badge-granted">1,808 Total Concessions</span>
+              <span class="badge-status-pill badge-process">1,172 SSM</span>
+              <span class="badge-status-pill badge-vacant">510 MM</span>
+              <span class="badge-status-pill" style="background: rgba(37,99,235,0.15); color: #2563EB;">126 LSM</span>
+            </div>
+          </div>
+
+          <!-- Controls for District Matrix -->
+          <div style="padding: 1rem 1.5rem; background: var(--canvas-bg); border-bottom: 1px solid var(--card-border); display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">District:</label>
+              <select class="smart-select" id="matrixDistrictSelect" style="min-width: 180px;">
+                <option value="ALL">All 36 Districts</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <label style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Mineral:</label>
+              <select class="smart-select" id="matrixMineralSelect" style="min-width: 180px;">
+                <option value="ALL">All Minerals</option>
+              </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 0.5rem; margin-left: auto;">
+              <span style="font-size: 0.78rem; color: var(--text-muted);" id="matrixCounter">Showing all district records</span>
+            </div>
+          </div>
+
+          <!-- Tabular Matrix Scroll -->
+          <div class="table-scroll-container" style="max-height: 480px; overflow-y: auto;">
+            <table class="table-clean" id="tableCadastreMatrix">
+              <thead>
+                <tr>
+                  <th>District</th>
+                  <th>Mineral Commodity</th>
+                  <th style="text-align: center;">Minor Minerals (MM)</th>
+                  <th style="text-align: center;">SSM Mining Leases (ML)</th>
+                  <th style="text-align: center;">SSM Prospecting (PL)</th>
+                  <th style="text-align: center; background: rgba(217, 119, 6, 0.08);">Total SSM</th>
+                  <th style="text-align: center;">LSM Mining Leases (ML)</th>
+                  <th style="text-align: center;">LSM Exploration (EL)</th>
+                  <th style="text-align: center; background: rgba(37, 99, 235, 0.08);">Total LSM</th>
+                  <th style="text-align: center; font-weight: 800; background: rgba(16, 185, 129, 0.1);">Grand Total</th>
+                </tr>
+              </thead>
+              <tbody id="matrixTableBody"></tbody>
+              <tfoot id="matrixTableFoot">
+                <tr style="font-weight: 800; background: var(--canvas-bg); border-top: 2px solid var(--card-border);">
+                  <td>PUNJAB — PROVINCIAL TOTAL</td>
+                  <td>All Core Commodities</td>
+                  <td style="text-align: center;">510</td>
+                  <td style="text-align: center;">1,040</td>
+                  <td style="text-align: center;">132</td>
+                  <td style="text-align: center; color: var(--gold-dark);">1,172</td>
+                  <td style="text-align: center;">75</td>
+                  <td style="text-align: center;">51</td>
+                  <td style="text-align: center; color: #2563EB;">126</td>
+                  <td style="text-align: center; color: #059669; font-size: 0.95rem;">1,808</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
         </div>
 
       </div>
@@ -680,9 +752,9 @@
             
             <div class="card-controls">
               <div class="sub-tabs-bar">
-                <button class="sub-tab-btn active" data-mm-sub="all" id="subBtnMmAll">All Blocks & Zones (510)</button>
-                <button class="sub-tab-btn" data-mm-sub="upcoming" id="subBtnMmUpcoming">Upcoming 2026 Auctions (104)</button>
-                <button class="sub-tab-btn" data-mm-sub="vacant" id="subBtnMmVacant">Vacant Blocks (132)</button>
+                <button class="sub-tab-btn active" data-mm-sub="all" id="subBtnMmAll">All Leases & Blocks (510)</button>
+                <button class="sub-tab-btn" data-mm-sub="granted" id="subBtnMmGranted">Granted Leases (460)</button>
+                <button class="sub-tab-btn" data-mm-sub="vacant" id="subBtnMmVacant">Vacant for Auction (50)</button>
               </div>
             </div>
           </div>
@@ -694,7 +766,7 @@
                 <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
                 <div class="input-with-icon">
                   <i class="fa-solid fa-magnifying-glass"></i>
-                  <input type="text" class="smart-input" id="mmSearchInput" placeholder="Search block, zone, title, ID...">
+                  <input type="text" class="smart-input" id="mmSearchInput" placeholder="Search lease name, block code, lessee, district...">
                 </div>
               </div>
 
