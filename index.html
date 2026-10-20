@@ -28,22 +28,26 @@
   <aside class="sidebar" id="appSidebar">
     
     <!-- Branding Header -->
-    <div class="sidebar-header">
-      <div class="sidebar-branding">
-        <div class="sidebar-crests-row">
+    <div class="sidebar-header" id="sidebarHeader">
+      <div class="sidebar-branding" id="sidebarBranding">
+        <div class="sidebar-crests-row" id="sidebarCrestsRow" title="Directorate General of Mines & Minerals (Click to Toggle Sidebar)">
           <img src="assets/punjab_logo.png" alt="Government of the Punjab" class="sidebar-crest-img" width="36" height="36" title="Government of the Punjab">
           <img src="assets/dgmm_logo.png" alt="Directorate General of Mines & Minerals" class="sidebar-crest-img" width="36" height="36" title="Directorate General of Mines & Minerals">
         </div>
-        <span class="sidebar-gov-tag">Govt of the Punjab</span>
-        <h2 class="sidebar-title">Mines & Minerals</h2>
-        <span class="sidebar-badge">Executive Operations</span>
+        <div class="sidebar-branding-text">
+          <span class="sidebar-gov-tag">Govt of the Punjab</span>
+          <h2 class="sidebar-title">Mines & Minerals</h2>
+        </div>
       </div>
+      <button class="sidebar-collapse-btn" id="sidebarCollapseToggle" title="Collapse / Expand Sidebar">
+        <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+      </button>
     </div>
 
     <!-- Navigation Menu with Division Tabs -->
     <nav class="sidebar-nav">
       
-      <div class="nav-section-title">EXECUTIVE OVERVIEW</div>
+      <!-- Summary Dashboard -->
       <button class="nav-link active" data-tab="tab-overview" id="navBtnOverview">
         <div class="nav-link-content">
           <i class="fa-solid fa-chart-pie"></i>
@@ -51,26 +55,64 @@
         </div>
       </button>
 
-      <div class="nav-section-title">MINERAL OPERATIONS</div>
-      <!-- Large Scale Mining -->
-      <button class="nav-link" data-tab="tab-lsm" id="navBtnLsm">
+      <!-- Administration Division (At Top as requested) -->
+      <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
         <div class="nav-link-content">
-          <i class="fa-solid fa-industry"></i>
-          <span>Large Scale Mining</span>
+          <i class="fa-solid fa-users-gear"></i>
+          <span>Administration Division</span>
         </div>
-        <span class="nav-pill pill-lsm">76 Leases</span>
+        <span class="nav-pill pill-neutral">575 Staff</span>
       </button>
 
-      <!-- Small Scale Mining -->
-      <button class="nav-link" data-tab="tab-sma" id="navBtnSma">
-        <div class="nav-link-content">
-          <i class="fa-solid fa-trowel-bricks"></i>
-          <span>Small Scale Mining</span>
+      <!-- 1. Large Scale Mining with Dropdown -->
+      <div class="nav-dropdown-wrap" id="dropdownLsmWrap">
+        <div class="nav-link nav-dropdown-toggle" data-tab="tab-lsm" id="navBtnLsm">
+          <div class="nav-link-content">
+            <i class="fa-solid fa-industry"></i>
+            <span>Large Scale Mining</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <span class="nav-pill pill-lsm">76 Leases</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
         </div>
-        <span class="nav-pill pill-sma">1,172 Titles</span>
-      </button>
+        <div class="sidebar-submenu" id="submenuLsm">
+          <button class="submenu-item active" data-lsm-sub="leases" id="menuItemLsmLeases">
+            <span>Mining Leases</span>
+            <span class="submenu-pill">76</span>
+          </button>
+          <button class="submenu-item" data-lsm-sub="exploration" id="menuItemLsmExploration">
+            <span>Exploration Licenses</span>
+            <span class="submenu-pill">52</span>
+          </button>
+        </div>
+      </div>
 
-      <!-- Minor Minerals -->
+      <!-- 2. Small Scale Mining with Dropdown -->
+      <div class="nav-dropdown-wrap" id="dropdownSmaWrap">
+        <div class="nav-link nav-dropdown-toggle" data-tab="tab-sma" id="navBtnSma">
+          <div class="nav-link-content">
+            <i class="fa-solid fa-trowel-bricks"></i>
+            <span>Small Scale Mining</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.35rem;">
+            <span class="nav-pill pill-sma">1,172 Titles</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
+        </div>
+        <div class="sidebar-submenu" id="submenuSma">
+          <button class="submenu-item active" data-sma-category="leases" id="menuItemSmaLeases">
+            <span>Mining Leases</span>
+            <span class="submenu-pill">1,040</span>
+          </button>
+          <button class="submenu-item" data-sma-category="prospecting" id="menuItemSmaProspecting">
+            <span>Prospecting Licenses</span>
+            <span class="submenu-pill">132</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3. Minor Minerals as it is -->
       <button class="nav-link" data-tab="tab-mm" id="navBtnMm">
         <div class="nav-link-content">
           <i class="fa-solid fa-cubes-stacked"></i>
@@ -79,13 +121,13 @@
         <span class="nav-pill pill-mm">510 Blocks</span>
       </button>
 
-      <div class="nav-section-title">SPATIAL & FINANCIAL</div>
-      <!-- GIS Mineral Map -->
+      <!-- Spatial Intelligence: GIS Mineral Map -->
       <button class="nav-link" data-tab="tab-map" id="navBtnMap">
         <div class="nav-link-content">
           <i class="fa-solid fa-map-location-dot"></i>
           <span>GIS Mineral Map</span>
         </div>
+        <span class="nav-pill pill-neutral">1,260 Polygons</span>
       </button>
 
       <!-- Financials & Royalty Rollup -->
@@ -97,7 +139,6 @@
         <span class="nav-pill pill-neutral">Rs 4.74B</span>
       </button>
 
-      <div class="nav-section-title">REGULATORY & LEGAL</div>
       <!-- EPA Clearances -->
       <button class="nav-link" data-tab="tab-epa" id="navBtnEpa">
         <div class="nav-link-content">
@@ -116,20 +157,14 @@
         <span class="nav-pill pill-neutral">187 Appeals</span>
       </button>
 
-      <div class="nav-section-title">ADMINISTRATION & ESTABLISHMENT</div>
-      <!-- Administration Division -->
-      <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
-        <div class="nav-link-content">
-          <i class="fa-solid fa-users-gear"></i>
-          <span>Administration Division</span>
-        </div>
-        <span class="nav-pill pill-neutral">575 Staff</span>
-      </button>
-
     </nav>
 
-    <!-- Sidebar Footer with Cloud Status (No Bookmark Button) -->
+    <!-- Sidebar Footer with Live PKT Time and Cloud Status -->
     <div class="sidebar-footer">
+      <div class="sidebar-time-badge" id="sidebarLiveTime" title="Live Pakistan Standard Time">
+        <i class="fa-regular fa-clock"></i>
+        <span id="livePktTime">--:--:-- PKT</span>
+      </div>
       <div class="cloud-sync-pill" title="Hosted permanently in the cloud on GitHub Pages">
         <span class="pulse-dot"></span>
         <span>Cloud Hosted • Live Portal</span>
@@ -172,11 +207,11 @@
           <span>Export</span>
         </button>
 
-        <!-- Live Clock (PKT) -->
-        <div class="clock-badge">
-          <i class="fa-regular fa-clock" style="color: var(--gold-dark);"></i>
-          <span id="livePktTime">Loading PKT...</span>
-        </div>
+        <!-- Dark / Light Mode Toggle -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" title="Switch between Dark and Light Mode">
+          <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
+          <span class="theme-label" id="themeToggleText">Dark Mode</span>
+        </button>
 
         <!-- Official Directorate General Logo (Top Right) -->
         <div class="topbar-dgmm-wrap" title="Directorate General of Mines & Minerals, Government of the Punjab">
@@ -721,33 +756,73 @@
       </div>
 
       <!-- =====================================================
-           TAB 5: GIS MINERAL MAP OF PUNJAB
+           TAB 5: GIS MINERAL MAP OF PUNJAB (1,260 POLYGONS)
            ===================================================== -->
       <div class="tab-pane" id="tab-map">
         
         <div class="card-section" style="margin-bottom: 0;">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title"><i class="fa-solid fa-map-location-dot" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> GIS Mineral Map of Punjab Province</h3>
-              <span class="card-subtitle">Georeferenced mining deposits with Northing, Easting, District, Division, and GPS coordinates</span>
+              <h3 class="card-title"><i class="fa-solid fa-map-location-dot" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> Punjab Province GIS Concession Polygon Map</h3>
+              <span class="card-subtitle">1,260 geo-referenced concession boundaries across all districts projected in Survey of Pakistan Grid (Kalianpur / WGS84)</span>
             </div>
             <div class="card-controls">
-              <select class="filter-select" id="mapMineralFilter">
-                <option value="ALL">All Minerals</option>
+              <select class="filter-select" id="mapDivisionFilter">
+                <option value="ALL">All Divisions (LSM, SSM, MM)</option>
+                <option value="Large Scale Mining">Large Scale Mining (76)</option>
+                <option value="Small Scale Mining">Small Scale Mining (835)</option>
+                <option value="Minor Minerals">Minor Minerals (349)</option>
               </select>
-              <button class="btn-page" id="btnResetMapView"><i class="fa-solid fa-arrows-rotate"></i> Reset View</button>
+              <select class="filter-select" id="mapMineralFilter">
+                <option value="ALL">All Minerals (14 Categories)</option>
+              </select>
+              <button class="btn-page" id="btnResetMapView"><i class="fa-solid fa-arrows-rotate"></i> Reset Zoom</button>
             </div>
           </div>
 
-          <!-- Leaflet Map Container -->
-          <div class="map-canvas-wrapper">
-            <div id="punjabGisMap"></div>
-
-            <!-- Floating Legend -->
-            <div class="map-floating-legend">
-              <div class="legend-title">Mineral Legend</div>
-              <div class="legend-items" id="mapLegendPills"></div>
+          <!-- Split View: Mineral Legend Table + Interactive Map Viewport -->
+          <div class="map-layout-grid">
+            
+            <!-- Side Panel: Interactive Mineral Legend Table -->
+            <div class="map-legend-panel">
+              <div class="map-legend-header">
+                <div class="map-legend-title">
+                  <i class="fa-solid fa-layer-group" style="color: var(--gold-dark);"></i>
+                  <span>Mineral Legend</span>
+                </div>
+                <span class="map-legend-count" id="mapLegendTotalBadge">1,260 Polygons</span>
+              </div>
+              <div class="map-legend-list" id="mapMineralLegendList">
+                <!-- Dynamically rendered legend rows -->
+              </div>
             </div>
+
+            <!-- Main Map Viewport with Hover Intelligence Card -->
+            <div class="map-viewport-wrapper">
+              <div id="punjabGisMap"></div>
+
+              <!-- Floating Tooltip / Info Card (Reflects Cursor Hover) -->
+              <div class="map-hover-card" id="mapHoverInfoCard">
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; margin-bottom: 0.35rem;">
+                  <span class="badge-status-pill badge-granted" id="hoverMineralBadge">Mineral</span>
+                  <span style="font-size: 0.68rem; color: var(--text-muted);" id="hoverDivisionTag">Division</span>
+                </div>
+                <h4 style="font-size: 0.88rem; font-weight: 700; color: var(--text-main); margin: 0 0 0.25rem 0;" id="hoverLeaseTitle">Lease Name</h4>
+                <div style="font-size: 0.74rem; color: var(--text-muted); margin-bottom: 0.45rem;">
+                  <strong>Lease #:</strong> <code id="hoverLeaseNo">--</code>
+                </div>
+                <div style="font-size: 0.74rem; color: var(--text-sub); margin-bottom: 0.35rem;">
+                  <i class="fa-solid fa-user" style="color: #64748B; width: 14px;"></i> <span id="hoverLessee">--</span>
+                </div>
+                <div style="font-size: 0.74rem; color: var(--text-sub); margin-bottom: 0.35rem;">
+                  <i class="fa-solid fa-location-dot" style="color: #64748B; width: 14px;"></i> <span id="hoverDistrict">--</span> • <strong id="hoverArea">--</strong>
+                </div>
+                <div style="font-size: 0.7rem; color: #2563EB; font-weight: 600; padding-top: 0.35rem; border-top: 1px dashed var(--card-border);">
+                  <i class="fa-solid fa-crosshairs"></i> <span id="hoverCoords">Click polygon for full financial & coordinates dossier</span>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -1099,10 +1174,11 @@
               <span class="card-subtitle" id="adminSectionSubtitle">Official Directorate General of Mines & Minerals Establishment Roster & Sanctioned Posts Database</span>
             </div>
             <div class="card-controls">
-              <!-- Sub-tabs: Roster vs Cadre vs Offices -->
+              <!-- Sub-tabs: Roster vs Organogram vs Cadre vs Offices -->
               <div class="sub-tabs-bar">
                 <button class="sub-tab-btn active" data-admin-sub="roster" id="subBtnAdminRoster"><i class="fa-solid fa-users"></i> Staff Directory (447)</button>
-                <button class="sub-tab-btn" data-admin-sub="cadre" id="subBtnAdminCadre"><i class="fa-solid fa-sitemap"></i> Sanctioned Cadre (64 Posts)</button>
+                <button class="sub-tab-btn" data-admin-sub="organogram" id="subBtnAdminOrganogram"><i class="fa-solid fa-sitemap"></i> Organogram</button>
+                <button class="sub-tab-btn" data-admin-sub="cadre" id="subBtnAdminCadre"><i class="fa-solid fa-table-list"></i> Sanctioned Cadre (64 Posts)</button>
                 <button class="sub-tab-btn" data-admin-sub="offices" id="subBtnAdminOffices"><i class="fa-solid fa-building-user"></i> Regional Offices (17)</button>
               </div>
             </div>
@@ -1264,6 +1340,13 @@
             </div>
           </div>
 
+          <!-- VIEW 4: Departmental Organogram Visual Tree -->
+          <div id="adminOrganogramView" style="display: none;">
+            <div class="organogram-container" id="adminOrganogramContent">
+              <!-- Dynamically rendered visual organizational hierarchy -->
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -1271,6 +1354,108 @@
     </div>
   </div>
 
+</div>
+
+<!-- =========================================================
+     CONCESSION FINANCIAL & GEOLOGICAL INTELLIGENCE MODAL
+     ========================================================= -->
+<div class="concession-modal-overlay" id="concessionDetailModal" role="dialog" aria-modal="true">
+  <div class="concession-modal-window">
+    <div class="concession-modal-header">
+      <div>
+        <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+          <span class="badge-status-pill badge-granted" id="modalMineralBadge">Limestone</span>
+          <span class="badge-status-pill badge-process" id="modalDivisionBadge">Large Scale Mining</span>
+          <span class="badge-status-pill badge-granted" id="modalStatusBadge">Active</span>
+        </div>
+        <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin: 0;" id="modalConcessionTitle">Lease Title</h3>
+        <span style="font-size: 0.8rem; color: var(--text-muted);" id="modalConcessionSub">Official Concession Identification</span>
+      </div>
+      <button class="btn-page" id="btnCloseConcessionModal" style="border: none; font-size: 1.35rem; cursor: pointer; color: var(--text-muted);">&times;</button>
+    </div>
+
+    <div class="concession-modal-body">
+      <!-- 5-Box Financial, Royalty & Production Metrics Ribbon -->
+      <div class="concession-kpi-grid">
+        <div class="concession-kpi-box" style="border-left: 3.5px solid #10B981;">
+          <span class="concession-kpi-label">Annual Revenue / Bid</span>
+          <span class="concession-kpi-val" id="modalRevenueVal">Rs 0</span>
+        </div>
+        <div class="concession-kpi-box" style="border-left: 3.5px solid #059669;">
+          <span class="concession-kpi-label">Assessed Royalty Yield</span>
+          <span class="concession-kpi-val" id="modalRoyaltyVal">Rs 0</span>
+        </div>
+        <div class="concession-kpi-box" style="border-left: 3.5px solid #2563EB;">
+          <span class="concession-kpi-label">Annual Production</span>
+          <span class="concession-kpi-val" id="modalProductionVal">0 Tons</span>
+        </div>
+        <div class="concession-kpi-box" style="border-left: 3.5px solid #D97706;">
+          <span class="concession-kpi-label">Concession Area</span>
+          <span class="concession-kpi-val" id="modalAreaVal">0 Acres</span>
+        </div>
+        <div class="concession-kpi-box" style="border-left: 3.5px solid #8B5CF6;">
+          <span class="concession-kpi-label">Tenure Duration</span>
+          <span class="concession-kpi-val" id="modalTenureVal">-- to --</span>
+        </div>
+      </div>
+
+      <!-- Concessionaire & Geological Profile -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+        <div class="card-section" style="padding: 1rem; margin-bottom: 0;">
+          <h4 style="font-size: 0.82rem; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; margin-bottom: 0.65rem;">
+            <i class="fa-solid fa-building"></i> Concessionaire & Tenancy
+          </h4>
+          <p style="font-size: 0.82rem; margin: 0 0 0.4rem 0;"><strong>Lessee / Firm:</strong> <span id="modalLesseeName">--</span></p>
+          <p style="font-size: 0.82rem; margin: 0 0 0.4rem 0;"><strong>District / Tehsil:</strong> <span id="modalDistrictName">--</span></p>
+          <p style="font-size: 0.82rem; margin: 0 0 0.4rem 0;"><strong>Date of Grant:</strong> <span id="modalDateGrant">--</span></p>
+          <p style="font-size: 0.82rem; margin: 0;"><strong>Lease Expiry:</strong> <span id="modalDateExpiry">--</span></p>
+        </div>
+
+        <div class="card-section" style="padding: 1rem; margin-bottom: 0;">
+          <h4 style="font-size: 0.82rem; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; margin-bottom: 0.65rem;">
+            <i class="fa-solid fa-gears"></i> Operational & Compliance
+          </h4>
+          <p style="font-size: 0.82rem; margin: 0 0 0.4rem 0;"><strong>Mining Method:</strong> <span id="modalMiningMethod">--</span></p>
+          <p style="font-size: 0.82rem; margin: 0 0 0.4rem 0;"><strong>Estimated Reserves:</strong> <span id="modalReservesVal">--</span></p>
+          <p style="font-size: 0.82rem; margin: 0 0 0.4rem 0;"><strong>Entry / Exit Points:</strong> <span id="modalEntryPoints">--</span></p>
+          <p style="font-size: 0.82rem; margin: 0;"><strong>CCTV / Surveillance:</strong> <span id="modalCctvCoverage">--</span></p>
+        </div>
+      </div>
+
+      <!-- Core Challenges / Impediments -->
+      <div id="modalChallengesBox" style="background: rgba(220, 38, 38, 0.05); border: 1px solid rgba(220, 38, 38, 0.2); border-radius: var(--radius-sm); padding: 0.75rem 1rem; font-size: 0.8rem; color: #7F1D1D; display: none;">
+        <strong><i class="fa-solid fa-triangle-exclamation"></i> Core Operational Challenges & Impediments:</strong>
+        <div id="modalChallengesText" style="margin-top: 0.35rem; line-height: 1.4;"></div>
+      </div>
+
+      <!-- Geo-Referenced Corner Coordinates Table -->
+      <div>
+        <h4 style="font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between;">
+          <span><i class="fa-solid fa-draw-polygon" style="color: var(--gold-dark);"></i> Boundary Corner Coordinates (Survey of Pakistan Grid)</span>
+          <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: normal;">Projected via Kalianpur / WGS84</span>
+        </h4>
+        <div style="max-height: 180px; overflow-y: auto; border: 1px solid var(--card-border); border-radius: var(--radius-sm);">
+          <table class="table-clean" style="margin: 0; font-size: 0.76rem;">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Point</th>
+                <th>Easting (m)</th>
+                <th>Northing (m)</th>
+                <th>WGS84 Latitude</th>
+                <th>WGS84 Longitude</th>
+              </tr>
+            </thead>
+            <tbody id="modalCoordinatesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="concession-modal-footer">
+      <button class="btn-page" id="btnZoomToModalConcession"><i class="fa-solid fa-location-crosshairs" style="color: #2563EB;"></i> View on GIS Map</button>
+      <button class="btn-topbar-outline" id="btnCloseModalBtn">Close</button>
+    </div>
+  </div>
 </div>
 
 <!-- =========================================================
@@ -1283,6 +1468,7 @@
 <!-- Compiled In-Memory Master Database -->
 <script src="data.js"></script>
 <script src="admin_data.js"></script>
+<script src="map_polygons.js"></script>
 
 <!-- Portal Application Controller -->
 <script src="app.js"></script>
