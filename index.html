@@ -29,23 +29,18 @@
     
     <!-- Branding Header -->
     <div class="sidebar-header">
-      <div class="sidebar-crests">
-        <img src="assets/dgmm_logo.jpg" alt="DGM&M Emblem" class="sidebar-emblem" onerror="this.onerror=null; this.src='assets/dgmm_logo.jpg';">
-        <!-- Official Punjab State Seal SVG -->
-        <svg class="sidebar-seal-svg" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="50" cy="50" r="48" fill="#092617" stroke="#C5A059" stroke-width="3"/>
-          <circle cx="50" cy="50" r="43" fill="none" stroke="#FAF6ED" stroke-width="1" stroke-dasharray="2,2"/>
-          <path d="M 46 22 A 16 16 0 1 0 66 42 A 13 13 0 1 1 46 22 Z" fill="#C5A059"/>
-          <polygon points="64,24 66,29 71,29 67,32 69,37 64,34 60,37 62,32 58,29 63,29" fill="#FAF6ED"/>
-          <path d="M 22 62 Q 36 57 50 62 T 78 62" stroke="#FAF6ED" stroke-width="2" fill="none"/>
-          <path d="M 22 67 Q 36 62 50 67 T 78 67" stroke="#FAF6ED" stroke-width="2" fill="none"/>
-          <path d="M 22 72 Q 36 67 50 72 T 78 72" stroke="#FAF6ED" stroke-width="2" fill="none"/>
-        </svg>
-      </div>
-      <div class="sidebar-branding">
-        <span class="sidebar-gov-tag">Govt of the Punjab</span>
-        <h2 class="sidebar-title">Mines & Minerals</h2>
-        <span class="sidebar-badge">Executive Operations</span>
+      <div class="sidebar-brand-wrapper">
+        <!-- Govt of Punjab Logo (Left) -->
+        <img src="assets/punjab_logo.png" alt="Government of the Punjab" class="sidebar-punjab-logo" title="Government of the Punjab">
+        
+        <div class="sidebar-branding">
+          <span class="sidebar-gov-tag">Govt of the Punjab</span>
+          <h2 class="sidebar-title">Mines & Minerals</h2>
+          <span class="sidebar-badge">Executive Operations</span>
+        </div>
+
+        <!-- Directorate Logo (Right) -->
+        <img src="assets/dgmm_logo.jpg" alt="Directorate General of Mines & Minerals" class="sidebar-dgmm-logo" title="Directorate General of Mines & Minerals">
       </div>
     </div>
 
@@ -148,6 +143,10 @@
         <button class="mobile-toggle" id="mobileMenuToggle" title="Toggle Sidebar Navigation">
           <i class="fa-solid fa-bars"></i>
         </button>
+        <!-- Official Govt of Punjab Logo (Top Left) -->
+        <div class="topbar-punjab-brand">
+          <img src="assets/punjab_logo.png" alt="Government of the Punjab" class="topbar-punjab-logo" title="Government of the Punjab">
+        </div>
         <div class="breadcrumb-area">
           <span class="breadcrumb-path" id="activeBreadcrumbSection">Executive Overview</span>
           <h1 class="breadcrumb-title" id="activeBreadcrumbTitle">Senior Management Summary Dashboard</h1>
@@ -171,6 +170,11 @@
         <div class="clock-badge">
           <i class="fa-regular fa-clock" style="color: var(--gold-dark);"></i>
           <span id="livePktTime">Loading PKT...</span>
+        </div>
+
+        <!-- Official Directorate General Logo (Top Right) -->
+        <div class="topbar-dgmm-wrap" title="Directorate General of Mines & Minerals, Government of the Punjab">
+          <img src="assets/dgmm_logo.jpg" alt="Directorate General of Mines & Minerals" class="topbar-dgmm-logo">
         </div>
       </div>
     </header>
