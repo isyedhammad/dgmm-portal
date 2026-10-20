@@ -1,0 +1,26 @@
+# Node modules
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS and temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+*.log
+
+# Heavy presentation and document archives (data is compiled into data.js)
+*.pptx
+*.pdf
+
+# Raw spreadsheets folders (compiled into high-speed data.js)
+ADP DG Khan/
+Appeals Data/
+Auction Data/
+EPA - IEE-EIA/
+Financial Data FY 21 - 26/
+GR - Data/
+Licensing Data/
+Notes/
+*.xlsx

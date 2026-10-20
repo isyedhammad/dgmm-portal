@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorate General of Mines & Minerals (DGM&M) — Executive Operations & Monitoring Portal</title>
+  <meta name="description" content="Executive Operations & Monitoring Portal for the Director General and Senior Leadership, Directorate General of Mines & Minerals, Government of the Punjab.">
+  
+  <!-- Google Fonts: Plus Jakarta Sans & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  
+  <!-- Leaflet.js for Interactive GIS Mineral Mapping -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+  <!-- Chart.js for Executive Analytics -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  
+  <!-- SheetJS for Client-Side Excel (.xlsx) & CSV Parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Official DGM&M Stylesheet (Executive v3.0) -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Top Executive Navigation Bar -->
+  <header class="header-punjab">
+    <div class="header-inner">
+      <!-- Left: Dual Crests & Official Titles -->
+      <div class="brand-section">
+        <div class="dual-crests">
+          <!-- Official Directorate General of Mines & Minerals Crest (User Attached) -->
+          <div class="emblem-wrapper" title="Directorate General of Mines & Minerals Official Crest">
+            <img src="assets/dgmm_logo.jpg" class="emblem-img" alt="Directorate General of Mines & Minerals Crest" onerror="this.onerror=null; this.src='assets/dgmm_logo.jpg';">
+          </div>
+          <!-- Government of the Punjab Official State Seal -->
+          <div class="emblem-wrapper" title="Government of the Punjab Official Seal">
+            <svg class="emblem-img" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="50" cy="50" r="48" fill="#092617" stroke="#C8A355" stroke-width="3"/>
+              <circle cx="50" cy="50" r="43" fill="none" stroke="#FAF6EB" stroke-width="1" stroke-dasharray="2,2"/>
+              <path d="M 54 22 A 16 16 0 1 0 54 44 A 13 13 0 1 1 54 22 Z" fill="#C8A355"/>
+              <polygon points="56,31 59,33 58,29 61,27 57,27 56,23 55,27 51,27 54,29 53,33" fill="#FAF6EB"/>
+              <path d="M 22 55 Q 36 50 50 55 T 78 55" fill="none" stroke="#FAF6EB" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 24 62 Q 37 57 50 62 T 76 62" fill="none" stroke="#FAF6EB" stroke-width="2.5" stroke-linecap="round"/>
+              <path d="M 26 69 Q 38 64 50 69 T 74 69" fill="none" stroke="#C8A355" stroke-width="2.2" stroke-linecap="round"/>
+              <path d="M 20 50 C 18 72 32 82 50 82 C 68 82 82 72 80 50" fill="none" stroke="#C8A355" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="brand-text-container">
+          <span class="gov-punjab-label">GOVERNMENT OF THE PUNJAB</span>
+          <h1 class="main-title">Directorate General of Mines & Minerals</h1>
+          <div class="subtitle-badge">
+            <span class="subtitle-dot"></span>
+            <span>Executive Operations & Monitoring Portal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Live PKT Clock, Quick Search, Import, Export, Profile -->
+      <div class="header-actions">
+        <!-- Live PKT Clock -->
+        <div class="clock-badge" id="pktClockBadge" title="Pakistan Standard Time (PKT, UTC+5)">
+          <span class="pulse-dot"></span>
+          <span id="livePktTime">Loading PKT...</span>
+        </div>
+
+        <!-- Global Quick Search -->
+        <div class="omni-search-box">
+          <i class="fa-solid fa-magnifying-glass omni-search-icon"></i>
+          <input type="text" id="globalOmniSearch" class="omni-search-input" placeholder="Search leases, minerals, auctions, appeals..." autocomplete="off">
+        </div>
+
+        <!-- Import Data (.xlsx / CSV) -->
+        <button class="header-btn" id="btnOpenImport" title="Drop or upload your exact spreadsheets">
+          <i class="fa-solid fa-file-excel" style="color: #4ade80;"></i>
+          <span>Import Data</span>
+        </button>
+
+        <!-- Export Dropdown -->
+        <div style="position: relative;">
+          <button class="header-btn" id="btnExportMenuToggle">
+            <i class="fa-solid fa-download"></i>
+            <span>Export Report</span>
+            <i class="fa-solid fa-chevron-down" style="font-size: 0.65rem;"></i>
+          </button>
+          <div id="exportDropdownMenu" style="display: none; position: absolute; right: 0; top: calc(100% + 6px); background: #FFFFFF; color: #0A1912; border: 1px solid var(--border-medium); border-radius: var(--radius-md); box-shadow: var(--shadow-modal); width: 240px; z-index: 100; overflow: hidden;">
+            <button class="dropdown-item" id="btnExportAuctionsCsv" style="width: 100%; text-align: left; padding: 0.65rem 1rem; background: none; border: none; font-size: 0.8rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; border-bottom: 1px solid var(--border-subtle);">
+              <i class="fa-solid fa-gavel" style="color: var(--gold-dark);"></i> Export Auctions Data (CSV)
+            </button>
+            <button class="dropdown-item" id="btnExportEpaCsv" style="width: 100%; text-align: left; padding: 0.65rem 1rem; background: none; border: none; font-size: 0.8rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; border-bottom: 1px solid var(--border-subtle);">
+              <i class="fa-solid fa-seedling" style="color: #059669;"></i> Export EPA Cases (CSV)
+            </button>
+            <button class="dropdown-item" id="btnExportAppealsCsv" style="width: 100%; text-align: left; padding: 0.65rem 1rem; background: none; border: none; font-size: 0.8rem; display: flex; align-items: center; gap: 0.6rem; cursor: pointer; border-bottom: 1px solid var(--border-subtle);">
+              <i class="fa-solid fa-scale-balanced" style="color: #B45309;"></i> Export Appeals Log (CSV)
+            </button>
+            <button class="dropdown-item" id="btnPrintBriefing" style="width: 100%; text-align: left; padding: 0.65rem 1rem; background: #F8FAF8; border: none; font-size: 0.8rem; font-weight: 700; color: var(--punjab-green-darkest); display: flex; align-items: center; gap: 0.6rem; cursor: pointer;">
+              <i class="fa-solid fa-print"></i> Print Executive Briefing / PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- User Profile Badge (Director General Secretariat) -->
+        <div class="user-profile-badge" title="Authenticated Executive Session">
+          <div class="user-avatar">
+            <i class="fa-solid fa-user-tie"></i>
+          </div>
+          <div class="user-details">
+            <span class="user-name">Director General</span>
+            <span class="user-role">DGM&M Secretariat</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-wrapper">
+
+    <!-- Executive Notice / Status Banner -->
+    <section class="executive-notice-bar">
+      <div class="notice-content">
+        <span class="notice-pill"><i class="fa-solid fa-circle-info"></i> Operations Memo</span>
+        <span class="notice-text">
+          <strong>Strategic Overview:</strong> 5-Year mineral revenue exceeds <strong>Rs. 4.74 Billion</strong>. 132 vacant blocks demarcated for rapid gazette re-auction. GIS coordinates ground-truthed across riverbed sand concessions.
+        </span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 0.6rem;">
+        <span style="font-size: 0.76rem; color: var(--text-muted);">Mines & Minerals Act 2025:</span>
+        <span class="badge-status badge-completed"><i class="fa-solid fa-check"></i> PMCR Statutory Rules In Force</span>
+      </div>
+    </section>
+
+    <!-- Executive Infographics Barometer (6 Metric Cards) -->
+    <section class="infographics-strip">
+      <div class="infographic-item">
+        <span class="info-label">5-Year Revenue Receipts</span>
+        <span class="info-value">Rs. 4.74 B</span>
+        <span class="info-sub">Rs. 4.58B Royalty + Rent</span>
+      </div>
+      <div class="infographic-item">
+        <span class="info-label">5-Year Mineral Production</span>
+        <span class="info-value">23.44 M</span>
+        <span class="info-sub">Metric Tons Extracted</span>
+      </div>
+      <div class="infographic-item">
+        <span class="info-label">Active Mineral Concessions</span>
+        <span class="info-value">870 Blocks</span>
+        <span class="info-sub">738 Granted (84.8%) | 132 Vacant</span>
+      </div>
+      <div class="infographic-item">
+        <span class="info-label">Upcoming Auction Pipeline</span>
+        <span class="info-value">104 Zones</span>
+        <span class="info-sub">Ready for Bidding</span>
+      </div>
+      <div class="infographic-item">
+        <span class="info-label">EPA Pending Clearances</span>
+        <span class="info-value">151 Cases</span>
+        <span class="info-sub">82 e-Biz | 41 DAEC Stalled</span>
+      </div>
+      <div class="infographic-item">
+        <span class="info-label">Appellate Authority</span>
+        <span class="info-value">269 Pending</span>
+        <span class="info-sub">313 Listed | 44 Decided</span>
+      </div>
+    </section>
+
+    <!-- Top Executive Summary KPI Cards (4 Cards) -->
+    <section class="kpi-grid">
+      <!-- KPI Card 1: 5-Year Revenue & Royalties -->
+      <div class="kpi-card" id="kpiCardFinancials" title="Click to view Financial Intelligence Tab">
+        <div class="kpi-top-bar">
+          <div class="kpi-label-group">
+            <span class="kpi-title">5-Year Revenue & Royalties</span>
+            <span class="kpi-subtitle">FY 2021-22 to FY 2025-26</span>
+          </div>
+          <div class="kpi-icon-badge kpi-badge-gold">
+            <i class="fa-solid fa-coins" style="font-size: 1.15rem;"></i>
+          </div>
+        </div>
+        <div class="kpi-main-stat">
+          <span class="stat-huge">Rs. 4,741.5</span>
+          <span class="stat-unit">M Paid</span>
+          <span class="stat-badge-trend badge-completed">
+            <i class="fa-solid fa-arrow-trend-up"></i> +181% Growth
+          </span>
+        </div>
+        <div class="kpi-progress-bar-bg">
+          <div class="kpi-progress-bar-fill" style="width: 100%; background: var(--gold-primary);"></div>
+        </div>
+        <div class="kpi-footer-breakdown">
+          <span>Royalty: <strong>Rs. 4.58B</strong></span>
+          <span>Securities: <strong>Rs. 141.5M</strong></span>
+        </div>
+      </div>
+
+      <!-- KPI Card 2: 5-Year Total Mineral Output -->
+      <div class="kpi-card" id="kpiCardOutput" title="Click to view Production Analytics">
+        <div class="kpi-top-bar">
+          <div class="kpi-label-group">
+            <span class="kpi-title">Total Mineral Output</span>
+            <span class="kpi-subtitle">6 Major Mining Field Offices</span>
+          </div>
+          <div class="kpi-icon-badge kpi-badge-green">
+            <i class="fa-solid fa-boxes-stacked" style="font-size: 1.15rem;"></i>
+          </div>
+        </div>
+        <div class="kpi-main-stat">
+          <span class="stat-huge">23.44</span>
+          <span class="stat-unit">M Tons</span>
+          <span class="stat-badge-trend badge-partially">
+            1,004 Leases
+          </span>
+        </div>
+        <div class="kpi-progress-bar-bg">
+          <div class="kpi-progress-bar-fill" style="width: 78%; background: var(--punjab-green-primary);"></div>
+        </div>
+        <div class="kpi-footer-breakdown">
+          <span>Mianwali: <strong>10.79M</strong></span>
+          <span>Chakwal: <strong>6.03M</strong></span>
+          <span>Khushab: <strong>4.64M</strong></span>
+        </div>
+      </div>
+
+      <!-- KPI Card 3: Active Mineral Concessions & Vacant Blocks -->
+      <div class="kpi-card" id="kpiCardLeases" title="Click to view Punjab Mineral Map">
+        <div class="kpi-top-bar">
+          <div class="kpi-label-group">
+            <span class="kpi-title">Mineral Concessions & Leases</span>
+            <span class="kpi-subtitle">LSM & SSM Occupancy Overview</span>
+          </div>
+          <div class="kpi-icon-badge kpi-badge-blue">
+            <i class="fa-solid fa-mountain" style="font-size: 1.15rem;"></i>
+          </div>
+        </div>
+        <div class="kpi-main-stat">
+          <span class="stat-huge">870</span>
+          <span class="stat-unit">Total Blocks</span>
+          <span class="stat-badge-trend badge-completed">
+            84.8% Granted
+          </span>
+        </div>
+        <div class="kpi-progress-bar-bg">
+          <div class="kpi-progress-bar-fill" style="width: 84.8%; background: #2563EB;"></div>
+        </div>
+        <div class="kpi-footer-breakdown">
+          <span><strong>738</strong> Granted / Active</span>
+          <span><strong>132</strong> Vacant Blocks</span>
+          <span><strong>104</strong> Pipeline</span>
+        </div>
+      </div>
+
+      <!-- KPI Card 4: EPA Pending Clearances -->
+      <div class="kpi-card" id="kpiCardEpa" title="Click to view EPA Pending Clearances Tab">
+        <div class="kpi-top-bar">
+          <div class="kpi-label-group">
+            <span class="kpi-title">EPA Pending Clearances</span>
+            <span class="kpi-subtitle">Awaiting DAEC / DC Sessions</span>
+          </div>
+          <div class="kpi-icon-badge kpi-badge-amber">
+            <i class="fa-solid fa-seedling" style="font-size: 1.15rem;"></i>
+          </div>
+        </div>
+        <div class="kpi-main-stat">
+          <span class="stat-huge" id="kpiStatTotalEpa">151</span>
+          <span class="stat-unit">Cases</span>
+          <span class="stat-badge-trend badge-urgent">
+            41 DAEC Bottlenecks
+          </span>
+        </div>
+        <div class="kpi-progress-bar-bg">
+          <div class="kpi-progress-bar-fill" style="width: 54.3%; background: #D97706;"></div>
+        </div>
+        <div class="kpi-footer-breakdown">
+          <span><strong id="kpiCountEbiz">82</strong> e-Biz Submissions</span>
+          <span><strong id="kpiCountManual">69</strong> Manual Filings</span>
+          <span><strong>21</strong> Dist. Involved</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tabbed Navigation Bar -->
+    <nav class="navigation-bar-container">
+      <div class="nav-tabs-list" role="tablist">
+        <button class="nav-tab-btn active" data-tab="tab-map" role="tab">
+          <i class="fa-solid fa-map-location-dot"></i>
+          <span>GIS Mineral Map of Punjab</span>
+          <span class="tab-count-pill" style="background: var(--gold-primary); color: #000;">GIS Live</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-financials" role="tab">
+          <i class="fa-solid fa-coins"></i>
+          <span>Financial Intelligence & 5-Year Trends</span>
+          <span class="tab-count-pill">Rs. 4.74B</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-auctions" role="tab">
+          <i class="fa-solid fa-gavel"></i>
+          <span>Licensing, Renewals & E-Auctions</span>
+          <span class="tab-count-pill">E-Auctions</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-epa" role="tab">
+          <i class="fa-solid fa-seedling"></i>
+          <span>EPA Clearances & Concession NOC Tracker</span>
+          <span class="tab-count-pill" id="tabBadgeEpa">151</span>
+        </button>
+        <button class="nav-tab-btn" data-tab="tab-performance" role="tab">
+          <i class="fa-solid fa-scale-balanced"></i>
+          <span>Appellate Authority & Field Targets</span>
+          <span class="tab-count-pill">187 Appeals</span>
+        </button>
+      </div>
+      <div class="tab-right-tools">
+        <button class="header-btn" id="btnQuickRefresh" style="color: var(--text-secondary); border-color: var(--border-medium); background: #FFFFFF;">
+          <i class="fa-solid fa-arrows-rotate"></i>
+          <span>Sync Data</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ===================================================================
+         TAB 1: GIS MINERAL MAP OF THE PROVINCE OF PUNJAB
+         =================================================================== -->
+    <section id="tab-map" class="tab-content-panel active">
+      <!-- Map Controls & Filter Bar -->
+      <div class="section-toolbar-card">
+        <div class="toolbar-left-group">
+          <div style="font-weight: 700; color: var(--punjab-green-darkest); display: flex; align-items: center; gap: 0.5rem;">
+            <i class="fa-solid fa-map-location-dot" style="color: var(--gold-dark); font-size: 1.1rem;"></i>
+            <span>Punjab Provincial GIS Mineral Map</span>
+          </div>
+          <!-- Mineral Filter Dropdown -->
+          <select id="mapFilterMineral" class="filter-select">
+            <option value="ALL">All Minerals</option>
+            <option value="Rock Salt">Rock Salt (Khewra / Salt Range)</option>
+            <option value="Coal">Coal (Choa Saidan Shah / Dandot)</option>
+            <option value="Limestone">Limestone (Attock / Wah / Margalla)</option>
+            <option value="Ordinary Sand">Ordinary Sand (Chenab / Ravi / Sutlej)</option>
+            <option value="Sandstone">Sandstone (Kirana Hills / Sargodha)</option>
+            <option value="Gypsum">Gypsum (Mianwali / Daud Khel)</option>
+            <option value="Silica Sand">Silica Sand (Khushab / Surakki)</option>
+            <option value="Gravel">Gravel (Koh-e-Suleman / DG Khan)</option>
+          </select>
+
+          <!-- Zone / Region Filter -->
+          <select id="mapFilterZone" class="filter-select">
+            <option value="ALL">All Provincial Zones</option>
+            <option value="Salt Range Belt">Salt Range Belt (Chakwal, Khushab, Mianwali, Jhelum)</option>
+            <option value="Potohar & Margalla Zone">Potohar & Margalla Zone (Attock, Rawalpindi)</option>
+            <option value="Central Riverbed & Hills">Central & Riverbeds (Sargodha, Chiniot, Gujranwala)</option>
+            <option value="Southern & Suleman Range">Southern & Suleman (DG Khan, Sahiwal, Bahawalpur)</option>
+          </select>
+
+          <!-- Concession Scale Filter -->
+          <select id="mapFilterScale" class="filter-select">
+            <option value="ALL">All Scales (LSM, SSM, Minor)</option>
+            <option value="LSM">Large Scale Mining (LSM)</option>
+            <option value="SSM">Small Scale Mining (SSM)</option>
+            <option value="Minor Minerals">Minor Minerals (MM)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.6rem;">
+          <button class="filter-chip-btn active" id="btnResetMapView"><i class="fa-solid fa-crosshairs"></i> Reset View to Punjab</button>
+          <span style="font-size: 0.78rem; color: var(--text-muted);" id="mapActivePointsCount">18 Key Mining Hubs Loaded</span>
+        </div>
+      </div>
+
+      <!-- Map Display & Summary Sidebar -->
+      <div class="map-layout-grid">
+        <div class="map-card-container">
+          <div id="punjabMineralMap"></div>
+        </div>
+
+        <!-- Map Resource Density Sidebar -->
+        <div class="map-sidebar-card">
+          <div class="chart-title-group">
+            <h3 class="chart-title">Mining Density & Hubs</h3>
+            <span class="chart-subtitle">Coordinates verified from GIS field records</span>
+          </div>
+
+          <div class="map-mineral-legend" id="mapLegendContainer">
+            <!-- Dynamically populated by JS -->
+          </div>
+
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 0.75rem; font-size: 0.75rem; color: var(--text-secondary);">
+            <strong>GIS Data Source:</strong> Easting & Northing UTM coordinates cross-referenced with Survey of Pakistan and GIS Cadastral Portal records.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 2: FINANCIAL INTELLIGENCE & 5-YEAR MULTI-YEAR TRENDS
+         =================================================================== -->
+    <section id="tab-financials" class="tab-content-panel">
+      <!-- Senior Management Audit Findings Alert -->
+      <div style="background: #FFFBEB; border: 1px solid #FCD34D; border-left: 4px solid #D97706; border-radius: var(--radius-md); padding: 1rem 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+          <div>
+            <strong style="color: #92400E; font-size: 0.88rem;"><i class="fa-solid fa-triangle-exclamation"></i> Senior Management Quality & Audit Observations (From Departmental Worksheets):</strong>
+            <ul style="margin-top: 0.35rem; padding-left: 1.25rem; font-size: 0.82rem; color: #78350F; line-height: 1.45;">
+              <li><strong>Chakwal Salt Lease ML.CKL.I.R. SALT (11):</strong> Reported 5-year total royalty (Rs. 13.05M) has an internal variance of <strong>Rs. 1.05M</strong> against the sum of its five yearly royalty figures (Rs. 14.10M). Requires voucher audit.</li>
+              <li><strong>Appeals Pendency Number Variance:</strong> Appellate Authority summary states 294 pending cases, whereas individual listed appeals sum to <strong>313</strong> (a 19-case variance across Minor Minerals and SSM).</li>
+              <li><strong>DAEC Meeting Bottlenecks:</strong> 41 concession NOCs are stalled awaiting Deputy Commissioners to convene District Anti-Encroachment/Environmental Committees in Rawalpindi, Jhelum, and Chakwal.</li>
+            </ul>
+          </div>
+          <button class="filter-chip-btn" id="btnDismissAuditAlert" style="background: #FEF3C7; border-color: #FCD34D; color: #92400E; flex-shrink: 0;">Acknowledge</button>
+        </div>
+      </div>
+
+      <!-- 5-Year Revenue Trajectory Chart -->
+      <div class="charts-grid-2col">
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3 class="chart-title">5-Year Revenue & Royalty Growth Trajectory (FY22 – FY26)</h3>
+              <span class="chart-subtitle">Office-wise roll-up from official 5-year production and royalty registers (PKR Millions)</span>
+            </div>
+            <span class="stat-badge-trend badge-completed">
+              <i class="fa-solid fa-arrow-trend-up"></i> +181% Growth in FY25-26
+            </span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartFiveYearFinancials"></canvas>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3 class="chart-title">Major Cement Manufacturers Royalty Audit</h3>
+              <span class="chart-subtitle">5-Year Cumulative Receipts & Quarry Acreage</span>
+            </div>
+            <span class="pill-count" style="background: var(--punjab-green-surface); color: var(--punjab-green-darkest);">LSM Major Sector</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; overflow-y: auto; max-height: 320px;" id="majorProducersList">
+            <!-- Dynamically populated from data.js majorProducers -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Offices Multi-Year Financial Performance Table -->
+      <div class="table-container-card">
+        <div class="section-toolbar-card" style="border: none; border-bottom: 1px solid var(--border-subtle); border-radius: 0; background: #F8FAF8;">
+          <div class="chart-title-group">
+            <h3 class="chart-title">Field Offices Five-Year Financial Performance & Security Deposit Matrix</h3>
+            <span class="chart-subtitle">Detailed breakdown across Attock, Chakwal, D.G. Khan, Jhelum, Khushab, and Mianwali</span>
+          </div>
+        </div>
+        <div class="table-scroll">
+          <table class="official-table">
+            <thead>
+              <tr>
+                <th>Field Office</th>
+                <th>Active Leases</th>
+                <th>5-Year Production (Tons)</th>
+                <th>5-Year Royalty (PKR)</th>
+                <th>Grand Total Paid (PKR)</th>
+                <th>Lease Security Held (PKR)</th>
+                <th>Primary Minerals</th>
+                <th>Provincial Share</th>
+              </tr>
+            </thead>
+            <tbody id="fieldOfficesFinancialTableBody">
+              <!-- Dynamically populated by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 3: LICENSING, RENEWALS & E-AUCTIONS INTELLIGENCE
+         =================================================================== -->
+    <section id="tab-auctions" class="tab-content-panel">
+      <!-- E-Auction Results Overview -->
+      <div class="table-container-card">
+        <div class="section-toolbar-card" style="border: none; border-bottom: 1px solid var(--border-subtle); border-radius: 0; background: #F8FAF8;">
+          <div class="chart-title-group">
+            <h3 class="chart-title">1st Round of E-Auction Fetched Bids (Minor Minerals, 2026)</h3>
+            <span class="chart-subtitle">From official Consolidated E-Auction Reports — Comparing Last Operative Bid, Reserve Price, and Received Bid</span>
+          </div>
+          <span class="badge-status badge-completed"><i class="fa-solid fa-chart-line"></i> Bids Surpassed Reserve by 18% to 985%</span>
+        </div>
+        <div class="table-scroll">
+          <table class="official-table">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Sr.</th>
+                <th>Field Office</th>
+                <th>Block / Zone Name</th>
+                <th>Last Operative Bid (PKR)</th>
+                <th>Reserve Price (PKR)</th>
+                <th>Bid Received (PKR)</th>
+                <th>Increase over Last Bid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="auctionTableBody">
+              <!-- Populated from data.js auctionRecords -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- 2-Column Grid: Subletting Violations & Decided Renewals -->
+      <div class="charts-grid-2col" style="grid-template-columns: 1fr 1fr;">
+        <!-- Subletting Violations Card -->
+        <div class="table-container-card">
+          <div class="section-toolbar-card" style="border: none; border-bottom: 1px solid var(--border-subtle); border-radius: 0; background: #F8FAF8;">
+            <div class="chart-title-group">
+              <h3 class="chart-title" style="color: #991B1B;"><i class="fa-solid fa-triangle-exclamation"></i> Pending Subletting Violations</h3>
+              <span class="chart-subtitle">Field Inspection Cases under PMCR Rules 160, 161, 171, 176</span>
+            </div>
+            <span class="badge-priority prio-urgent">Action Required</span>
+          </div>
+          <div class="table-scroll">
+            <table class="official-table">
+              <thead>
+                <tr>
+                  <th>District</th>
+                  <th>Lease No.</th>
+                  <th>Company Name</th>
+                  <th>Inspection Date</th>
+                  <th>Violation</th>
+                </tr>
+              </thead>
+              <tbody id="sublettingTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Decided Renewals Card -->
+        <div class="table-container-card">
+          <div class="section-toolbar-card" style="border: none; border-bottom: 1px solid var(--border-subtle); border-radius: 0; background: #F8FAF8;">
+            <div class="chart-title-group">
+              <h3 class="chart-title"><i class="fa-solid fa-certificate" style="color: var(--punjab-green-dark);"></i> Recent Decided Renewals</h3>
+              <span class="chart-subtitle">Renewed Mining Leases under Small Scale Mining (SSM)</span>
+            </div>
+            <span class="pill-count">98 Decided</span>
+          </div>
+          <div class="table-scroll" style="max-height: 380px; overflow-y: auto;">
+            <table class="official-table">
+              <thead>
+                <tr>
+                  <th>Lease No.</th>
+                  <th>Company / Lessee</th>
+                  <th>Area (Acres)</th>
+                  <th>Renewed W.E.F</th>
+                  <th>Expiry Date</th>
+                </tr>
+              </thead>
+              <tbody id="renewalsTableBody">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 4: EPA CLEARANCES & CONCESSION NOC TRACKER
+         =================================================================== -->
+    <section id="tab-epa" class="tab-content-panel">
+      <!-- Visual District Breakdown Cards Grid -->
+      <div class="district-grid-card">
+        <div class="district-grid-header">
+          <div class="chart-title-group">
+            <h3 class="chart-title">Visual District Breakdown — EPA Environmental Clearances</h3>
+            <span class="chart-subtitle">Click any district pill to instantly filter pending concession NOC cases</span>
+          </div>
+          <button class="district-pill-btn active" data-district="ALL" id="pillDistrictAll">
+            <span>Show All Districts</span>
+            <span class="pill-count" id="pillAllCount">151</span>
+          </button>
+        </div>
+        <div class="district-badges-wrap" id="districtBadgesContainer">
+          <!-- Dynamically populated with all districts from epaDistricts in data.js -->
+        </div>
+      </div>
+
+      <!-- Filter Chips & Search Toolbar -->
+      <div class="section-toolbar-card">
+        <div class="filter-chips-row" id="epaFilterChipsRow">
+          <button class="filter-chip-btn active" data-filter="ALL">All Pending (151)</button>
+          <button class="filter-chip-btn" data-filter="EBIZ"><i class="fa-solid fa-globe"></i> e-Biz Portal Submissions (82)</button>
+          <button class="filter-chip-btn" data-filter="MANUAL"><i class="fa-solid fa-folder-closed"></i> Manual Filings (69)</button>
+          <button class="filter-chip-btn" data-filter="DAEC"><i class="fa-solid fa-user-group"></i> Pending DC / DAEC Meeting</button>
+          <button class="filter-chip-btn" data-filter="INSPECTION"><i class="fa-solid fa-compass"></i> Site Inspection Assigned</button>
+          <button class="filter-chip-btn" data-filter="SAND"><i class="fa-solid fa-gem"></i> Ordinary Sand Leases</button>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span style="font-size: 0.78rem; color: var(--text-muted);" id="epaFilteredCountLabel">Showing 151 records</span>
+          <select id="epaRowsPerPageSelect" class="filter-select" style="padding: 0.35rem 0.65rem;">
+            <option value="25">25 per page</option>
+            <option value="50">50 per page</option>
+            <option value="100">100 per page</option>
+            <option value="ALL">Show All</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- EPA Cases Table Container -->
+      <div class="table-container-card">
+        <div class="table-scroll">
+          <table class="official-table" id="epaTable">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Sr.</th>
+                <th style="width: 120px;">District</th>
+                <th style="width: 110px;">Division</th>
+                <th>Concession / Block Title</th>
+                <th style="width: 120px;">Mineral</th>
+                <th style="width: 110px;">Method</th>
+                <th style="width: 110px;">Date Applied</th>
+                <th>Current Bottleneck / Justification for Delay</th>
+                <th style="width: 130px;">DAEC / Review Status</th>
+                <th style="width: 80px; text-align: center;">Dossier</th>
+              </tr>
+            </thead>
+            <tbody id="epaTableBody">
+              <!-- Dynamically populated from data.js -->
+            </tbody>
+          </table>
+        </div>
+        <div style="padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; background: #F8FAF8; border-top: 1px solid var(--border-subtle); font-size: 0.8rem;">
+          <span id="epaPaginationInfo">Showing page 1 of 6</span>
+          <div style="display: flex; gap: 0.5rem;" id="epaPaginationBtns"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 5: APPELLATE AUTHORITY & FIELD OFFICE TARGETS
+         =================================================================== -->
+    <section id="tab-performance" class="tab-content-panel">
+      <!-- 2-Column Executive Charts Grid -->
+      <div class="charts-grid-2col">
+        <!-- Chart 1: LSM vs SSM Target Achievement Comparison -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3 class="chart-title">Revenue Target vs Actual Recovery (LSM vs SSM)</h3>
+              <span class="chart-subtitle">Regional Field Offices Collection Breakdown (PKR Millions)</span>
+            </div>
+            <div style="display: flex; gap: 0.35rem;">
+              <button class="filter-chip-btn active" id="btnToggleChartCombined">Combined</button>
+              <button class="filter-chip-btn" id="btnToggleChartLsm">LSM Only</button>
+              <button class="filter-chip-btn" id="btnToggleChartSsm">SSM Only</button>
+            </div>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartLsmSsmRecovery"></canvas>
+          </div>
+        </div>
+
+        <!-- Chart 2: Top Revenue Concentration by Mining Districts -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div class="chart-title-group">
+              <h3 class="chart-title">Top Mining Districts (Reserve Price Benchmark)</h3>
+              <span class="chart-subtitle">Expected Revenue Density (PKR Millions)</span>
+            </div>
+            <span class="stat-badge-trend badge-completed">
+              51.6% in Sargodha & Attock
+            </span>
+          </div>
+          <div class="chart-canvas-wrapper">
+            <canvas id="chartTopDistrictsRevenue"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Appeals & Legal Resolution Section -->
+      <div class="table-container-card">
+        <div class="section-toolbar-card" style="border: none; border-bottom: 1px solid var(--border-subtle); border-radius: 0; background: #F8FAF8;">
+          <div class="toolbar-left-group">
+            <div class="chart-title-group">
+              <h3 class="chart-title">Appellate Authority Pendency Tracker (Director General, Lahore)</h3>
+              <span class="chart-subtitle">Comprehensive legal log of appeals under Rule 207/PMCR 2002 & Mines Act 2025</span>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 0.6rem;">
+            <button class="filter-chip-btn active" id="btnAppealsFilterAll">All Appeals (187 listed)</button>
+            <button class="filter-chip-btn" id="btnAppealsFilterMinor">Minor Minerals (65)</button>
+            <button class="filter-chip-btn" id="btnAppealsFilterSsm">Small Scale Mining (122)</button>
+            <button class="filter-chip-btn" id="btnAppealsFilterHighRecovery"><i class="fa-solid fa-coins"></i> High Recovery (&gt; Rs. 1M)</button>
+          </div>
+        </div>
+
+        <div class="table-scroll">
+          <table class="official-table" id="appealsTable">
+            <thead>
+              <tr>
+                <th style="width: 50px;">Sr.</th>
+                <th style="width: 170px;">Appeal Reference</th>
+                <th style="width: 130px;">Category</th>
+                <th>Block / Subject Matter</th>
+                <th style="width: 140px;">Appellant Name</th>
+                <th style="width: 110px;">Issue Type</th>
+                <th>Impugned Executive Action / Recoverable Dues</th>
+                <th style="width: 100px;">Status</th>
+              </tr>
+            </thead>
+            <tbody id="appealsTableBody">
+              <!-- Dynamically populated from data.js -->
+            </tbody>
+          </table>
+        </div>
+        <div style="padding: 0.85rem 1.25rem; display: flex; align-items: center; justify-content: space-between; background: #F8FAF8; border-top: 1px solid var(--border-subtle); font-size: 0.8rem;">
+          <span id="appealsPaginationInfo">Showing 1 to 20 of 187 appeals</span>
+          <div style="display: flex; gap: 0.5rem;" id="appealsPaginationBtns"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================
+       MODALS SYSTEM
+       =================================================================== -->
+
+  <!-- Modal 1: EPA Case Detail Dossier -->
+  <div class="modal-overlay" id="modalEpaDetail">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-header-title">EPA Case Regulatory Dossier</h3>
+        <button class="modal-close-btn" id="btnCloseEpaModal">&times;</button>
+      </div>
+      <div class="modal-body" id="epaModalContent">
+        <!-- Dynamically rendered by JS -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCloseEpaFooter">Close Dossier</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Import Excel / CSV Modal -->
+  <div class="modal-overlay" id="modalImport">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 class="modal-header-title">Import Departmental Excel or CSV</h3>
+        <button class="modal-close-btn" id="btnCloseImportModal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 0.85rem; color: var(--text-secondary);">
+          Upload your exact <code>EPA_Pending_Cases_Compiled.xlsx</code>, <code>Detail of Block & Zones fetched bid.xlsx</code>, or CSV export. The portal will parse columns automatically and live-update the dashboard.
+        </p>
+
+        <div class="form-group">
+          <label class="form-label">Select Destination Module</label>
+          <select id="importModuleSelect" class="form-select">
+            <option value="EPA">EPA Pending Cases (EPA_Pending_Cases_Compiled.xlsx)</option>
+            <option value="AUCTIONS">E-Auctions Fetched Bids</option>
+            <option value="APPEALS">Appeals Log (Pendency_Report_Appeal_Section.xlsx)</option>
+          </select>
+        </div>
+
+        <div id="dropZone" style="border: 2px dashed var(--punjab-green-border); border-radius: var(--radius-md); padding: 2.5rem 1.5rem; text-align: center; background: #F8FAF8; cursor: pointer; transition: all 0.2s ease;">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--punjab-green-primary); margin-bottom: 0.85rem;"></i>
+          <p style="font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
+            Click to Browse or Drag & Drop File Here
+          </p>
+          <p style="font-size: 0.78rem; color: var(--text-muted);">
+            Supported formats: .xlsx, .xls, .csv
+          </p>
+          <input type="file" id="fileInputExcel" accept=".xlsx, .xls, .csv" style="display: none;">
+        </div>
+
+        <div id="importStatusFeedback" style="display: none; padding: 0.75rem 1rem; border-radius: var(--radius-sm); font-size: 0.82rem;"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-secondary" id="btnCancelImport">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

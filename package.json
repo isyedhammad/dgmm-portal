@@ -1,0 +1,22 @@
+{
+  "name": "dgmm-punjab-executive-portal",
+  "version": "2.0.0",
+  "description": "Executive Operations & Monitoring Portal for the Directorate General of Mines & Minerals, Government of the Punjab",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "punjab",
+    "mines",
+    "minerals",
+    "dashboard",
+    "gis-map",
+    "executive-portal"
+  ],
+  "author": "Directorate General of Mines & Minerals, Government of the Punjab",
+  "license": "UNLICENSED",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
