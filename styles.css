@@ -960,8 +960,104 @@ body {
 }
 
 /* -------------------------------------------------------------
-   RESPONSIVE DESIGN
+   THREE PILLARS (LARGE SCALE, SMALL SCALE, MINOR MINERALS)
    ------------------------------------------------------------- */
+.pillar-card {
+  background: #FFFFFF;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.pillar-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.06);
+  border-color: var(--card-border-hover);
+}
+
+.pillar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.pillar-tag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.tag-lsm { background: var(--lsm-bg); color: var(--lsm-color); }
+.tag-sma { background: var(--sma-bg); color: var(--sma-color); }
+.tag-mm { background: var(--mm-bg); color: var(--mm-color); }
+
+.pillar-link-btn {
+  background: transparent;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gold-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: gap 0.15s ease;
+}
+
+.pillar-link-btn:hover {
+  color: #071F14;
+  gap: 0.55rem;
+}
+
+.pillar-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.45rem;
+}
+
+.pillar-desc {
+  font-size: 0.78rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 1.25rem;
+  flex: 1;
+}
+
+.pillar-stats {
+  background: var(--canvas-bg);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  border: 1px solid var(--card-border);
+}
+
+.pillar-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.78rem;
+}
+
+.pillar-stat-row span {
+  color: var(--text-muted);
+}
+
+.pillar-stat-row strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
 @media (max-width: 1024px) {
   .kpi-grid { grid-template-columns: repeat(2, 1fr); }
   .insights-grid { grid-template-columns: 1fr; }

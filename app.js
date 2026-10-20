@@ -1,7 +1,7 @@
 // ===================================================================
 // GOVERNMENT OF THE PUNJAB — DIRECTORATE GENERAL OF MINES & MINERALS
 // EXECUTIVE MONITORING & REVENUE OPERATIONS PORTAL
-// MASTER APPLICATION CONTROLLER (app.js)
+// MASTER APPLICATION CONTROLLER (app.js) - VERSION 4.1
 // ===================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -16,40 +16,42 @@ document.addEventListener("DOMContentLoaded", () => {
     activeTab: "tab-overview",
     searchQuery: "",
     
-    // LSM State
+    // Large Scale Mining (LSM)
     lsm: {
-      subTab: "leases",
+      category: "leases",      // "leases" | "exploration" | "pending"
+      explFilter: "valid",     // "valid" | "cancelled"
       page: 1,
       pageSize: 15,
       district: "ALL"
     },
 
-    // SMA State
+    // Small Scale Mining (SMA)
     sma: {
-      subTab: "auction",
+      category: "leases",      // "leases" | "prospecting" | "matrix"
+      mode: "auction",         // "auction" | "application"
       page: 1,
       pageSize: 15,
       district: "ALL",
       mineral: "ALL"
     },
 
-    // MM State
+    // Minor Minerals (MM)
     mm: {
-      subTab: "all",
+      subTab: "all",           // "all" | "upcoming" | "vacant"
       page: 1,
       pageSize: 15,
       district: "ALL",
       mineral: "ALL"
     },
 
-    // EPA State
+    // EPA Clearances
     epa: {
       page: 1,
       pageSize: 15,
       district: "ALL"
     },
 
-    // Appeals State
+    // Appeals
     appeals: {
       page: 1,
       pageSize: 15,
@@ -62,7 +64,6 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------------------------------
   initClock();
   initSidebar();
-  initBookmarkModal();
   populateFilterDropdowns();
   renderActiveTab();
   initGlobalSearch();
@@ -75,7 +76,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const clockEl = document.getElementById("livePktTime");
     function updateClock() {
       const now = new Date();
-      // Pakistan Standard Time (UTC+5)
       const options = {
         timeZone: "Asia/Karachi",
         weekday: "short",
@@ -105,11 +105,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const breadcrumbSection = document.getElementById("activeBreadcrumbSection");
     const breadcrumbTitle = document.getElementById("activeBreadcrumbTitle");
 
-    const tabTitles = {
-      "tab-overview": { section: "Executive Cockpit", title: "Senior Management Executive Barometer" },
-      "tab-lsm": { section: "Operational Divisions", title: "Large Scale Mining (LSM) Division Directory" },
-      "tab-sma": { section: "Operational Divisions", title: "Small Scale Mining & Concessions (SMA / SSM)" },
-      "tab-mm": { section: "Operational Divisions", title: "Minor Minerals (MM) Division Master Register" },
+    const tabMeta = {
+      "tab-overview": { section: "Executive Overview", title: "Senior Management Summary Dashboard" },
+      "tab-lsm": { section: "Mineral Operations", title: "Large Scale Mining" },
+      "tab-sma": { section: "Mineral Operations", title: "Small Scale Mining" },
+      "tab-mm": { section: "Mineral Operations", title: "Minor Minerals" },
       "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map of Punjab Province" },
       "tab-financials": { section: "Financial Intelligence", title: "5-Year Revenue, Royalty & Output Analytics" },
       "tab-epa": { section: "Regulatory Clearances", title: "EPA Environmental Clearances (151 Concession Cases)" },
@@ -121,25 +121,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const tabId = link.getAttribute("data-tab");
         if (!tabId) return;
 
-        // Active link class
         navLinks.forEach(l => l.classList.remove("active"));
         link.classList.add("active");
 
-        // Active tab pane
         document.querySelectorAll(".tab-pane").forEach(pane => pane.classList.remove("active"));
         const targetPane = document.getElementById(tabId);
         if (targetPane) targetPane.classList.add("active");
 
         state.activeTab = tabId;
 
-        // Update breadcrumb
-        if (tabTitles[tabId]) {
-          breadcrumbSection.textContent = tabTitles[tabId].section;
-          breadcrumbTitle.textContent = tabTitles[tabId].title;
+        if (tabMeta[tabId]) {
+          breadcrumbSection.textContent = tabMeta[tabId].section;
+          breadcrumbTitle.textContent = tabMeta[tabId].title;
         }
 
-        // Close mobile sidebar if open
-        if (sidebar.classList.contains("mobile-open")) {
+        if (sidebar && sidebar.classList.contains("mobile-open")) {
           sidebar.classList.remove("mobile-open");
         }
 
@@ -147,44 +143,9 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    if (mobileToggle) {
+    if (mobileToggle && sidebar) {
       mobileToggle.addEventListener("click", () => {
         sidebar.classList.toggle("mobile-open");
-      });
-    }
-  }
-
-  // -------------------------------------------------------------
-  // BOOKMARK MODAL CONTROLLER
-  // -------------------------------------------------------------
-  function initBookmarkModal() {
-    const openBtn = document.getElementById("btnOpenBookmarkModal");
-    const closeBtn = document.getElementById("btnCloseBookmarkModal");
-    const overlay = document.getElementById("bookmarkModalOverlay");
-    const copyBtn = document.getElementById("btnCopyPortalUrl");
-    const urlInput = document.getElementById("portalCloudUrl");
-
-    if (openBtn && overlay) {
-      openBtn.addEventListener("click", () => overlay.classList.add("active"));
-    }
-    if (closeBtn && overlay) {
-      closeBtn.addEventListener("click", () => overlay.classList.remove("active"));
-    }
-    if (overlay) {
-      overlay.addEventListener("click", (e) => {
-        if (e.target === overlay) overlay.classList.remove("active");
-      });
-    }
-
-    if (copyBtn && urlInput) {
-      copyBtn.addEventListener("click", () => {
-        urlInput.select();
-        navigator.clipboard.writeText(urlInput.value).then(() => {
-          copyBtn.innerHTML = `<i class="fa-solid fa-check"></i> Copied!`;
-          setTimeout(() => {
-            copyBtn.innerHTML = `<i class="fa-regular fa-copy"></i> Copy`;
-          }, 2000);
-        });
       });
     }
   }
@@ -193,18 +154,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // POPULATE FILTER DROPDOWNS
   // -------------------------------------------------------------
   function populateFilterDropdowns() {
-    // Collect unique districts from all sources
     const allDistricts = new Set();
     const allMinerals = new Set();
 
     (divisions.lsm?.leases || []).forEach(l => { if (l.district) allDistricts.add(l.district); if (l.mineral) allMinerals.add(l.mineral); });
     (divisions.sma?.auctionConcessions || []).forEach(c => { if (c.district) allDistricts.add(c.district); if (c.mineral) allMinerals.add(c.mineral); });
+    (divisions.sma?.applicationConcessions || []).forEach(c => { if (c.district) allDistricts.add(c.district); if (c.mineral) allMinerals.add(c.mineral); });
     (divisions.mm?.blocks || []).forEach(b => { if (b.district) allDistricts.add(b.district); if (b.mineral) allMinerals.add(b.mineral); });
 
     const sortedDistricts = Array.from(allDistricts).sort();
     const sortedMinerals = Array.from(allMinerals).sort();
 
-    // Populate selects helper
     function fillSelect(selectId, items, placeholder = "All") {
       const el = document.getElementById(selectId);
       if (!el) return;
@@ -235,7 +195,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActiveTab() {
     switch (state.activeTab) {
       case "tab-overview":
-        // Overview cards are static HTML seeded from executive
         break;
       case "tab-lsm":
         renderLsm();
@@ -262,27 +221,35 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // -------------------------------------------------------------
-  // LSM DIVISION RENDERER
+  // LARGE SCALE MINING (LSM) RENDERER
   // -------------------------------------------------------------
   function renderLsm() {
     const thead = document.getElementById("lsmTableHead");
     const tbody = document.getElementById("lsmTableBody");
     const pageInfo = document.getElementById("lsmPageInfo");
+    const explToggles = document.getElementById("lsmExplorationToggles");
     const lsmData = divisions.lsm || {};
+
+    // Toggle secondary exploration bar
+    if (explToggles) {
+      explToggles.style.display = state.lsm.category === "exploration" ? "flex" : "none";
+    }
 
     let records = [];
     let headers = [];
 
-    if (state.lsm.subTab === "leases") {
-      headers = ["Sr", "Company Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "Grant Date", "Expiry Date", "Status"];
+    if (state.lsm.category === "leases") {
+      headers = ["Sr", "Company Name", "License Number", "Area (Acres)", "Mineral", "District", "Location", "Grant Date", "Expiry Date", "Status"];
       records = lsmData.leases || [];
-    } else if (state.lsm.subTab === "expl-valid") {
-      headers = ["Sr", "Licensee Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "From", "To", "Status"];
-      records = lsmData.explorationValid || [];
-    } else if (state.lsm.subTab === "expl-cancelled") {
-      headers = ["Sr", "Licensee Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "Period", "Status", "Remarks"];
-      records = lsmData.explorationCancelled || [];
-    } else if (state.lsm.subTab === "pending") {
+    } else if (state.lsm.category === "exploration") {
+      if (state.lsm.explFilter === "valid") {
+        headers = ["Sr", "Licensee Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "From", "To", "Status"];
+        records = lsmData.explorationValid || [];
+      } else {
+        headers = ["Sr", "Licensee Name", "License #", "Area (Acres)", "Mineral", "District", "Location", "Period", "Status", "Remarks"];
+        records = lsmData.explorationCancelled || [];
+      }
+    } else if (state.lsm.category === "pending") {
       headers = ["Sr", "Applicant Name", "Application #", "Date", "Area (Acres)", "Category", "District", "Mineral", "Location", "Status"];
       records = lsmData.pendingApplications || [];
     }
@@ -298,7 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
       records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
     }
 
-    // Render Table Head
     thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
 
     // Pagination
@@ -307,16 +273,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageRecords = records.slice(start, start + state.lsm.pageSize);
 
     if (pageRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found matching filters.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
     } else {
       tbody.innerHTML = pageRecords.map(r => {
-        if (state.lsm.subTab === "leases") {
+        if (state.lsm.category === "leases") {
           return `
             <tr>
               <td><strong>${r.srNo || '-'}</strong></td>
-              <td style="font-weight: 600; color: #1E293B;">${r.company || '-'}</td>
+              <td style="font-weight: 600; color: #0F172A;">${r.company || '-'}</td>
               <td><code>${r.licenseNo || '-'}</code></td>
-              <td>${formatNumber(r.area)}</td>
+              <td>${formatNumber(r.area)} ac</td>
               <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
               <td>${r.district || '-'}</td>
               <td><small>${r.location || '-'}</small></td>
@@ -325,44 +291,46 @@ document.addEventListener("DOMContentLoaded", () => {
               <td><span class="badge-status-pill badge-granted">${r.status || 'Valid'}</span></td>
             </tr>
           `;
-        } else if (state.lsm.subTab === "expl-valid") {
-          return `
-            <tr>
-              <td><strong>${r.srNo || '-'}</strong></td>
-              <td style="font-weight: 600;">${r.licensee || '-'}</td>
-              <td><code>${r.licenseNo || '-'}</code></td>
-              <td>${formatNumber(r.area)}</td>
-              <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
-              <td>${r.district || '-'}</td>
-              <td><small>${r.location || '-'}</small></td>
-              <td>${r.from || '-'}</td>
-              <td>${r.to || '-'}</td>
-              <td><span class="badge-status-pill badge-granted">${r.status || 'Valid'}</span></td>
-            </tr>
-          `;
-        } else if (state.lsm.subTab === "expl-cancelled") {
-          return `
-            <tr>
-              <td><strong>${r.srNo || '-'}</strong></td>
-              <td style="font-weight: 600;">${r.licensee || '-'}</td>
-              <td><code>${r.licenseNo || '-'}</code></td>
-              <td>${r.areaRaw || formatNumber(r.area)}</td>
-              <td>${r.mineral || '-'}</td>
-              <td>${r.district || '-'}</td>
-              <td><small>${r.location || '-'}</small></td>
-              <td>${r.from} to ${r.to}</td>
-              <td><span class="badge-status-pill badge-cancelled">Cancelled</span></td>
-              <td><small style="color: #64748B;">${r.remarks || '-'}</small></td>
-            </tr>
-          `;
+        } else if (state.lsm.category === "exploration") {
+          if (state.lsm.explFilter === "valid") {
+            return `
+              <tr>
+                <td><strong>${r.srNo || '-'}</strong></td>
+                <td style="font-weight: 600; color: #0F172A;">${r.licensee || '-'}</td>
+                <td><code>${r.licenseNo || '-'}</code></td>
+                <td>${formatNumber(r.area)} ac</td>
+                <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
+                <td>${r.district || '-'}</td>
+                <td><small>${r.location || '-'}</small></td>
+                <td>${r.from || '-'}</td>
+                <td>${r.to || '-'}</td>
+                <td><span class="badge-status-pill badge-granted">${r.status || 'Valid'}</span></td>
+              </tr>
+            `;
+          } else {
+            return `
+              <tr>
+                <td><strong>${r.srNo || '-'}</strong></td>
+                <td style="font-weight: 600; color: #0F172A;">${r.licensee || '-'}</td>
+                <td><code>${r.licenseNo || '-'}</code></td>
+                <td>${r.areaRaw || formatNumber(r.area)}</td>
+                <td>${r.mineral || '-'}</td>
+                <td>${r.district || '-'}</td>
+                <td><small>${r.location || '-'}</small></td>
+                <td>${r.from} to ${r.to}</td>
+                <td><span class="badge-status-pill badge-cancelled">Cancelled</span></td>
+                <td><small style="color: #64748B;">${r.remarks || '-'}</small></td>
+              </tr>
+            `;
+          }
         } else {
           return `
             <tr>
               <td><strong>${r.srNo || '-'}</strong></td>
-              <td style="font-weight: 600;">${r.applicant || '-'}</td>
+              <td style="font-weight: 600; color: #0F172A;">${r.applicant || '-'}</td>
               <td><code>${r.appNo || '-'}</code></td>
               <td>${r.appDate || '-'}</td>
-              <td>${formatNumber(r.area)}</td>
+              <td>${formatNumber(r.area)} ac</td>
               <td><strong>${r.category || '-'}</strong></td>
               <td>${r.district || '-'}</td>
               <td><span class="badge-status-pill badge-process">${r.mineral || '-'}</span></td>
@@ -374,19 +342,29 @@ document.addEventListener("DOMContentLoaded", () => {
       }).join("");
     }
 
-    // Page Info & Buttons
     const end = Math.min(start + state.lsm.pageSize, total);
     pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`;
     document.getElementById("btnPrevLsm").disabled = state.lsm.page <= 1;
     document.getElementById("btnNextLsm").disabled = end >= total;
   }
 
-  // LSM Controls Event Listeners
+  // LSM Category Sub-tab buttons
   document.querySelectorAll("[data-lsm-sub]").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll("[data-lsm-sub]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      state.lsm.subTab = btn.getAttribute("data-lsm-sub");
+      state.lsm.category = btn.getAttribute("data-lsm-sub");
+      state.lsm.page = 1;
+      renderLsm();
+    });
+  });
+
+  // Exploration Sub-toggle buttons
+  document.querySelectorAll("[data-lsm-expl]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-lsm-expl]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.lsm.explFilter = btn.getAttribute("data-lsm-expl");
       state.lsm.page = 1;
       renderLsm();
     });
@@ -406,29 +384,64 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // -------------------------------------------------------------
-  // SMA DIVISION RENDERER
+  // SMALL SCALE MINING (SMA) RENDERER
   // -------------------------------------------------------------
   function renderSma() {
     const thead = document.getElementById("smaTableHead");
     const tbody = document.getElementById("smaTableBody");
     const pageInfo = document.getElementById("smaPageInfo");
+    const modeToggles = document.getElementById("smaModeToggles");
     const smaData = divisions.sma || {};
+
+    // Show mode toggles only when category is "leases"
+    if (modeToggles) {
+      modeToggles.style.display = state.sma.category === "leases" ? "flex" : "none";
+    }
 
     let records = [];
     let headers = [];
 
-    if (state.sma.subTab === "auction") {
-      headers = ["Sr", "Block Code", "Block Name", "Mineral", "District", "Status", "Lessee Name", "Grant Date", "Expiry Date", "Operative Bid (PKR)", "Reserve Price (PKR)"];
-      records = smaData.auctionConcessions || [];
-    } else if (state.sma.subTab === "application") {
-      headers = ["Concession #", "Client / Lessee", "Branch", "Mineral", "Type", "District", "Acreage", "Grant Date", "Expiry Date", "Status"];
-      records = smaData.applicationConcessions || [];
-    } else if (state.sma.subTab === "matrix") {
-      headers = ["District", "Limestone", "Gypsum", "Silica Sand", "Coal", "Fireclay", "Bentonite", "Iron Ore", "Bauxite", "Latrite", "Celestite", "Fuller Earth", "Total Concessions"];
+    if (state.sma.category === "leases") {
+      if (state.sma.mode === "auction") {
+        headers = ["Sr", "Block Code", "Block Name", "Mineral", "District", "Status", "Lessee Name", "Grant Date", "Expiry Date", "Operative Bid (PKR)", "Reserve Price (PKR)"];
+        // Filter auction concessions where type is "Mining Lease"
+        records = (smaData.auctionConcessions || []).filter(c => c.type === "Mining Lease");
+      } else {
+        headers = ["Concession #", "Client / Lessee", "Mineral", "Type", "District", "Acreage", "Grant Date", "Expiry Date", "Status"];
+        // Filter application concessions where type is "Mining Lease"
+        records = (smaData.applicationConcessions || []).filter(c => c.type === "Mining Lease");
+      }
+    } else if (state.sma.category === "prospecting") {
+      headers = ["License / Concession #", "Title / Client", "Mode", "Mineral", "District", "Grant Date", "Expiry Date", "Status"];
+      // Combine Prospecting Licenses from auction and application
+      const auctionPL = (smaData.auctionConcessions || []).filter(c => c.type === "Prospecting License").map(c => ({
+        code: c.block,
+        title: c.lessee || c.blockName,
+        mode: "Auction Mode",
+        mineral: c.mineral,
+        district: c.district,
+        grantDate: c.grantDate,
+        expiryDate: c.expiryDate,
+        status: c.status
+      }));
+      const appPL = (smaData.applicationConcessions || []).filter(c => c.type === "Prospecting License").map(c => ({
+        code: c.concessionNo,
+        title: c.client,
+        mode: "Application Mode",
+        mineral: c.mineral,
+        district: c.district,
+        grantDate: c.grantDate,
+        expiryDate: c.expiryDate,
+        status: c.status
+      }));
+      records = [...auctionPL, ...appPL];
+    } else if (state.sma.category === "matrix") {
+      headers = ["District", "Limestone", "Gypsum", "Silica Sand", "Coal", "Fireclay", "Bentonite", "Iron Ore", "Bauxite", "Latrite", "Celestite", "Fuller Earth", "Total Titles"];
       records = smaData.districtMatrix || [];
     }
 
-    if (state.sma.subTab !== "matrix") {
+    // Apply District & Mineral Filters (except matrix)
+    if (state.sma.category !== "matrix") {
       if (state.sma.district !== "ALL") {
         records = records.filter(r => (r.district || "").toLowerCase() === state.sma.district.toLowerCase());
       }
@@ -443,8 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
 
-    // Pagination (except matrix which is 8 rows)
-    const isMatrix = state.sma.subTab === "matrix";
+    const isMatrix = state.sma.category === "matrix";
     const total = records.length;
     const start = isMatrix ? 0 : (state.sma.page - 1) * state.sma.pageSize;
     const pageRecords = isMatrix ? records : records.slice(start, start + state.sma.pageSize);
@@ -453,32 +465,46 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
     } else {
       tbody.innerHTML = pageRecords.map(r => {
-        if (state.sma.subTab === "auction") {
+        if (state.sma.category === "leases") {
+          if (state.sma.mode === "auction") {
+            return `
+              <tr>
+                <td><strong>${r.srNo}</strong></td>
+                <td><code>${r.block}</code></td>
+                <td style="font-weight: 600; color: #0F172A;">${r.blockName}</td>
+                <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+                <td>${r.district}</td>
+                <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
+                <td>${r.lessee || '-'}</td>
+                <td>${r.grantDate || '-'}</td>
+                <td>${r.expiryDate || '-'}</td>
+                <td style="font-weight: 700; color: #166534;">${formatPKR(r.operativeBid)}</td>
+                <td style="color: #64748B;">${formatPKR(r.reservePrice)}</td>
+              </tr>
+            `;
+          } else {
+            return `
+              <tr>
+                <td><code>${r.concessionNo}</code></td>
+                <td style="font-weight: 600; color: #0F172A;">${r.client}</td>
+                <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+                <td>${r.type}</td>
+                <td>${r.district}</td>
+                <td>${formatNumber(r.acreage)} ac</td>
+                <td>${r.grantDate || '-'}</td>
+                <td>${r.expiryDate || '-'}</td>
+                <td><span class="badge-status-pill badge-granted">${r.status}</span></td>
+              </tr>
+            `;
+          }
+        } else if (state.sma.category === "prospecting") {
           return `
             <tr>
-              <td><strong>${r.srNo}</strong></td>
-              <td><code>${r.block}</code></td>
-              <td style="font-weight: 600;">${r.blockName}</td>
+              <td><code>${r.code}</code></td>
+              <td style="font-weight: 600; color: #0F172A;">${r.title}</td>
+              <td><span class="nav-pill ${r.mode.includes('Auction') ? 'pill-sma' : 'pill-neutral'}">${r.mode}</span></td>
               <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
               <td>${r.district}</td>
-              <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
-              <td>${r.lessee || '-'}</td>
-              <td>${r.grantDate || '-'}</td>
-              <td>${r.expiryDate || '-'}</td>
-              <td style="font-weight: 700; color: #166534;">${formatPKR(r.operativeBid)}</td>
-              <td style="color: #64748B;">${formatPKR(r.reservePrice)}</td>
-            </tr>
-          `;
-        } else if (state.sma.subTab === "application") {
-          return `
-            <tr>
-              <td><code>${r.concessionNo}</code></td>
-              <td style="font-weight: 600;">${r.client}</td>
-              <td><span class="nav-pill pill-sma">${r.branch}</span></td>
-              <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
-              <td>${r.type}</td>
-              <td>${r.district}</td>
-              <td>${formatNumber(r.acreage)} ac</td>
               <td>${r.grantDate || '-'}</td>
               <td>${r.expiryDate || '-'}</td>
               <td><span class="badge-status-pill badge-granted">${r.status}</span></td>
@@ -512,12 +538,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnNextSma").disabled = isMatrix || end >= total;
   }
 
-  // SMA Controls
-  document.querySelectorAll("[data-sma-sub]").forEach(btn => {
+  // SMA Category Sub-tabs
+  document.querySelectorAll("[data-sma-category]").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-sma-sub]").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("[data-sma-category]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      state.sma.subTab = btn.getAttribute("data-sma-sub");
+      state.sma.category = btn.getAttribute("data-sma-category");
+      state.sma.page = 1;
+      renderSma();
+    });
+  });
+
+  // SMA Mode Toggles (Auction vs Application)
+  document.querySelectorAll("[data-sma-mode]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-sma-mode]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.sma.mode = btn.getAttribute("data-sma-mode");
       state.sma.page = 1;
       renderSma();
     });
@@ -542,7 +579,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // -------------------------------------------------------------
-  // MM DIVISION RENDERER
+  // MINOR MINERALS (MM) RENDERER
   // -------------------------------------------------------------
   function renderMm() {
     const thead = document.getElementById("mmTableHead");
@@ -568,7 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
       records = records.filter(r => JSON.stringify(r).toLowerCase().includes(q));
     }
 
-    const headers = ["ID", "District", "Mineral", "Block Title", "Area (Acres)", "Status", "Reserve Price (PKR)", "Auction Dates (1st / 2nd / 3rd)", "Remarks"];
+    const headers = ["ID", "District", "Mineral", "Block / Zone Title", "Area (Acres)", "Status", "Reserve Price (PKR)", "Auction Dates (1st / 2nd / 3rd)", "Remarks"];
     thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
 
     const total = records.length;
@@ -588,7 +625,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
           <td style="font-weight: 700; color: #15803D;">${formatPKR(r.reservePrice)}</td>
           <td><small>${r.firstAuctionDate ? `${r.firstAuctionDate} / ${r.secondAuctionDate}` : '-'}</small></td>
-          <td><small style="color: #64748B;">${r.remarks ? r.remarks.slice(0, 75) + '...' : '-'}</small></td>
+          <td><small style="color: #64748B;">${r.remarks ? r.remarks.slice(0, 80) + '...' : '-'}</small></td>
         </tr>
       `).join("");
     }
@@ -652,10 +689,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }).addTo(mapInstance);
     }
 
-    // Refresh map size
     setTimeout(() => mapInstance.invalidateSize(), 200);
 
-    // Clear existing markers
     mapMarkers.forEach(m => mapInstance.removeLayer(m));
     mapMarkers = [];
 
@@ -671,7 +706,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "Ordinary Sand": "#10B981"
     };
 
-    // Populate Floating Legend
     const legendEl = document.getElementById("mapLegendPills");
     if (legendEl && legendEl.children.length === 0) {
       legendEl.innerHTML = Object.entries(mineralColors).map(([min, col]) => `
@@ -899,16 +933,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
       switch (state.activeTab) {
         case "tab-lsm":
-          exportData = state.lsm.subTab === "leases" ? divisions.lsm.leases : divisions.lsm.pendingApplications;
-          filename = `DGMM_LSM_${state.lsm.subTab}.xlsx`;
+          exportData = state.lsm.category === "leases" ? divisions.lsm.leases : divisions.lsm.pendingApplications;
+          filename = `DGMM_LSM_${state.lsm.category}.xlsx`;
           break;
         case "tab-sma":
-          exportData = state.sma.subTab === "auction" ? divisions.sma.auctionConcessions : divisions.sma.applicationConcessions;
-          filename = `DGMM_SMA_${state.sma.subTab}.xlsx`;
+          exportData = state.sma.category === "leases" 
+            ? (state.sma.mode === "auction" ? divisions.sma.auctionConcessions : divisions.sma.applicationConcessions)
+            : divisions.sma.auctionConcessions;
+          filename = `DGMM_SMA_${state.sma.category}.xlsx`;
           break;
         case "tab-mm":
           exportData = divisions.mm.blocks;
-          filename = "DGMM_MM_Blocks.xlsx";
+          filename = "DGMM_Minor_Minerals_Blocks.xlsx";
           break;
         case "tab-financials":
           exportData = db.majorProducers;

@@ -52,38 +52,38 @@
     <!-- Navigation Menu with Division Tabs -->
     <nav class="sidebar-nav">
       
-      <div class="nav-section-title">EXECUTIVE COCKPIT</div>
+      <div class="nav-section-title">EXECUTIVE OVERVIEW</div>
       <button class="nav-link active" data-tab="tab-overview" id="navBtnOverview">
         <div class="nav-link-content">
           <i class="fa-solid fa-chart-pie"></i>
-          <span>Executive Overview</span>
+          <span>Summary Dashboard</span>
         </div>
       </button>
 
-      <div class="nav-section-title">OPERATIONAL DIVISIONS</div>
-      <!-- LSM Division -->
+      <div class="nav-section-title">MINERAL OPERATIONS</div>
+      <!-- Large Scale Mining -->
       <button class="nav-link" data-tab="tab-lsm" id="navBtnLsm">
         <div class="nav-link-content">
           <i class="fa-solid fa-industry"></i>
-          <span>LSM Division</span>
+          <span>Large Scale Mining</span>
         </div>
         <span class="nav-pill pill-lsm">76 Leases</span>
       </button>
 
-      <!-- SMA Division -->
+      <!-- Small Scale Mining -->
       <button class="nav-link" data-tab="tab-sma" id="navBtnSma">
         <div class="nav-link-content">
           <i class="fa-solid fa-trowel-bricks"></i>
-          <span>SMA Division</span>
+          <span>Small Scale Mining</span>
         </div>
-        <span class="nav-pill pill-sma">280 Auctions</span>
+        <span class="nav-pill pill-sma">1,172 Titles</span>
       </button>
 
-      <!-- MM Division -->
+      <!-- Minor Minerals -->
       <button class="nav-link" data-tab="tab-mm" id="navBtnMm">
         <div class="nav-link-content">
           <i class="fa-solid fa-cubes-stacked"></i>
-          <span>MM Division</span>
+          <span>Minor Minerals</span>
         </div>
         <span class="nav-pill pill-mm">510 Blocks</span>
       </button>
@@ -111,7 +111,7 @@
       <button class="nav-link" data-tab="tab-epa" id="navBtnEpa">
         <div class="nav-link-content">
           <i class="fa-solid fa-seedling"></i>
-          <span>EPA NOC Clearances</span>
+          <span>EPA Clearances</span>
         </div>
         <span class="nav-pill pill-neutral">151 Cases</span>
       </button>
@@ -127,16 +127,12 @@
 
     </nav>
 
-    <!-- Sidebar Footer with Cloud Status & Bookmarks -->
+    <!-- Sidebar Footer with Cloud Status (No Bookmark Button) -->
     <div class="sidebar-footer">
       <div class="cloud-sync-pill" title="Hosted permanently in the cloud on GitHub Pages">
         <span class="pulse-dot"></span>
-        <span>Cloud Hosted • Zero Local Files</span>
+        <span>Cloud Hosted • Live Portal</span>
       </div>
-      <button class="btn-sidebar-action" id="btnOpenBookmarkModal">
-        <i class="fa-solid fa-star"></i>
-        <span>Add to Bookmarks Bar</span>
-      </button>
     </div>
 
   </aside>
@@ -153,8 +149,8 @@
           <i class="fa-solid fa-bars"></i>
         </button>
         <div class="breadcrumb-area">
-          <span class="breadcrumb-path" id="activeBreadcrumbSection">Operations Cockpit</span>
-          <h1 class="breadcrumb-title" id="activeBreadcrumbTitle">Senior Management Executive Barometer</h1>
+          <span class="breadcrumb-path" id="activeBreadcrumbSection">Executive Overview</span>
+          <h1 class="breadcrumb-title" id="activeBreadcrumbTitle">Senior Management Summary Dashboard</h1>
         </div>
       </div>
 
@@ -183,18 +179,18 @@
     <div class="content-scroll">
 
       <!-- =====================================================
-           TAB 1: EXECUTIVE OVERVIEW
+           TAB 1: CLEAN SUMMARY DASHBOARD (NOT RUSHY)
            ===================================================== -->
       <div class="tab-pane active" id="tab-overview">
         
-        <!-- 4 Top KPI Cards -->
+        <!-- Spacious 4-Card KPI Ribbon -->
         <div class="kpi-grid">
           <div class="kpi-card">
             <div>
               <div class="kpi-label">Total Mineral Blocks</div>
-              <div class="kpi-value" id="kpiTotalBlocks">870</div>
+              <div class="kpi-value">870</div>
               <div class="kpi-subtext">
-                <span class="badge-status-pill badge-granted">84.8% Granted (738)</span>
+                <span class="badge-status-pill badge-granted">738 Granted (84.8%)</span>
                 <span>• 132 Vacant</span>
               </div>
             </div>
@@ -205,11 +201,11 @@
 
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">Total Spatial Footprint</div>
+              <div class="kpi-label">Total Leased Area</div>
               <div class="kpi-value">5.45M</div>
               <div class="kpi-subtext">
                 <i class="fa-solid fa-mountain" style="color: var(--gold-dark);"></i>
-                <span>5,446,909 Leased Acres across Punjab</span>
+                <span>5,446,909 Acres Across Punjab</span>
               </div>
             </div>
             <div class="kpi-icon-wrap icon-gold">
@@ -219,7 +215,7 @@
 
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">Reserve Price Proxy</div>
+              <div class="kpi-label">Expected Reserve Value</div>
               <div class="kpi-value">Rs 33.66B</div>
               <div class="kpi-subtext">
                 <span style="color: var(--lsm-color); font-weight: 700;">Avg Rs 6,180 / acre</span>
@@ -236,7 +232,7 @@
               <div class="kpi-value">104</div>
               <div class="kpi-subtext">
                 <span class="badge-status-pill badge-vacant">Active Pipeline</span>
-                <span>June – July 2026</span>
+                <span>Ready for Bidding</span>
               </div>
             </div>
             <div class="kpi-icon-wrap icon-amber">
@@ -245,148 +241,169 @@
           </div>
         </div>
 
-        <!-- Strategic Policy Insights Grid -->
-        <div class="insights-grid">
-          <div class="insight-card">
-            <h4 class="insight-title">
-              <i class="fa-solid fa-chart-column" style="color: var(--gold-dark);"></i>
-              51.6% Concentrated in Sargodha & Attock
-            </h4>
-            <p class="insight-desc">
-              Together, Sargodha (<strong>PKR 9.42B</strong>) and Attock (<strong>PKR 7.97B</strong>) generate over 51.6% of the province's entire reserve price. Attock exhibits an exceptional revenue density of <strong>PKR 176,991 per acre</strong>.
+        <!-- 3 Pillars: Large Scale Mining, Small Scale Mining, Minor Minerals -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
+          
+          <!-- Pillar 1: Large Scale Mining -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-tag tag-lsm">Major Industry</span>
+              <button class="pillar-link-btn" onclick="document.getElementById('navBtnLsm').click()">
+                Open Details <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <h3 class="pillar-title">Large Scale Mining</h3>
+            <p class="pillar-desc">
+              Major industrial leases serving cement manufacturers (Fauji, Bestway, DG Khan, Maple Leaf, Gharibwal) and chemical producers under PMCR Rule 46(3).
             </p>
+            <div class="pillar-stats">
+              <div class="pillar-stat-row">
+                <span>Mining Leases</span>
+                <strong>76 Granted</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Exploration Licenses</span>
+                <strong>27 Active • 25 Cancelled</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Pending Applications</span>
+                <strong>156 Cases</strong>
+              </div>
+            </div>
           </div>
 
-          <div class="insight-card">
-            <h4 class="insight-title">
-              <i class="fa-solid fa-trowel" style="color: var(--mm-color);"></i>
-              Ordinary Sand & Sandstone Backbone
-            </h4>
-            <p class="insight-desc">
-              Ordinary Sand comprises 321 blocks over 4.98 Million acres (PKR 13.53B). Sandstone consists of 88 blocks commanding PKR 8.91B in reserve value, driven heavily by 52 high-value blocks in Sargodha.
+          <!-- Pillar 2: Small Scale Mining -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-tag tag-sma">Concessions</span>
+              <button class="pillar-link-btn" onclick="document.getElementById('navBtnSma').click()">
+                Open Details <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <h3 class="pillar-title">Small Scale Mining</h3>
+            <p class="pillar-desc">
+              Mining leases and prospecting licenses for Coal, Rock Salt, Limestone, Fireclay, Gypsum, Iron Ore, and Bauxite awarded via auction and application.
             </p>
+            <div class="pillar-stats">
+              <div class="pillar-stat-row">
+                <span>Mining Leases (Auction)</span>
+                <strong>251 Leases</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Mining Leases (Application)</span>
+                <strong>789 Leases</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Prospecting Licenses</span>
+                <strong>132 Licenses</strong>
+              </div>
+            </div>
           </div>
 
-          <div class="insight-card">
-            <h4 class="insight-title">
-              <i class="fa-solid fa-scale-unbalanced-flip" style="color: var(--lsm-color);"></i>
-              Scale Skew: 606 Large-Scale Leases
-            </h4>
-            <p class="insight-desc">
-              Out of 870 provincial blocks, <strong>606 are Large (&gt;100 acres)</strong>, accounting for the vast majority of spatial acreage. Medium blocks (20–100 acres) stand at 162, and Small blocks at 102.
+          <!-- Pillar 3: Minor Minerals -->
+          <div class="pillar-card">
+            <div class="pillar-header">
+              <span class="pillar-tag tag-mm">Quarries & Riverbeds</span>
+              <button class="pillar-link-btn" onclick="document.getElementById('navBtnMm').click()">
+                Open Details <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <h3 class="pillar-title">Minor Minerals</h3>
+            <p class="pillar-desc">
+              Riverbed sand zones, sandstone blocks, gravel, and slate stone across all 36 districts auctioned on competitive multi-round e-auctions.
             </p>
+            <div class="pillar-stats">
+              <div class="pillar-stat-row">
+                <span>Total Minor Mineral Blocks</span>
+                <strong>510 Blocks</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Upcoming 2026 Auctions</span>
+                <strong>104 Scheduled</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Ordinary Sand Footprint</span>
+                <strong>4.98M Acres (321 blocks)</strong>
+              </div>
+            </div>
           </div>
+
         </div>
 
-        <!-- 3 Divisions Executive Snapshot Cards -->
-        <div class="card-section">
-          <div class="card-header-clean">
-            <div class="card-title-group">
-              <h3 class="card-title">Three Core Operational Divisions of DGM&M</h3>
-              <span class="card-subtitle">Official administrative bifurcation for managing mineral rights, licensing, and minor mineral zones</span>
-            </div>
-          </div>
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 1.5rem;">
-            
-            <!-- LSM Card -->
-            <div style="background: var(--lsm-bg); border: 1px solid var(--lsm-border); border-radius: var(--radius-sm); padding: 1.25rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-size: 0.75rem; font-weight: 700; color: var(--lsm-color); text-transform: uppercase;">Division 01</span>
-                <span class="badge-status-pill" style="background: #FFFFFF; color: var(--lsm-color);">LSM</span>
+        <!-- Strategic Takeaways: Clean 2-Column Summary -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-bottom: 1.75rem;">
+          
+          <div class="card-section" style="margin-bottom: 0;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-coins" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> Revenue Concentration Policy Insight</h3>
+                <span class="card-subtitle">Geographic distribution of provincial reserve value</span>
               </div>
-              <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; color: #1E3A8A;">Large Scale Mining</h4>
-              <p style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 1rem;">
-                Cement manufacturing giants (Fauji, Bestway, DG Khan, Maple Leaf, Gharibwal) and major chemical producers under PMCR Rule 46(3).
+            </div>
+            <div style="padding: 1.25rem 1.5rem; font-size: 0.82rem; color: var(--text-sub); line-height: 1.6;">
+              <p style="margin-bottom: 0.75rem;">
+                • <strong>Sargodha & Attock Drive 51.6% of Provincial Revenue:</strong> Together, Sargodha (<strong>Rs 9.42B</strong>) and Attock (<strong>Rs 7.97B</strong>) account for over half of Punjab's entire mining reserve price.
               </p>
-              <div style="font-size: 0.8rem; font-weight: 600; display: flex; flex-direction: column; gap: 0.25rem;">
-                <div>• Granted Industrial Leases: <strong>76 Leases</strong></div>
-                <div>• Valid Exploration Licenses: <strong>27 Licenses</strong></div>
-                <div>• Pending Applications: <strong>156 Cases</strong></div>
-              </div>
-            </div>
-
-            <!-- SMA Card -->
-            <div style="background: var(--sma-bg); border: 1px solid var(--sma-border); border-radius: var(--radius-sm); padding: 1.25rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-size: 0.75rem; font-weight: 700; color: var(--sma-color); text-transform: uppercase;">Division 02</span>
-                <span class="badge-status-pill" style="background: #FFFFFF; color: var(--sma-color);">SMA / SSM</span>
-              </div>
-              <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; color: #92400E;">Small Scale Mining</h4>
-              <p style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 1rem;">
-                Mining leases & prospecting licenses for Coal, Rock Salt, Limestone, Fireclay, Gypsum, Bauxite, Bentonite, Iron Ore, and Celestite.
+              <p style="margin-bottom: 0.75rem;">
+                • <strong>Exceptional Revenue Density in Attock:</strong> While D.G. Khan and Rajanpur have larger geographic areas, Attock generates an unprecedented <strong>Rs 176,991 per acre</strong>, making it the most financially efficient mining district in Punjab.
               </p>
-              <div style="font-size: 0.8rem; font-weight: 600; display: flex; flex-direction: column; gap: 0.25rem;">
-                <div>• Granted Through Auction: <strong>280 Concessions</strong></div>
-                <div>• Granted by Applications: <strong>892 Titles</strong></div>
-                <div>• Active District Matrix: <strong>8 Mining Districts</strong></div>
-              </div>
-            </div>
-
-            <!-- MM Card -->
-            <div style="background: var(--mm-bg); border: 1px solid var(--mm-border); border-radius: var(--radius-sm); padding: 1.25rem;">
-              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <span style="font-size: 0.75rem; font-weight: 700; color: var(--mm-color); text-transform: uppercase;">Division 03</span>
-                <span class="badge-status-pill" style="background: #FFFFFF; color: var(--mm-color);">MM</span>
-              </div>
-              <h4 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.4rem; color: #065F46;">Minor Minerals</h4>
-              <p style="font-size: 0.78rem; color: var(--text-sub); margin-bottom: 1rem;">
-                Riverbed zones & quarry blocks for Ordinary Sand, Sand-Gravel, Gravel, Sandstone, and Slate Stone auctioned across all Punjab districts.
+              <p>
+                • <strong>Sandstone Clusters:</strong> Sandstone accounts for 88 blocks commanding <strong>Rs 8.91 Billion</strong> in reserve value, with 52 of those blocks clustered in Sargodha.
               </p>
-              <div style="font-size: 0.8rem; font-weight: 600; display: flex; flex-direction: column; gap: 0.25rem;">
-                <div>• Minor Mineral Blocks/Zones: <strong>510 Blocks</strong></div>
-                <div>• Upcoming 2026 Auctions: <strong>104 Scheduled</strong></div>
-                <div>• Total Reserve Value: <strong>PKR 33.66 Billion</strong></div>
+            </div>
+          </div>
+
+          <div class="card-section" style="margin-bottom: 0; border-left: 4px solid #DC2626;">
+            <div class="card-header-clean" style="background: #FEF2F2;">
+              <div class="card-title-group">
+                <h3 class="card-title" style="color: #991B1B;"><i class="fa-solid fa-triangle-exclamation" style="margin-right: 0.4rem;"></i> Leadership Audit & Integrity Notes</h3>
+                <span class="card-subtitle" style="color: #B91C1C;">Flagged discrepancies across provincial registers</span>
               </div>
             </div>
+            <div style="padding: 1.25rem 1.5rem; font-size: 0.82rem; color: var(--text-sub); line-height: 1.6;">
+              <p style="margin-bottom: 0.75rem;">
+                • <strong>Chakwal Salt Lease Mismatch (<code>ML.CKL.I.R. SALT (11)</code>):</strong>
+                Annual figures total <strong>Rs 14,103,450</strong>, but summary records Rs 13,053,450 (understated by <strong>Rs 1.05M</strong>).
+              </p>
+              <p style="margin-bottom: 0.75rem;">
+                • <strong>Appeals Docket Variance:</strong>
+                Summary sheet lists 294 pending appeals, but docket enumerates <strong>313 listed cases</strong> (19 uncounted in summary).
+              </p>
+              <p>
+                • <strong>DAEC Meeting Bottleneck:</strong>
+                <strong>41 of 151 EPA cases</strong> have been stalled for &gt;90 days awaiting District Administration Environmental Committee (DAEC) sessions.
+              </p>
+            </div>
+          </div>
 
-          </div>
-        </div>
-
-        <!-- Data Quality Audit Callout -->
-        <div class="card-section" style="border-left: 4px solid #DC2626;">
-          <div class="card-header-clean" style="background: #FEF2F2;">
-            <div class="card-title-group">
-              <h3 class="card-title" style="color: #991B1B;"><i class="fa-solid fa-triangle-exclamation"></i> Official Data Reconciliation Findings (For Senior Leadership)</h3>
-              <span class="card-subtitle" style="color: #B91C1C;">3 critical audit variances identified during database compilation across provincial spreadsheets</span>
-            </div>
-          </div>
-          <div style="padding: 1.25rem 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.82rem;">
-            <div>
-              <strong>1. Chakwal Salt Lease Calculation Discrepancy (<code>ML.CKL.I.R. SALT (11)</code>):</strong>
-              The spreadsheet summary row records PKR 13,053,450, but the mathematical sum of yearly columns (FY22–FY26) equals <strong>PKR 14,103,450</strong> (understated by <strong>PKR 1,050,000</strong>).
-            </div>
-            <div>
-              <strong>2. Appellate Authority Docket Variance:</strong>
-              The Appellate Authority summary sheet lists 294 pending appeals, but individual enumerated entries in the docket total <strong>313 listed cases</strong> (19 appeals omitted from summary count).
-            </div>
-            <div>
-              <strong>3. EPA DAEC Scheduling Bottlenecks:</strong>
-              <strong>41 of 151 EPA cases (27.2%)</strong> have been stalled for &gt;90 days awaiting District Administration Environmental Committee (DAEC) meetings convened by Deputy Commissioners in Rawalpindi, Chakwal, and Jhelum.
-            </div>
-          </div>
         </div>
 
       </div>
 
       <!-- =====================================================
-           TAB 2: LSM DIVISION (LARGE SCALE MINING)
+           TAB 2: LARGE SCALE MINING (LSM)
            ===================================================== -->
       <div class="tab-pane" id="tab-lsm">
         
         <div class="card-section">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title">Large Scale Mining (LSM) Division Directory</h3>
+              <h3 class="card-title">Large Scale Mining</h3>
               <span class="card-subtitle">Major industrial mining leases, cement quarry concessions, and mineral exploration licenses</span>
             </div>
             
             <div class="card-controls">
-              <!-- Sub-tabs bar -->
+              <!-- Primary Sub-tabs: Mining Leases & Exploration Licenses -->
               <div class="sub-tabs-bar">
-                <button class="sub-tab-btn active" data-lsm-sub="leases" id="subBtnLsmLeases">Granted Leases (76)</button>
-                <button class="sub-tab-btn" data-lsm-sub="expl-valid" id="subBtnLsmExplValid">Valid Exploration (27)</button>
-                <button class="sub-tab-btn" data-lsm-sub="expl-cancelled" id="subBtnLsmExplCancelled">Cancelled Licenses (25)</button>
+                <button class="sub-tab-btn active" data-lsm-sub="leases" id="subBtnLsmLeases">Mining Leases (76)</button>
+                <button class="sub-tab-btn" data-lsm-sub="exploration" id="subBtnLsmExploration">Exploration Licenses (52)</button>
                 <button class="sub-tab-btn" data-lsm-sub="pending" id="subBtnLsmPending">Pending Applications (156)</button>
+              </div>
+
+              <!-- Secondary Toggle (Visible when Exploration Licenses is active) -->
+              <div class="sub-tabs-bar" id="lsmExplorationToggles" style="display: none;">
+                <button class="sub-tab-btn active" data-lsm-expl="valid" id="btnExplValid">Active (27)</button>
+                <button class="sub-tab-btn" data-lsm-expl="cancelled" id="btnExplCancelled">Cancelled / Expired (25)</button>
               </div>
 
               <!-- Filter select -->
@@ -417,23 +434,29 @@
       </div>
 
       <!-- =====================================================
-           TAB 3: SMA DIVISION (SMALL SCALE MINING & CONCESSIONS)
+           TAB 3: SMALL SCALE MINING
            ===================================================== -->
       <div class="tab-pane" id="tab-sma">
         
         <div class="card-section">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title">Small Scale Mining & Concessions (SMA / SSM) Directory</h3>
-              <span class="card-subtitle">Concessions granted through open auction and regular departmental applications</span>
+              <h3 class="card-title">Small Scale Mining</h3>
+              <span class="card-subtitle">Mining leases and prospecting licenses granted through auction mode and application mode</span>
             </div>
             
             <div class="card-controls">
-              <!-- Sub-tabs bar -->
+              <!-- Primary Sub-tabs: Mining Leases & Prospecting Licenses -->
               <div class="sub-tabs-bar">
-                <button class="sub-tab-btn active" data-sma-sub="auction" id="subBtnSmaAuction">Auction Concessions (280)</button>
-                <button class="sub-tab-btn" data-sma-sub="application" id="subBtnSmaApplication">Granted by Applications (892)</button>
-                <button class="sub-tab-btn" data-sma-sub="matrix" id="subBtnSmaMatrix">District Mineral Matrix</button>
+                <button class="sub-tab-btn active" data-sma-category="leases" id="subBtnSmaLeases">Mining Leases</button>
+                <button class="sub-tab-btn" data-sma-category="prospecting" id="subBtnSmaProspecting">Prospecting Licenses (132)</button>
+                <button class="sub-tab-btn" data-sma-category="matrix" id="subBtnSmaMatrix">District Matrix</button>
+              </div>
+
+              <!-- Mode Toggles for Mining Leases: Auction Mode vs Application Mode -->
+              <div class="sub-tabs-bar" id="smaModeToggles">
+                <button class="sub-tab-btn active" data-sma-mode="auction" id="btnSmaModeAuction">Auction Mode (251)</button>
+                <button class="sub-tab-btn" data-sma-mode="application" id="btnSmaModeApplication">Application Mode (789)</button>
               </div>
 
               <select class="filter-select" id="smaDistrictFilter">
@@ -455,7 +478,7 @@
 
           <!-- Pagination -->
           <div class="table-pagination">
-            <span id="smaPageInfo">Showing 1 to 15 of 280 records</span>
+            <span id="smaPageInfo">Showing 1 to 15 records</span>
             <div class="pagination-btns">
               <button class="btn-page" id="btnPrevSma"><i class="fa-solid fa-chevron-left"></i> Previous</button>
               <button class="btn-page" id="btnNextSma">Next <i class="fa-solid fa-chevron-right"></i></button>
@@ -466,20 +489,20 @@
       </div>
 
       <!-- =====================================================
-           TAB 4: MM DIVISION (MINOR MINERALS)
+           TAB 4: MINOR MINERALS
            ===================================================== -->
       <div class="tab-pane" id="tab-mm">
         
         <div class="card-section">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title">Minor Minerals (MM) Division Master Register</h3>
-              <span class="card-subtitle">Comprehensive registry of Ordinary Sand, Sand-Gravel, Gravel, Sandstone, and Slate-Stone zones</span>
+              <h3 class="card-title">Minor Minerals</h3>
+              <span class="card-subtitle">Quarry blocks & riverbed zones across Ordinary Sand, Sand-Gravel, Gravel, Sandstone, and Slate Stone</span>
             </div>
             
             <div class="card-controls">
               <div class="sub-tabs-bar">
-                <button class="sub-tab-btn active" data-mm-sub="all" id="subBtnMmAll">All MM Blocks (510)</button>
+                <button class="sub-tab-btn active" data-mm-sub="all" id="subBtnMmAll">All Blocks & Zones (510)</button>
                 <button class="sub-tab-btn" data-mm-sub="upcoming" id="subBtnMmUpcoming">Upcoming 2026 Auctions (104)</button>
                 <button class="sub-tab-btn" data-mm-sub="vacant" id="subBtnMmVacant">Vacant Blocks (132)</button>
               </div>
@@ -521,7 +544,7 @@
         <div class="card-section" style="margin-bottom: 0;">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title"><i class="fa-solid fa-map-location-dot" style="color: var(--gold-dark);"></i> GIS Mineral Map of Punjab</h3>
+              <h3 class="card-title"><i class="fa-solid fa-map-location-dot" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> GIS Mineral Map of Punjab Province</h3>
               <span class="card-subtitle">Georeferenced mining deposits with Northing, Easting, District, Division, and GPS coordinates</span>
             </div>
             <div class="card-controls">
@@ -554,7 +577,7 @@
         <div class="kpi-grid">
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">5-Year Revenue Total</div>
+              <div class="kpi-label">5-Year Royalty & Revenue</div>
               <div class="kpi-value">PKR 4.741B</div>
               <div class="kpi-subtext"><span>FY 2021-22 to FY 2025-26</span></div>
             </div>
@@ -562,15 +585,15 @@
           </div>
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">5-Year Production</div>
+              <div class="kpi-label">5-Year Production Output</div>
               <div class="kpi-value">23.44M Tons</div>
-              <div class="kpi-subtext"><span>Across 1,004 verified leases</span></div>
+              <div class="kpi-subtext"><span>Across 1,004 monitored leases</span></div>
             </div>
             <div class="kpi-icon-wrap icon-emerald"><i class="fa-solid fa-boxes-stacked"></i></div>
           </div>
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">Attock 5-Year Collection</div>
+              <div class="kpi-label">Attock Office Collection</div>
               <div class="kpi-value">PKR 1.691B</div>
               <div class="kpi-subtext"><span>5.58M Tons output</span></div>
             </div>
@@ -578,7 +601,7 @@
           </div>
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">Chakwal 5-Year Collection</div>
+              <div class="kpi-label">Chakwal Office Collection</div>
               <div class="kpi-value">PKR 1.223B</div>
               <div class="kpi-subtext"><span>7.45M Tons output</span></div>
             </div>
@@ -732,40 +755,6 @@
     </div>
   </div>
 
-</div>
-
-<!-- =========================================================
-     BOOKMARK INSTRUCTIONS MODAL
-     ========================================================= -->
-<div class="modal-overlay" id="bookmarkModalOverlay">
-  <div class="modal-card">
-    <div class="modal-header">
-      <h3><i class="fa-solid fa-star" style="color: var(--gold-primary);"></i> Bookmark DGM&M Executive Portal</h3>
-      <button class="btn-close-modal" id="btnCloseBookmarkModal"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="modal-body">
-      <div class="bookmark-instructions">
-        <p style="font-size: 0.84rem; color: var(--text-sub); margin-bottom: 0.85rem;">
-          Drag this button directly onto your browser's <strong>Bookmarks Bar</strong>:
-        </p>
-        <a href="https://isyedhammad.github.io/dgmm-portal/" class="draggable-bookmark-btn" onclick="return false;" title="Drag me to your Bookmarks Bar!">
-          <i class="fa-solid fa-star"></i> ⭐ DGM&M Executive Portal
-        </a>
-        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">
-          Or press <strong>Ctrl + D</strong> (Windows) / <strong>Cmd + D</strong> (Mac) right now!
-        </p>
-      </div>
-
-      <div style="font-size: 0.78rem; font-weight: 600; color: var(--text-sub); margin-bottom: 0.35rem;">Permanent Cloud URL:</div>
-      <div class="copy-url-box">
-        <input type="text" class="copy-url-input" id="portalCloudUrl" value="https://isyedhammad.github.io/dgmm-portal/" readonly>
-        <button class="btn-copy-url" id="btnCopyPortalUrl"><i class="fa-regular fa-copy"></i> Copy</button>
-      </div>
-      <p style="font-size: 0.73rem; color: var(--text-muted); margin-top: 0.65rem;">
-        <i class="fa-solid fa-cloud" style="color: #10B981;"></i> Hosted permanently on the cloud. You can access this portal from any computer, phone, or tablet anywhere in the world.
-      </p>
-    </div>
-  </div>
 </div>
 
 <!-- =========================================================
