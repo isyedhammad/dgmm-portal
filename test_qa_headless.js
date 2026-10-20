@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const CHROME_PATH = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe";
 const PORT = 9222;
-const TARGET_URL = "http://localhost:3000";
+const TARGET_URL = "https://isyedhammad.github.io/dgmm-portal/";
 
 async function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
