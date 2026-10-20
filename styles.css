@@ -682,6 +682,205 @@ img {
   border-color: var(--gold-primary);
 }
 
+/* -------------------------------------------------------------
+   SMART MULTI-DIMENSIONAL FILTER PANEL
+   ------------------------------------------------------------- */
+.smart-filter-panel {
+  background: #F8FAFC;
+  border-bottom: 1px solid var(--card-border);
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.filter-inputs-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  align-items: flex-end;
+}
+
+.filter-control-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1 1 125px;
+  min-width: 110px;
+}
+
+.filter-control-wrap.search-wrap {
+  flex: 1.8 1 180px;
+  min-width: 170px;
+}
+
+.filter-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.smart-select, .smart-input, .smart-date {
+  width: 100%;
+  height: 34px;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  font-size: 0.78rem;
+  background: #FFFFFF;
+  color: var(--text-main);
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.smart-select:focus, .smart-input:focus, .smart-date:focus {
+  border-color: var(--gold-primary);
+  box-shadow: 0 0 0 2px rgba(197, 160, 89, 0.15);
+}
+
+.input-with-icon {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 0.65rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.input-with-icon .smart-input {
+  padding-left: 2rem;
+}
+
+.btn-reset-filters {
+  height: 34px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  color: #64748B;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.btn-reset-filters:hover {
+  background: #F1F5F9;
+  color: #0F172A;
+  border-color: #CBD5E1;
+}
+
+/* Active Chips & Filter Counter Bar */
+.active-chips-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  padding-top: 0.65rem;
+  border-top: 1px dashed #E2E8F0;
+  font-size: 0.75rem;
+}
+
+.active-counter-badge {
+  font-weight: 700;
+  color: #0F172A;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.active-counter-badge i {
+  color: var(--gold-dark);
+}
+
+.chips-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.55rem;
+  background: #FFFFFF;
+  border: 1px solid var(--gold-border);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #071F14;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.filter-chip .chip-label {
+  color: var(--text-muted);
+}
+
+.filter-chip .chip-remove {
+  cursor: pointer;
+  color: #94A3B8;
+  font-size: 0.75rem;
+  transition: color 0.15s ease;
+}
+
+.filter-chip .chip-remove:hover {
+  color: #DC2626;
+}
+
+/* Quick Date Presets Bar */
+.quick-presets-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.preset-chip-btn {
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--card-border);
+  border-radius: 999px;
+  background: #FFFFFF;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.preset-chip-btn:hover {
+  border-color: var(--gold-primary);
+  color: #071F14;
+}
+
+.preset-chip-btn.active {
+  background: var(--gold-surface);
+  border-color: var(--gold-primary);
+  color: var(--gold-dark);
+}
+
+.filter-select:focus {
+  border-color: var(--gold-primary);
+}
+
 /* Data Table */
 .table-scroll-container {
   width: 100%;

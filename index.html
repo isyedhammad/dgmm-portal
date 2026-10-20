@@ -405,11 +405,71 @@
                 <button class="sub-tab-btn active" data-lsm-expl="valid" id="btnExplValid">Active (27)</button>
                 <button class="sub-tab-btn" data-lsm-expl="cancelled" id="btnExplCancelled">Cancelled / Expired (25)</button>
               </div>
+            </div>
+          </div>
 
-              <!-- Filter select -->
-              <select class="filter-select" id="lsmDistrictFilter">
-                <option value="ALL">All Districts</option>
-              </select>
+          <!-- Smart Multi-Dimensional Filter Panel for LSM -->
+          <div class="smart-filter-panel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="lsmSearchInput" placeholder="Search company, license #, location...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                <select class="smart-select" id="lsmDistrictFilter">
+                  <option value="ALL">All Districts</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-gem"></i> Mineral</label>
+                <select class="smart-select" id="lsmMineralFilter">
+                  <option value="ALL">All Minerals</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-building-columns"></i> Field Office</label>
+                <select class="smart-select" id="lsmFieldOfficeFilter">
+                  <option value="ALL">All Offices</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-circle-check"></i> Status</label>
+                <select class="smart-select" id="lsmStatusFilter">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Valid">Valid / Active</option>
+                  <option value="Under Process">Under Process</option>
+                  <option value="Cancelled">Cancelled / Expired</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> From Date</label>
+                <input type="date" class="smart-date" id="lsmDateFrom">
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> To Date</label>
+                <input type="date" class="smart-date" id="lsmDateTo">
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetLsmFilters" title="Reset all LSM filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="lsmCounterBadge"><i class="fa-solid fa-layer-group"></i> Showing 76 records</span>
+              <div class="chips-container" id="lsmChipsContainer"></div>
             </div>
           </div>
 
@@ -458,13 +518,70 @@
                 <button class="sub-tab-btn active" data-sma-mode="auction" id="btnSmaModeAuction">Auction Mode (251)</button>
                 <button class="sub-tab-btn" data-sma-mode="application" id="btnSmaModeApplication">Application Mode (789)</button>
               </div>
+            </div>
+          </div>
 
-              <select class="filter-select" id="smaDistrictFilter">
-                <option value="ALL">All Districts</option>
-              </select>
-              <select class="filter-select" id="smaMineralFilter">
-                <option value="ALL">All Minerals</option>
-              </select>
+          <!-- Smart Multi-Dimensional Filter Panel for SMA -->
+          <div class="smart-filter-panel" id="smaFilterPanel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="smaSearchInput" placeholder="Search client, block name, code...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                <select class="smart-select" id="smaDistrictFilter">
+                  <option value="ALL">All Districts</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-gem"></i> Mineral</label>
+                <select class="smart-select" id="smaMineralFilter">
+                  <option value="ALL">All Minerals</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-building-columns"></i> Field Office</label>
+                <select class="smart-select" id="smaFieldOfficeFilter">
+                  <option value="ALL">All Offices</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-circle-check"></i> Status</label>
+                <select class="smart-select" id="smaStatusFilter">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Granted">Granted / Valid</option>
+                  <option value="Vacant">Vacant</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> From Date</label>
+                <input type="date" class="smart-date" id="smaDateFrom">
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> To Date</label>
+                <input type="date" class="smart-date" id="smaDateTo">
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetSmaFilters" title="Reset all SMA filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="smaCounterBadge"><i class="fa-solid fa-layer-group"></i> Showing records</span>
+              <div class="chips-container" id="smaChipsContainer"></div>
             </div>
           </div>
 
@@ -506,13 +623,70 @@
                 <button class="sub-tab-btn" data-mm-sub="upcoming" id="subBtnMmUpcoming">Upcoming 2026 Auctions (104)</button>
                 <button class="sub-tab-btn" data-mm-sub="vacant" id="subBtnMmVacant">Vacant Blocks (132)</button>
               </div>
+            </div>
+          </div>
 
-              <select class="filter-select" id="mmDistrictFilter">
-                <option value="ALL">All Districts</option>
-              </select>
-              <select class="filter-select" id="mmMineralFilter">
-                <option value="ALL">All Minerals</option>
-              </select>
+          <!-- Smart Multi-Dimensional Filter Panel for MM -->
+          <div class="smart-filter-panel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="mmSearchInput" placeholder="Search block, zone, title, ID...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                <select class="smart-select" id="mmDistrictFilter">
+                  <option value="ALL">All Districts</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-gem"></i> Mineral</label>
+                <select class="smart-select" id="mmMineralFilter">
+                  <option value="ALL">All Minerals</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-building-columns"></i> Field Office</label>
+                <select class="smart-select" id="mmFieldOfficeFilter">
+                  <option value="ALL">All Offices</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-circle-check"></i> Status</label>
+                <select class="smart-select" id="mmStatusFilter">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Granted">Granted</option>
+                  <option value="Vacant">Vacant</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> Auction From</label>
+                <input type="date" class="smart-date" id="mmDateFrom">
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> Auction To</label>
+                <input type="date" class="smart-date" id="mmDateTo">
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetMmFilters" title="Reset all MM filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="mmCounterBadge"><i class="fa-solid fa-layer-group"></i> Showing 510 records</span>
+              <div class="chips-container" id="mmChipsContainer"></div>
             </div>
           </div>
 
@@ -671,15 +845,68 @@
         <div class="card-section">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title">EPA Environmental Clearances (151 Concession Cases)</h3>
-              <span class="card-subtitle">Tracking environmental NOC status, e-Biz portal filings, and DAEC meeting bottlenecks</span>
-            </div>
-            <div class="card-controls">
-              <select class="filter-select" id="epaDistrictSelect">
-                <option value="ALL">All Districts (21)</option>
-              </select>
+              <h3 class="card-title">EPA Environmental Clearances</h3>
+              <span class="card-subtitle">Tracking environmental NOC status, e-Biz portal filings, and DAEC meeting bottlenecks across 151 concession cases</span>
             </div>
           </div>
+
+          <!-- Smart Filter Panel for EPA -->
+          <div class="smart-filter-panel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="epaSearchInput" placeholder="Search zone title, bottleneck, applicant...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                <select class="smart-select" id="epaDistrictSelect">
+                  <option value="ALL">All Districts (21)</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-gem"></i> Mineral</label>
+                <select class="smart-select" id="epaMineralSelect">
+                  <option value="ALL">All Minerals</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-laptop-code"></i> Filing Method</label>
+                <select class="smart-select" id="epaMethodSelect">
+                  <option value="ALL">All Methods</option>
+                  <option value="e-Biz">e-Biz Portal</option>
+                  <option value="Manual">Manual Filing</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-clock-rotate-left"></i> DAEC Status</label>
+                <select class="smart-select" id="epaStatusSelect">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Pending">Pending DAEC Meeting</option>
+                  <option value="Approved">Approved / Cleared</option>
+                  <option value="Deferred">Deferred / In Review</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetEpaFilters" title="Reset EPA filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="epaCounterBadge"><i class="fa-solid fa-layer-group"></i> Showing 151 records</span>
+              <div class="chips-container" id="epaChipsContainer"></div>
+            </div>
+          </div>
+
           <div class="table-scroll-container">
             <table class="table-clean">
               <thead>
@@ -716,15 +943,63 @@
         <div class="card-section">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title">Appellate Authority Pendency Tracker (Director General, Lahore)</h3>
-              <span class="card-subtitle">187 listed legal appeals under Rule 207 of Punjab Mining Concession Rules 2002</span>
-            </div>
-            <div class="card-controls">
-              <select class="filter-select" id="appealsDistrictSelect">
-                <option value="ALL">All Districts</option>
-              </select>
+              <h3 class="card-title">Appellate Authority Pendency Tracker</h3>
+              <span class="card-subtitle">187 listed legal appeals before the Director General Lahore under Rule 207 of Punjab Mining Concession Rules 2002</span>
             </div>
           </div>
+
+          <!-- Smart Filter Panel for Appeals -->
+          <div class="smart-filter-panel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Keyword Search</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="appealsSearchInput" placeholder="Search appellant, appeal #, subject...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                <select class="smart-select" id="appealsDistrictSelect">
+                  <option value="ALL">All Districts</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-building"></i> Respondent Wing</label>
+                <select class="smart-select" id="appealsWingSelect">
+                  <option value="ALL">All Wings</option>
+                  <option value="Director Licensing">Director Licensing</option>
+                  <option value="Licensing Authority">Licensing Authority</option>
+                  <option value="Director Admin">Director Admin</option>
+                  <option value="Field Office">Field Office</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> Hearing From</label>
+                <input type="date" class="smart-date" id="appealsDateFrom">
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-regular fa-calendar"></i> Hearing To</label>
+                <input type="date" class="smart-date" id="appealsDateTo">
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetAppealsFilters" title="Reset Appeals filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="appealsCounterBadge"><i class="fa-solid fa-layer-group"></i> Showing 187 records</span>
+              <div class="chips-container" id="appealsChipsContainer"></div>
+            </div>
+          </div>
+
           <div class="table-scroll-container">
             <table class="table-clean">
               <thead>
