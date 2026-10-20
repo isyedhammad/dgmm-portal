@@ -401,6 +401,19 @@ document.addEventListener("DOMContentLoaded", () => {
       dateTo: "",
       page: 1,
       pageSize: 15
+    },
+
+    // Administration Division
+    admin: {
+      subTab: "roster",        // "roster" | "cadre" | "offices"
+      search: "",
+      office: "ALL",
+      bps: "ALL",
+      status: "ALL",
+      gender: "ALL",
+      appointment: "ALL",
+      page: 1,
+      pageSize: 15
     }
   };
 
@@ -418,6 +431,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderMm();
   renderEpa();
   renderAppeals();
+  renderAdmin();
   renderActiveTab();
 
   // -------------------------------------------------------------
@@ -460,7 +474,8 @@ document.addEventListener("DOMContentLoaded", () => {
       "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map of Punjab Province" },
       "tab-financials": { section: "Financial Intelligence", title: "5-Year Revenue, Royalty & Output Analytics" },
       "tab-epa": { section: "Regulatory Clearances", title: "EPA Environmental Clearances (151 Concession Cases)" },
-      "tab-appeals": { section: "Legal Proceedings", title: "Appellate Authority Pendency Tracker" }
+      "tab-appeals": { section: "Legal Proceedings", title: "Appellate Authority Pendency Tracker" },
+      "tab-admin": { section: "Administration & Establishment", title: "Administration Division & Human Capital Master Register" }
     };
 
     navLinks.forEach(link => {
@@ -555,6 +570,12 @@ document.addEventListener("DOMContentLoaded", () => {
     fill("lsmFieldOfficeFilter", ALL_FIELD_OFFICES, "All Field Offices");
     fill("smaFieldOfficeFilter", ALL_FIELD_OFFICES, "All Field Offices");
     fill("mmFieldOfficeFilter", ALL_FIELD_OFFICES, "All Field Offices");
+
+    // Admin Offices
+    const adminOffices = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices)
+      ? window.DGM_DATA.admin.offices.map(o => o.office)
+      : [];
+    fill("adminOfficeSelect", adminOffices, "All Offices (17)");
   }
 
   // -------------------------------------------------------------
@@ -625,6 +646,62 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnResetAppealsFilters")?.addEventListener("click", () => {
       resetAppealsFilters();
       renderAppeals();
+    });
+
+    // Admin Inputs
+    bindInput("adminSearchInput", val => { state.admin.search = val; state.admin.page = 1; renderAdmin(); });
+    bindSelect("adminOfficeSelect", val => { state.admin.office = val; state.admin.page = 1; renderAdmin(); });
+    bindSelect("adminBpsSelect", val => { state.admin.bps = val; state.admin.page = 1; renderAdmin(); });
+    bindSelect("adminStatusSelect", val => { state.admin.status = val; state.admin.page = 1; renderAdmin(); });
+    bindSelect("adminGenderSelect", val => { state.admin.gender = val; state.admin.page = 1; renderAdmin(); });
+    bindSelect("adminAppointmentSelect", val => { state.admin.appointment = val; state.admin.page = 1; renderAdmin(); });
+
+    document.getElementById("btnResetAdminFilters")?.addEventListener("click", () => {
+      resetAdminFilters();
+      renderAdmin();
+    });
+
+    // Admin Sub-tabs toggles
+    document.querySelectorAll("[data-admin-sub]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const sub = btn.getAttribute("data-admin-sub");
+        if (!sub) return;
+        document.querySelectorAll("[data-admin-sub]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.admin.subTab = sub;
+
+        const rosterView = document.getElementById("adminRosterView");
+        const cadreView = document.getElementById("adminCadreView");
+        const officesView = document.getElementById("adminOfficesView");
+        const filterPanel = document.getElementById("adminFilterPanel");
+        const heading = document.getElementById("adminSectionHeading");
+        const subtitle = document.getElementById("adminSectionSubtitle");
+
+        if (rosterView) rosterView.style.display = sub === "roster" ? "block" : "none";
+        if (cadreView) cadreView.style.display = sub === "cadre" ? "block" : "none";
+        if (officesView) officesView.style.display = sub === "offices" ? "block" : "none";
+        if (filterPanel) filterPanel.style.display = sub === "roster" ? "block" : "none";
+
+        if (sub === "roster") {
+          if (heading) heading.textContent = "Staff Directory & Personnel Nominal Roll";
+          if (subtitle) subtitle.textContent = "Official Directorate General of Mines & Minerals Establishment Roster & Sanctioned Posts Database";
+        } else if (sub === "cadre") {
+          if (heading) heading.textContent = "Sanctioned Cadre Matrix (BS-20 to BS-01)";
+          if (subtitle) subtitle.textContent = "Complete 64-Post Cadre Schedule with Headquarters & Field Allocation Breakdown";
+        } else if (sub === "offices") {
+          if (heading) heading.textContent = "Regional Field Offices Staffing Rollup";
+          if (subtitle) subtitle.textContent = "Headquarters & 16 Regional Field Formations by Fund Centre with Gazetted & Non-Gazetted Deployment";
+        }
+
+        renderAdmin();
+      });
+    });
+
+    document.getElementById("btnPrevAdmin")?.addEventListener("click", () => {
+      if (state.admin.page > 1) { state.admin.page--; renderAdmin(); }
+    });
+    document.getElementById("btnNextAdmin")?.addEventListener("click", () => {
+      state.admin.page++; renderAdmin();
     });
   }
 
@@ -734,6 +811,23 @@ document.addEventListener("DOMContentLoaded", () => {
     setVal("appealsDateTo", "");
   }
 
+  function resetAdminFilters() {
+    state.admin.search = "";
+    state.admin.office = "ALL";
+    state.admin.bps = "ALL";
+    state.admin.status = "ALL";
+    state.admin.gender = "ALL";
+    state.admin.appointment = "ALL";
+    state.admin.page = 1;
+
+    setVal("adminSearchInput", "");
+    setVal("adminOfficeSelect", "ALL");
+    setVal("adminBpsSelect", "ALL");
+    setVal("adminStatusSelect", "ALL");
+    setVal("adminGenderSelect", "ALL");
+    setVal("adminAppointmentSelect", "ALL");
+  }
+
   function setVal(id, val) {
     const el = document.getElementById(id);
     if (el) el.value = val;
@@ -791,6 +885,9 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "tab-appeals":
         renderAppeals();
+        break;
+      case "tab-admin":
+        renderAdmin();
         break;
     }
   }
@@ -1668,6 +1765,215 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // -------------------------------------------------------------
+  // ADMINISTRATION DIVISION & HUMAN CAPITAL CONTROLLER
+  // -------------------------------------------------------------
+  function renderAdmin() {
+    if (state.admin.subTab === "roster") {
+      renderAdminRoster();
+    } else if (state.admin.subTab === "cadre") {
+      renderAdminCadre();
+    } else if (state.admin.subTab === "offices") {
+      renderAdminOffices();
+    }
+  }
+
+  function renderAdminRoster() {
+    const tbody = document.getElementById("adminRosterTableBody");
+    const pageInfo = document.getElementById("adminPageInfo");
+    const counterBadge = document.getElementById("adminCounterBadge");
+    if (!tbody) return;
+
+    const allRoster = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.roster) || [];
+    const totalUnfiltered = allRoster.length;
+
+    // Filter Logic
+    const term = (state.admin.search || state.globalSearch || "").toLowerCase();
+    const filtered = allRoster.filter(r => {
+      // Office / Cost Centre
+      if (state.admin.office !== "ALL") {
+        const off = (r.office || "").toLowerCase();
+        const cc = (r.costCentre || "").toLowerCase();
+        const filterOff = state.admin.office.toLowerCase();
+        if (!off.includes(filterOff) && !cc.includes(filterOff)) return false;
+      }
+
+      // BPS Grade
+      if (state.admin.bps !== "ALL") {
+        const bpsTarget = state.admin.bps.replace(/^BS-?0?/i, "");
+        const recordBps = String(r.bps || "");
+        if (recordBps !== bpsTarget && "BS-" + recordBps.padStart(2, "0") !== state.admin.bps) return false;
+      }
+
+      // Status
+      if (state.admin.status !== "ALL") {
+        if ((r.status || "").toLowerCase().trim() !== state.admin.status.toLowerCase().trim()) return false;
+      }
+
+      // Gender
+      if (state.admin.gender !== "ALL") {
+        if ((r.gender || "").toLowerCase().trim() !== state.admin.gender.toLowerCase().trim()) return false;
+      }
+
+      // Appointment Type
+      if (state.admin.appointment !== "ALL") {
+        if (!(r.appointmentType || "").toLowerCase().includes(state.admin.appointment.toLowerCase())) return false;
+      }
+
+      // Keyword Search
+      if (term) {
+        const haystack = [
+          r.name,
+          r.designation,
+          r.personalNo,
+          r.cnic,
+          r.domicile,
+          r.contact,
+          r.branch,
+          r.division,
+          r.remarks,
+          r.fatherName,
+          r.costCentre,
+          r.office
+        ].filter(Boolean).join(" ").toLowerCase();
+        if (!haystack.includes(term)) return false;
+      }
+
+      return true;
+    });
+
+    // Active Chips
+    const activeChips = [];
+    if (state.admin.search) activeChips.push({ key: "search", label: "Search", value: `"${state.admin.search}"` });
+    if (state.admin.office !== "ALL") activeChips.push({ key: "office", label: "Office", value: state.admin.office });
+    if (state.admin.bps !== "ALL") activeChips.push({ key: "bps", label: "BPS", value: state.admin.bps });
+    if (state.admin.status !== "ALL") activeChips.push({ key: "status", label: "Status", value: state.admin.status });
+    if (state.admin.gender !== "ALL") activeChips.push({ key: "gender", label: "Gender", value: state.admin.gender });
+    if (state.admin.appointment !== "ALL") activeChips.push({ key: "appointment", label: "Appointment", value: state.admin.appointment });
+
+    renderActiveChips("adminChipsContainer", activeChips, key => {
+      if (key === "search") { state.admin.search = ""; setVal("adminSearchInput", ""); }
+      if (key === "office") { state.admin.office = "ALL"; setVal("adminOfficeSelect", "ALL"); }
+      if (key === "bps") { state.admin.bps = "ALL"; setVal("adminBpsSelect", "ALL"); }
+      if (key === "status") { state.admin.status = "ALL"; setVal("adminStatusSelect", "ALL"); }
+      if (key === "gender") { state.admin.gender = "ALL"; setVal("adminGenderSelect", "ALL"); }
+      if (key === "appointment") { state.admin.appointment = "ALL"; setVal("adminAppointmentSelect", "ALL"); }
+      state.admin.page = 1;
+      renderAdminRoster();
+    });
+
+    if (counterBadge) {
+      counterBadge.innerHTML = `<i class="fa-solid fa-users"></i> Showing ${filtered.length} of ${totalUnfiltered} personnel`;
+    }
+
+    const total = filtered.length;
+    const start = (state.admin.page - 1) * state.admin.pageSize;
+    const pageRecords = filtered.slice(start, start + state.admin.pageSize);
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No staff records matching your filter criteria.</td></tr>`;
+    } else {
+      tbody.innerHTML = pageRecords.map(r => {
+        const isVacant = (r.status || "").toLowerCase().trim() === "vacant";
+        const bpsTag = `<span class="badge-status-pill" style="background: ${r.bps >= 16 ? 'rgba(37,99,235,0.1)' : 'rgba(100,116,139,0.1)'}; color: ${r.bps >= 16 ? '#2563EB' : '#475569'}; font-weight: 700;">BS-${String(r.bps).padStart(2, '0')}</span>`;
+        const statusBadge = isVacant
+          ? `<span class="badge-status-pill badge-vacant">Vacant</span>`
+          : `<span class="badge-status-pill badge-granted">Filled</span>`;
+
+        const nameCell = isVacant
+          ? `<span style="color: #DC2626; font-weight: 600; font-size: 0.82rem;">[Vacant Post]</span><br><span style="font-weight: 600; color: #1E293B;">${r.designation}</span>`
+          : `<span style="font-weight: 700; color: #0F172A; font-size: 0.85rem;">${r.name || 'Incumbent'}</span><br><span style="font-size: 0.76rem; color: #475569;">${r.designation}</span>`;
+
+        return `
+          <tr>
+            <td style="color: #64748B; font-weight: 600;">${r.sr}</td>
+            <td>${nameCell}</td>
+            <td>${bpsTag}</td>
+            <td><strong>${r.office}</strong><br><small style="color: #64748B;">${r.costCentre}</small></td>
+            <td>${isVacant ? '-' : `<code>${r.personalNo || '-'}</code><br><small style="color: #64748B;">${r.cnic || '-'}</small>`}</td>
+            <td>${isVacant ? '-' : `${r.domicile || '-'}${r.contact ? `<br><small style="color: #2563EB;">${r.contact}</small>` : ''}`}</td>
+            <td>${isVacant ? '-' : `<span class="badge-status-pill badge-process" style="font-size: 0.7rem;">${r.appointmentType || 'Regular'}</span>${r.quota ? `<br><small style="color: #64748B;">${r.quota}</small>` : ''}`}</td>
+            <td>${r.branch ? `<strong>${r.branch}</strong>` : ''}${r.division ? `<br><small style="color: #64748B;">${r.division}</small>` : (r.branch ? '' : '-')}</td>
+            <td>${statusBadge}${r.remarks ? `<br><small style="color: #475569; font-size: 0.72rem; line-height: 1.2; display: inline-block; max-width: 170px;">${r.remarks}</small>` : ''}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    const end = Math.min(start + state.admin.pageSize, total);
+    if (pageInfo) pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total} records` : `0 records`;
+    const btnPrev = document.getElementById("btnPrevAdmin");
+    const btnNext = document.getElementById("btnNextAdmin");
+    if (btnPrev) btnPrev.disabled = state.admin.page <= 1;
+    if (btnNext) btnNext.disabled = end >= total;
+  }
+
+  function renderAdminCadre() {
+    const tbody = document.getElementById("adminCadreTableBody");
+    if (!tbody) return;
+    const cadreList = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.cadre) || [];
+
+    tbody.innerHTML = cadreList.map(c => {
+      const fillPct = c.s > 0 ? Math.round((c.f / c.s) * 100) : 0;
+      let pctBg = "rgba(5, 150, 105, 0.15)";
+      let pctColor = "#059669";
+      if (fillPct < 50) { pctBg = "rgba(220, 38, 38, 0.15)"; pctColor = "#DC2626"; }
+      else if (fillPct < 80) { pctBg = "rgba(217, 119, 6, 0.15)"; pctColor = "#D97706"; }
+
+      const bpsBadge = `<span class="badge-status-pill" style="background: ${c.bps >= 16 ? 'rgba(37,99,235,0.1)' : 'rgba(100,116,139,0.1)'}; color: ${c.bps >= 16 ? '#2563EB' : '#475569'}; font-weight: 700;">BS-${String(c.bps).padStart(2, '0')}</span>`;
+
+      return `
+        <tr>
+          <td style="color: #64748B; font-weight: 600;">${c.sn}</td>
+          <td><code>${c.code}</code></td>
+          <td style="font-weight: 600; color: #0F172A;">${c.post}</td>
+          <td style="text-align: center;">${bpsBadge}</td>
+          <td style="text-align: center; font-weight: 700; color: #0F172A;">${c.s}</td>
+          <td style="text-align: center; font-weight: 700; color: #059669;">${c.f}</td>
+          <td style="text-align: center; font-weight: 700; color: ${c.v > 0 ? '#DC2626' : '#94A3B8'};">${c.v}</td>
+          <td style="text-align: center;"><small>${c.hq.s} / <span style="color:#059669; font-weight:600;">${c.hq.f}</span> / <span style="color:${c.hq.v > 0 ? '#DC2626' : '#94A3B8'};">${c.hq.v}</span></small></td>
+          <td style="text-align: center;"><small>${c.field.s} / <span style="color:#059669; font-weight:600;">${c.field.f}</span> / <span style="color:${c.field.v > 0 ? '#DC2626' : '#94A3B8'};">${c.field.v}</span></small></td>
+          <td style="text-align: center;">
+            <span class="badge-status-pill" style="background: ${pctBg}; color: ${pctColor}; font-weight: 700;">${fillPct}%</span>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function renderAdminOffices() {
+    const tbody = document.getElementById("adminOfficesTableBody");
+    if (!tbody) return;
+    const officesList = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices) || [];
+
+    tbody.innerHTML = officesList.map((o, idx) => {
+      const fillPct = o.total.s > 0 ? Math.round((o.total.f / o.total.s) * 100) : 0;
+      let pctBg = "rgba(5, 150, 105, 0.15)";
+      let pctColor = "#059669";
+      if (fillPct < 60) { pctBg = "rgba(220, 38, 38, 0.15)"; pctColor = "#DC2626"; }
+      else if (fillPct < 80) { pctBg = "rgba(217, 119, 6, 0.15)"; pctColor = "#D97706"; }
+
+      const typeBadge = `<span class="badge-status-pill ${o.type === 'HQ' ? 'badge-granted' : 'badge-process'}">${o.type}</span>`;
+
+      return `
+        <tr>
+          <td style="color: #64748B; font-weight: 600;">${idx + 1}</td>
+          <td style="font-weight: 700; color: #0F172A;">${o.office}</td>
+          <td><code>${o.fundCentre}</code></td>
+          <td>${typeBadge}</td>
+          <td style="text-align: center;"><small>${o.gazetted.s} / <span style="color:#059669; font-weight:600;">${o.gazetted.f}</span> / <span style="color:${o.gazetted.v > 0 ? '#DC2626' : '#94A3B8'};">${o.gazetted.v}</span></small></td>
+          <td style="text-align: center;"><small>${o.nonGazetted.s} / <span style="color:#059669; font-weight:600;">${o.nonGazetted.f}</span> / <span style="color:${o.nonGazetted.v > 0 ? '#DC2626' : '#94A3B8'};">${o.nonGazetted.v}</span></small></td>
+          <td style="text-align: center; font-weight: 700; color: #0F172A;">${o.total.s}</td>
+          <td style="text-align: center; font-weight: 700; color: #059669;">${o.total.f}</td>
+          <td style="text-align: center; font-weight: 700; color: ${o.total.v > 0 ? '#DC2626' : '#94A3B8'};">${o.total.v}</td>
+          <td style="text-align: center;">
+            <span class="badge-status-pill" style="background: ${pctBg}; color: ${pctColor}; font-weight: 700;">${fillPct}%</span>
+          </td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  // -------------------------------------------------------------
   // GLOBAL CROSS-SEARCH CONTROLLER
   // -------------------------------------------------------------
   function initGlobalSearch() {
@@ -1730,6 +2036,18 @@ document.addEventListener("DOMContentLoaded", () => {
         case "tab-appeals":
           exportData = db.appealsCases;
           filename = "DGMM_Appeals_Docket.xlsx";
+          break;
+        case "tab-admin":
+          if (state.admin.subTab === "roster") {
+            exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.roster) || [];
+            filename = "DGMM_Staff_Nominal_Roll.xlsx";
+          } else if (state.admin.subTab === "cadre") {
+            exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.cadre) || [];
+            filename = "DGMM_Sanctioned_Cadre_Matrix.xlsx";
+          } else {
+            exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices) || [];
+            filename = "DGMM_Regional_Offices_Staffing.xlsx";
+          }
           break;
         default:
           exportData = divisions.mm.blocks;

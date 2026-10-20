@@ -116,6 +116,16 @@
         <span class="nav-pill pill-neutral">187 Appeals</span>
       </button>
 
+      <div class="nav-section-title">ADMINISTRATION & ESTABLISHMENT</div>
+      <!-- Administration Division -->
+      <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
+        <div class="nav-link-content">
+          <i class="fa-solid fa-users-gear"></i>
+          <span>Administration Division</span>
+        </div>
+        <span class="nav-pill pill-neutral">575 Staff</span>
+      </button>
+
     </nav>
 
     <!-- Sidebar Footer with Cloud Status (No Bookmark Button) -->
@@ -1027,6 +1037,237 @@
 
       </div>
 
+      <!-- =====================================================
+           TAB 9: ADMINISTRATION DIVISION & HUMAN CAPITAL
+           ===================================================== -->
+      <div class="tab-pane" id="tab-admin">
+
+        <!-- 4-Card Human Resources KPI Ribbon -->
+        <div class="kpi-grid">
+          <div class="kpi-card" style="border-left-color: #2563EB;">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Sanctioned Posts</span>
+              <div class="kpi-icon-wrap" style="color: #2563EB; background: rgba(37,99,235,0.1);"><i class="fa-solid fa-users-gear"></i></div>
+            </div>
+            <div class="kpi-value">575</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">401 Filled (69.7%)</span>
+              <span class="badge-status-pill badge-vacant" style="font-size: 0.72rem; margin-left: 4px;">174 Vacant</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #059669;">
+            <div class="kpi-header">
+              <span class="kpi-title">Gazetted Officers (BS 16–20)</span>
+              <div class="kpi-icon-wrap" style="color: #059669; background: rgba(5,150,105,0.1);"><i class="fa-solid fa-user-tie"></i></div>
+            </div>
+            <div class="kpi-value">162</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">113 Filled (69.8%)</span>
+              <span class="badge-status-pill badge-vacant" style="font-size: 0.72rem; margin-left: 4px;">49 Vacant</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #D97706;">
+            <div class="kpi-header">
+              <span class="kpi-title">Non-Gazetted Cadre (BS 01–15)</span>
+              <div class="kpi-icon-wrap" style="color: #D97706; background: rgba(217,119,6,0.1);"><i class="fa-solid fa-id-card-clip"></i></div>
+            </div>
+            <div class="kpi-value">413</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">288 Filled (69.7%)</span>
+              <span class="badge-status-pill badge-vacant" style="font-size: 0.72rem; margin-left: 4px;">125 Vacant</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #7C3AED;">
+            <div class="kpi-header">
+              <span class="kpi-title">Field Deployment vs HQ</span>
+              <div class="kpi-icon-wrap" style="color: #7C3AED; background: rgba(124,58,237,0.1);"><i class="fa-solid fa-building-columns"></i></div>
+            </div>
+            <div class="kpi-value">351 <span style="font-size: 1rem; font-weight: normal; color: #64748B;">/ 224 HQ</span></div>
+            <div class="kpi-desc">
+              <span style="font-size: 0.72rem; color: #475569;">Field: 228 Filled (65.0%) • HQ: 173 Filled (77.2%)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-section">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title" id="adminSectionHeading">Staff Directory & Personnel Nominal Roll</h3>
+              <span class="card-subtitle" id="adminSectionSubtitle">Official Directorate General of Mines & Minerals Establishment Roster & Sanctioned Posts Database</span>
+            </div>
+            <div class="card-controls">
+              <!-- Sub-tabs: Roster vs Cadre vs Offices -->
+              <div class="sub-tabs-bar">
+                <button class="sub-tab-btn active" data-admin-sub="roster" id="subBtnAdminRoster"><i class="fa-solid fa-users"></i> Staff Directory (447)</button>
+                <button class="sub-tab-btn" data-admin-sub="cadre" id="subBtnAdminCadre"><i class="fa-solid fa-sitemap"></i> Sanctioned Cadre (64 Posts)</button>
+                <button class="sub-tab-btn" data-admin-sub="offices" id="subBtnAdminOffices"><i class="fa-solid fa-building-user"></i> Regional Offices (17)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Smart Filter Panel for Staff Roster -->
+          <div class="smart-filter-panel" id="adminFilterPanel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap" style="flex: 2;">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Search Personnel</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="adminSearchInput" placeholder="Search staff name, designation, personal #, CNIC, branch...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-building"></i> Office / Cost Centre</label>
+                <select class="smart-select" id="adminOfficeSelect">
+                  <option value="ALL">All Offices (17)</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-ranking-star"></i> BPS Grade</label>
+                <select class="smart-select" id="adminBpsSelect">
+                  <option value="ALL">All Grades (BS 01–20)</option>
+                  <option value="BS-20">BS-20</option>
+                  <option value="BS-19">BS-19</option>
+                  <option value="BS-18">BS-18</option>
+                  <option value="BS-17">BS-17</option>
+                  <option value="BS-16">BS-16</option>
+                  <option value="BS-15">BS-15</option>
+                  <option value="BS-14">BS-14</option>
+                  <option value="BS-12">BS-12</option>
+                  <option value="BS-11">BS-11</option>
+                  <option value="BS-09">BS-09</option>
+                  <option value="BS-06">BS-06</option>
+                  <option value="BS-05">BS-05</option>
+                  <option value="BS-04">BS-04</option>
+                  <option value="BS-01">BS-01</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-circle-check"></i> Post Status</label>
+                <select class="smart-select" id="adminStatusSelect">
+                  <option value="ALL">All Status</option>
+                  <option value="Filled">Filled</option>
+                  <option value="Vacant">Vacant</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-venus-mars"></i> Gender</label>
+                <select class="smart-select" id="adminGenderSelect">
+                  <option value="ALL">All Genders</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-file-contract"></i> Appointment Type</label>
+                <select class="smart-select" id="adminAppointmentSelect">
+                  <option value="ALL">All Types</option>
+                  <option value="Direct">Direct</option>
+                  <option value="Promotee">Promotee</option>
+                  <option value="On Contract">Contract</option>
+                  <option value="S&GAD">S&GAD</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetAdminFilters" title="Reset Admin filters"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="adminCounterBadge"><i class="fa-solid fa-users"></i> Showing 447 personnel</span>
+              <div class="chips-container" id="adminChipsContainer"></div>
+            </div>
+          </div>
+
+          <!-- VIEW 1: Staff Directory & Nominal Roll Table -->
+          <div id="adminRosterView">
+            <div class="table-scroll-container">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">Sr #</th>
+                    <th>Official Name & Designation</th>
+                    <th>BPS</th>
+                    <th>Cost Centre & Office</th>
+                    <th>Personal # & CNIC</th>
+                    <th>Domicile & Contact</th>
+                    <th>Appointment & Quota</th>
+                    <th>Branch / Wing Posting</th>
+                    <th>Status / Remarks</th>
+                  </tr>
+                </thead>
+                <tbody id="adminRosterTableBody"></tbody>
+              </table>
+            </div>
+            <div class="table-pagination">
+              <span id="adminPageInfo">Showing 1 to 15 of 447 records</span>
+              <div class="pagination-btns">
+                <button class="btn-page" id="btnPrevAdmin"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+                <button class="btn-page" id="btnNextAdmin">Next <i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+          </div>
+
+          <!-- VIEW 2: Sanctioned Cadre Matrix Table -->
+          <div id="adminCadreView" style="display: none;">
+            <div class="table-scroll-container">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th style="width: 45px;">#</th>
+                    <th>Cadre Code</th>
+                    <th>Sanctioned Nomenclature / Designation</th>
+                    <th style="text-align: center;">BPS</th>
+                    <th style="text-align: center;">Total Sanctioned</th>
+                    <th style="text-align: center;">Total Filled</th>
+                    <th style="text-align: center;">Total Vacant</th>
+                    <th style="text-align: center;">HQ (S / F / V)</th>
+                    <th style="text-align: center;">Field (S / F / V)</th>
+                    <th style="text-align: center;">Fill Rate %</th>
+                  </tr>
+                </thead>
+                <tbody id="adminCadreTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- VIEW 3: Regional Offices Matrix Table -->
+          <div id="adminOfficesView" style="display: none;">
+            <div class="table-scroll-container">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th style="width: 45px;">#</th>
+                    <th>Office Establishment Name</th>
+                    <th>Fund Centre</th>
+                    <th>Deployment Type</th>
+                    <th style="text-align: center;">Gazetted (S / F / V)</th>
+                    <th style="text-align: center;">Non-Gazetted (S / F / V)</th>
+                    <th style="text-align: center;">Total Sanctioned</th>
+                    <th style="text-align: center;">Total Filled</th>
+                    <th style="text-align: center;">Total Vacant</th>
+                    <th style="text-align: center;">Fill Rate %</th>
+                  </tr>
+                </thead>
+                <tbody id="adminOfficesTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
   </div>
 
@@ -1041,6 +1282,7 @@
 
 <!-- Compiled In-Memory Master Database -->
 <script src="data.js"></script>
+<script src="admin_data.js"></script>
 
 <!-- Portal Application Controller -->
 <script src="app.js"></script>
