@@ -2346,12 +2346,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     currentConcessionModalObject = c;
     setModalEditMode(false);
+    const isDark = document.body.classList.contains("dark-mode");
 
     const minBadge = document.getElementById("modalMineralBadge");
     if (minBadge) {
       minBadge.textContent = c.mineral || c.category || "Mineral";
-      minBadge.style.background = (c.color || "#2563EB") + "25";
-      minBadge.style.color = c.strokeColor || "#2563EB";
+      minBadge.style.background = isDark ? "rgba(59, 130, 246, 0.22)" : ((c.color || "#2563EB") + "25");
+      minBadge.style.color = isDark ? "#60A5FA" : (c.strokeColor || "#2563EB");
     }
 
     const divBadge = document.getElementById("modalDivisionBadge");
@@ -3260,37 +3261,37 @@ document.addEventListener("DOMContentLoaded", () => {
           
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">DD Chakwal (CH004025)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">25 Filled / 43 Sanctioned (18 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">25 Filled / 43 Sanctioned (18 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 3 F / 7 S • Non-Gaz: 22 F / 36 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Mianwali (MI004001)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">37 Filled / 48 Sanctioned (11 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">37 Filled / 48 Sanctioned (11 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 4 F / 5 S • Non-Gaz: 33 F / 43 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Khushab (KB004001)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">18 Filled / 31 Sanctioned (13 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">18 Filled / 31 Sanctioned (13 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 5 F / 7 S • Non-Gaz: 13 F / 24 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">D.G. Khan (DG004075)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">18 Filled / 28 Sanctioned (10 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">18 Filled / 28 Sanctioned (10 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 5 S • Non-Gaz: 16 F / 23 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Sargodha (SG004080)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">20 Filled / 27 Sanctioned (7 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">20 Filled / 27 Sanctioned (7 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 4 F / 7 S • Non-Gaz: 16 F / 20 S</div>
           </div>
 
           <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
             <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Rawalpindi (RI004396)</div>
-            <div style="font-size: 0.72rem; color: #059669; font-weight: 600;">11 Filled / 24 Sanctioned (13 Vacant)</div>
+            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">11 Filled / 24 Sanctioned (13 Vacant)</div>
             <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 3 F / 7 S • Non-Gaz: 8 F / 17 S</div>
           </div>
 

@@ -289,20 +289,22 @@
 
         </div>
 
-        <!-- 3 Pillars: Large Scale Mining, Small Scale Mining, Minor Minerals -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
+        <!-- 3 Symmetrical Pillars: Large Scale Mining, Small Scale Mining, Minor Minerals -->
+        <div class="pillars-grid">
           
           <!-- Pillar 1: Large Scale Mining -->
           <div class="pillar-card pillar-lsm">
             <div class="pillar-header">
-              <span class="pillar-tag tag-lsm">Major Industry</span>
-              <button class="pillar-link-btn" onclick="document.getElementById('navBtnLsm').click()">
-                Explore Division <i class="fa-solid fa-arrow-right"></i>
-              </button>
+              <div class="pillar-title-group">
+                <span class="badge-status-pill pill-lsm">126 Active Titles</span>
+                <h3 class="pillar-title">Large Scale Mining</h3>
+              </div>
+              <div class="pillar-icon-wrap icon-blue">
+                <i class="fa-solid fa-industry"></i>
+              </div>
             </div>
-            <h3 class="pillar-title">Large Scale Mining</h3>
             <p class="pillar-desc">
-              Major industrial leases serving strategic cement manufacturers (Fauji, Bestway, DG Khan, Maple Leaf, Gharibwal) and chemical producers under PMCR Rule 46(3).
+              Major industrial leases serving strategic cement manufacturers and chemical producers across limestone, gypsum, and coal formations under PMCR Rule 46(3).
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
@@ -311,69 +313,85 @@
               </div>
               <div class="pillar-stat-row">
                 <span>Exploration Licenses (EL)</span>
-                <strong>51 Titles (126 Total LSM)</strong>
+                <strong>51 Titles (Survey Grid)</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Pending Scrutiny</span>
-                <strong>156 Cases Processed</strong>
+                <span>Total Concession Portfolio</span>
+                <strong>126 Active Titles</strong>
               </div>
             </div>
+            <button class="pillar-action-btn btn-pillar-lsm" onclick="document.getElementById('navBtnLsm').click()">
+              <span>Explore Division</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
 
           <!-- Pillar 2: Small Scale Mining -->
           <div class="pillar-card pillar-sma">
             <div class="pillar-header">
-              <span class="pillar-tag tag-sma">Titles & Concessions</span>
-              <button class="pillar-link-btn" onclick="document.getElementById('navBtnSma').click()">
-                Explore Division <i class="fa-solid fa-arrow-right"></i>
-              </button>
+              <div class="pillar-title-group">
+                <span class="badge-status-pill pill-sma">1,172 Active Titles</span>
+                <h3 class="pillar-title">Small Scale Mining</h3>
+              </div>
+              <div class="pillar-icon-wrap icon-gold">
+                <i class="fa-solid fa-trowel-bricks"></i>
+              </div>
             </div>
-            <h3 class="pillar-title">Small Scale Mining</h3>
             <p class="pillar-desc">
               Extensive mining titles and prospecting rights for Coal, Rock Salt, Limestone, Fireclay, Gypsum, Iron Ore, and Bauxite awarded via transparent e-auctions & applications.
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
-                <span>Mining Leases (Auction)</span>
-                <strong>251 Leases</strong>
+                <span>Mining Leases (ML)</span>
+                <strong>1,040 Active Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Mining Leases (Application)</span>
-                <strong>789 Leases</strong>
-              </div>
-              <div class="pillar-stat-row">
-                <span>Prospecting Licenses</span>
+                <span>Prospecting Licenses (PL)</span>
                 <strong>132 Licenses</strong>
               </div>
+              <div class="pillar-stat-row">
+                <span>Total Concession Portfolio</span>
+                <strong>1,172 Active Titles</strong>
+              </div>
             </div>
+            <button class="pillar-action-btn btn-pillar-sma" onclick="document.getElementById('navBtnSma').click()">
+              <span>Explore Division</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
 
           <!-- Pillar 3: Minor Minerals -->
           <div class="pillar-card pillar-mm">
             <div class="pillar-header">
-              <span class="pillar-tag tag-mm">Quarries & Riverbeds</span>
-              <button class="pillar-link-btn" onclick="document.getElementById('navBtnMm').click()">
-                Explore Division <i class="fa-solid fa-arrow-right"></i>
-              </button>
+              <div class="pillar-title-group">
+                <span class="badge-status-pill pill-mm">510 Quarry Blocks</span>
+                <h3 class="pillar-title">Minor Minerals</h3>
+              </div>
+              <div class="pillar-icon-wrap icon-emerald">
+                <i class="fa-solid fa-cubes-stacked"></i>
+              </div>
             </div>
-            <h3 class="pillar-title">Minor Minerals</h3>
             <p class="pillar-desc">
               Riverbed sand blocks, sandstone quarries, gravel, and slate stone zones across all 36 districts auctioned competitively on multi-round provincial public bidding.
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
-                <span>Total Minor Mineral Blocks</span>
-                <strong>510 Blocks</strong>
-              </div>
-              <div class="pillar-stat-row">
                 <span>Granted Concessions</span>
                 <strong>460 Operational Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Vacant for Auction</span>
+                <span>Vacant for Public Auction</span>
                 <strong>50 Ready for Bidding</strong>
               </div>
+              <div class="pillar-stat-row">
+                <span>Total Concession Portfolio</span>
+                <strong>510 Quarry Blocks</strong>
+              </div>
             </div>
+            <button class="pillar-action-btn btn-pillar-mm" onclick="document.getElementById('navBtnMm').click()">
+              <span>Explore Division</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
           </div>
 
         </div>
@@ -402,7 +420,7 @@
                 <h4 class="chart-card-title"><i class="fa-solid fa-chart-pie" style="color: #F59E0B;"></i> Provincial Concession Portfolio</h4>
                 <span class="chart-card-subtitle">Active Titles across LSM, SSM, and Minor Minerals</span>
               </div>
-              <span class="badge-status-pill badge-vacant">1,758 Concessions</span>
+              <span class="badge-status-pill badge-vacant">1,808 Concessions</span>
             </div>
             <div class="chart-canvas-wrapper">
               <canvas id="overviewPortfolioChart"></canvas>
