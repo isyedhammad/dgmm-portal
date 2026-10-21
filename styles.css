@@ -445,10 +445,11 @@ img {
   align-items: center;
   justify-content: space-between;
   padding: 0 1.25rem;
-  z-index: 50;
+  z-index: 500;
   box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03);
   gap: 0.75rem;
-  overflow: hidden;
+  overflow: visible;
+  position: relative;
 }
 
 .topbar-left {
@@ -2083,12 +2084,11 @@ code, .table-clean code {
   }
 
   .btn-topbar-outline span,
-  .theme-toggle-btn .theme-label {
+  .btn-export-toggle .export-chevron {
     display: none;
   }
 
-  .btn-topbar-outline,
-  .theme-toggle-btn {
+  .btn-topbar-outline {
     width: 36px;
     height: 36px;
     padding: 0;
@@ -2375,29 +2375,341 @@ code, .table-clean code {
   color: #FCD34D;
 }
 
-/* Theme Toggle Button in Topbar */
-.theme-toggle-btn {
+/* =============================================================
+   ELEGANT SUN & MOON THEME TOGGLE SWITCH
+   ============================================================= */
+.theme-toggle-switch {
+  background: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  outline: none;
+  flex-shrink: 0;
+}
+
+.theme-switch-track {
+  width: 62px;
+  height: 32px;
+  background: #E2E8F0;
+  border: 1px solid var(--card-border);
+  border-radius: 9999px;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.45rem 0.85rem;
-  border: 1px solid var(--card-border);
-  border-radius: var(--radius-sm);
+  justify-content: space-between;
+  padding: 0 4px;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.theme-toggle-switch:hover .theme-switch-track {
+  border-color: #CBD5E1;
+  background: #CBD5E1;
+}
+
+.theme-switch-icon {
+  font-size: 0.82rem;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.theme-switch-icon.sun-icon {
+  color: #D97706;
+}
+
+.theme-switch-icon.moon-icon {
+  color: #94A3B8;
+}
+
+.theme-switch-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   background: #FFFFFF;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.16), 0 1px 2px rgba(15, 23, 42, 0.08);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.2s ease;
+  z-index: 1;
+}
+
+/* Dark Mode State for Sun & Moon Switch */
+body.dark-mode .theme-switch-track {
+  background: #0B1120;
+  border-color: #334155;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+body.dark-mode .theme-toggle-switch:hover .theme-switch-track {
+  border-color: #475569;
+  background: #0F172A;
+}
+
+body.dark-mode .theme-switch-icon.sun-icon {
+  color: #64748B;
+  opacity: 0.6;
+}
+
+body.dark-mode .theme-switch-icon.moon-icon {
+  color: #38BDF8;
+  filter: drop-shadow(0 0 5px rgba(56, 189, 248, 0.5));
+}
+
+body.dark-mode .theme-switch-thumb {
+  transform: translateX(30px);
+  background: #1E293B;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
+  border: 1px solid #334155;
+}
+
+/* =============================================================
+   REVAMPED EXPORT DROPDOWN MENU
+   ============================================================= */
+.export-dropdown-wrap {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-export-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  height: 36px;
+  padding: 0 0.85rem;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--card-bg);
   color: var(--text-main);
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
 }
 
-.theme-toggle-btn:hover {
+.btn-export-toggle:hover {
   background: var(--canvas-bg);
   border-color: var(--card-border-hover);
+  transform: translateY(-1px);
 }
 
-.theme-toggle-btn i {
-  color: var(--gold-dark);
+.btn-export-toggle .export-chevron {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+  margin-left: 0.15rem;
+}
+
+.export-dropdown-wrap.open .btn-export-toggle .export-chevron {
+  transform: rotate(180deg);
+}
+
+.export-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  width: 260px;
+  background: #FFFFFF;
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+  padding: 0.45rem;
+  display: none;
+  flex-direction: column;
+  gap: 0.25rem;
+  z-index: 1000;
+  animation: dropdownFadeIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.export-dropdown-wrap.open .export-dropdown-menu {
+  display: flex;
+}
+
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.export-menu-header {
+  padding: 0.4rem 0.65rem 0.35rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--card-border);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.2rem;
+}
+
+.export-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.65rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  width: 100%;
+}
+
+.export-menu-item:hover {
+  background: #F8FAFC;
+  border-color: #E2E8F0;
+}
+
+.export-item-icon {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.export-item-icon.excel-icon {
+  background: #ECFDF5;
+  color: #059669;
+}
+
+.export-item-icon.csv-icon {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.export-item-icon.pdf-icon {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.export-item-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.export-item-title {
+  font-size: 0.81rem;
+  font-weight: 600;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+
+.export-item-desc {
+  font-size: 0.67rem;
+  color: var(--text-muted);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.export-badge {
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  letter-spacing: 0.04em;
+}
+
+.badge-xlsx {
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+
+.badge-csv {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.badge-pdf {
+  background: #FEF2F2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+/* Dark Mode Overrides for Export Menu */
+body.dark-mode .export-dropdown-menu {
+  background: #131D31;
+  border-color: #1E293B;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .export-menu-header {
+  border-bottom-color: #1E293B;
+  color: #94A3B8;
+}
+
+body.dark-mode .export-menu-item:hover {
+  background: #1E293B;
+  border-color: #334155;
+}
+
+body.dark-mode .export-item-title {
+  color: #F8FAFC;
+}
+
+body.dark-mode .export-item-desc {
+  color: #94A3B8;
+}
+
+body.dark-mode .export-item-icon.excel-icon {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34D399;
+}
+
+body.dark-mode .export-item-icon.csv-icon {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60A5FA;
+}
+
+body.dark-mode .export-item-icon.pdf-icon {
+  background: rgba(239, 68, 68, 0.15);
+  color: #F87171;
+}
+
+body.dark-mode .badge-xlsx {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6EE7B7;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+body.dark-mode .badge-csv {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93C5FD;
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+body.dark-mode .badge-pdf {
+  background: rgba(239, 68, 68, 0.2);
+  color: #FCA5A5;
+  border-color: rgba(239, 68, 68, 0.35);
 }
 
 /* Sidebar Live Time Badge */

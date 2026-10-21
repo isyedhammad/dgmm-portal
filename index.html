@@ -321,16 +321,52 @@
           <input type="text" class="search-input-top" id="globalOmniSearch" placeholder="Search leases, districts...">
         </div>
 
-        <!-- Export Active Tab Data -->
-        <button class="btn-topbar-outline" id="btnExportActiveTable" title="Export current dataset to CSV / Excel">
-          <i class="fa-solid fa-file-excel" style="color: #10B981;"></i>
-          <span>Export</span>
-        </button>
+        <!-- Revamped Export Dropdown (Excel, CSV, PDF) -->
+        <div class="export-dropdown-wrap" id="exportDropdownWrap">
+          <button class="btn-topbar-outline btn-export-toggle" id="btnExportToggle" aria-haspopup="true" aria-expanded="false" title="Export dataset as Excel, CSV, or PDF">
+            <i class="fa-solid fa-file-arrow-down" style="color: #10B981;"></i>
+            <span>Export</span>
+            <i class="fa-solid fa-chevron-down export-chevron"></i>
+          </button>
+          <div class="export-dropdown-menu" id="exportDropdownMenu" role="menu">
+            <div class="export-menu-header">
+              <i class="fa-solid fa-download"></i>
+              <span>Export Options</span>
+            </div>
+            <button class="export-menu-item" id="exportOptExcel" role="menuitem">
+              <div class="export-item-icon excel-icon"><i class="fa-solid fa-file-excel"></i></div>
+              <div class="export-item-details">
+                <span class="export-item-title">Excel Spreadsheet</span>
+                <span class="export-item-desc">Microsoft Excel Workbook (.xlsx)</span>
+              </div>
+              <span class="export-badge badge-xlsx">XLSX</span>
+            </button>
+            <button class="export-menu-item" id="exportOptCsv" role="menuitem">
+              <div class="export-item-icon csv-icon"><i class="fa-solid fa-file-csv"></i></div>
+              <div class="export-item-details">
+                <span class="export-item-title">CSV Document</span>
+                <span class="export-item-desc">Comma-Separated Values (.csv)</span>
+              </div>
+              <span class="export-badge badge-csv">CSV</span>
+            </button>
+            <button class="export-menu-item" id="exportOptPdf" role="menuitem">
+              <div class="export-item-icon pdf-icon"><i class="fa-solid fa-file-pdf"></i></div>
+              <div class="export-item-details">
+                <span class="export-item-title">PDF Document</span>
+                <span class="export-item-desc">Print-Ready Official Document (.pdf)</span>
+              </div>
+              <span class="export-badge badge-pdf">PDF</span>
+            </button>
+          </div>
+        </div>
 
-        <!-- Dark / Light Mode Toggle -->
-        <button class="theme-toggle-btn" id="themeToggleBtn" title="Switch between Dark and Light Mode">
-          <i class="fa-solid fa-moon" id="themeToggleIcon"></i>
-          <span class="theme-label" id="themeToggleText">Dark Mode</span>
+        <!-- Elegant Sun & Moon Theme Toggle (No "Dark Mode" Text) -->
+        <button class="theme-toggle-switch" id="themeToggleBtn" title="Switch Theme (Light / Dark)" aria-label="Toggle light and dark theme">
+          <span class="theme-switch-track">
+            <span class="theme-switch-icon sun-icon"><i class="fa-solid fa-sun" id="themeSunIcon"></i></span>
+            <span class="theme-switch-icon moon-icon"><i class="fa-solid fa-moon" id="themeMoonIcon"></i></span>
+            <span class="theme-switch-thumb"></span>
+          </span>
         </button>
 
         <!-- Official Directorate General Logo (Top Right) -->

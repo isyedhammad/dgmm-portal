@@ -458,21 +458,17 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------------------------------
   // THEME CONTROLLER (DARK / LIGHT MODE)
   // -------------------------------------------------------------
+  // THEME CONTROLLER (ELEGANT SUN & MOON TOGGLE)
+  // -------------------------------------------------------------
   function initTheme() {
     const toggleBtn = document.getElementById("themeToggleBtn");
-    const icon = document.getElementById("themeToggleIcon");
-    const label = document.getElementById("themeToggleText");
     const saved = localStorage.getItem("dgmm_theme") || "light";
 
     function apply(mode) {
       if (mode === "dark") {
         document.body.classList.add("dark-mode");
-        if (icon) icon.className = "fa-solid fa-sun";
-        if (label) label.textContent = "Light Mode";
       } else {
         document.body.classList.remove("dark-mode");
-        if (icon) icon.className = "fa-solid fa-moon";
-        if (label) label.textContent = "Dark Mode";
       }
       localStorage.setItem("dgmm_theme", mode);
       if (state.activeTab === "tab-overview" && typeof renderOverviewCharts === "function") {
@@ -4018,15 +4014,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // -------------------------------------------------------------
-  // EXPORT ACTIVE DATA CONTROLLER (SHEETJS)
+  // REVAMPED EXPORT ACTIVE DATA CONTROLLER (EXCEL, CSV, PDF)
   // -------------------------------------------------------------
   function initExport() {
-    const exportBtn = document.getElementById("btnExportActiveTable");
-    if (!exportBtn || !window.XLSX) return;
+    const exportWrap = document.getElementById("exportDropdownWrap");
+    const exportToggle = document.getElementById("btnExportToggle") || document.getElementById("btnExportActiveTable");
+    const optExcel = document.getElementById("exportOptExcel");
+    const optCsv = document.getElementById("exportOptCsv");
+    const optPdf = document.getElementById("exportOptPdf");
 
-    exportBtn.addEventListener("click", () => {
+    if (exportToggle && exportWrap) {
+      exportToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isOpen = exportWrap.classList.contains("open");
+        exportWrap.classList.toggle("open", !isOpen);
+        exportToggle.setAttribute("aria-expanded", !isOpen ? "true" : "false");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!exportWrap.contains(e.target)) {
+          exportWrap.classList.remove("open");
+          exportToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && exportWrap.classList.contains("open")) {
+          exportWrap.classList.remove("open");
+          exportToggle.setAttribute("aria-expanded", "false");
+        }
+      });
+    }
+
+    function getExportPayload() {
       let exportData = [];
-      let filename = `DGMM_${state.activeTab}_Export.xlsx`;
+      let baseFilename = `DGMM_${state.activeTab}_Export`;
+      let reportTitle = "Executive Data Register";
+      let categoryLabel = "General";
 
       switch (state.activeTab) {
         case "tab-lsm":
@@ -4082,24 +4106,302 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (!exportData || exportData.length === 0) {
-        alert("No data available to export in the current view.");
-        return;
+        return null;
       }
 
-      // Sanitize fields (remove internal underscore helper properties for pristine export)
+      // Sanitize fields (remove internal underscore helper properties and raw references)
       const cleanData = exportData.map(row => {
-        const copy = { ...row };
-        Object.keys(copy).forEach(k => {
-          if (k.startsWith("_")) delete copy[k];
+        const copy = {};
+        Object.keys(row).forEach(k => {
+          if (!k.startsWith("_") && k !== "raw" && typeof row[k] !== "object") {
+            copy[k] = row[k];
+          }
         });
         return copy;
       });
 
-      const ws = XLSX.utils.json_to_sheet(cleanData);
-      const wb = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(wb, ws, "DGM&M Official");
-      XLSX.writeFile(wb, filename);
-    });
+      return { cleanData, baseFilename, reportTitle, categoryLabel };
+    }
+
+    // Export Option 1: Excel (.xlsx)
+    if (optExcel) {
+      optExcel.addEventListener("click", () => {
+        if (exportWrap) exportWrap.classList.remove("open");
+        const payload = getExportPayload();
+        if (!payload) {
+          alert("No data available to export in the current view.");
+          return;
+        }
+        if (!window.XLSX) {
+          alert("SheetJS library is loading. Please try again.");
+          return;
+        }
+        const ws = XLSX.utils.json_to_sheet(payload.cleanData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "DGM&M Official");
+        XLSX.writeFile(wb, `${payload.baseFilename}.xlsx`);
+      });
+    }
+
+    // Export Option 2: CSV (.csv)
+    if (optCsv) {
+      optCsv.addEventListener("click", () => {
+        if (exportWrap) exportWrap.classList.remove("open");
+        const payload = getExportPayload();
+        if (!payload) {
+          alert("No data available to export in the current view.");
+          return;
+        }
+        if (!window.XLSX) {
+          alert("Export engine is loading. Please try again.");
+          return;
+        }
+        const ws = XLSX.utils.json_to_sheet(payload.cleanData);
+        const csv = XLSX.utils.sheet_to_csv(ws);
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = `${payload.baseFilename}.csv`;
+        link.click();
+      });
+    }
+
+    // Export Option 3: PDF Document (.pdf)
+    if (optPdf) {
+      optPdf.addEventListener("click", () => {
+        if (exportWrap) exportWrap.classList.remove("open");
+        const payload = getExportPayload();
+        if (!payload) {
+          alert("No data available to export in the current view.");
+          return;
+        }
+        exportToPDF(payload.cleanData, payload.reportTitle, payload.categoryLabel);
+      });
+    }
+  }
+
+  // -------------------------------------------------------------
+  // PRINTABLE EXECUTIVE PDF GENERATOR
+  // -------------------------------------------------------------
+  function exportToPDF(data, title, categoryLabel) {
+    if (!data || data.length === 0) {
+      alert("No data available to generate PDF.");
+      return;
+    }
+
+    const printWindow = window.open("", "_blank");
+    if (!printWindow) {
+      alert("Please allow popups to export the PDF document.");
+      return;
+    }
+
+    const now = new Date();
+    const timeStr = now.toLocaleDateString("en-PK", { dateStyle: "full" }) + " • " +
+      now.toLocaleTimeString("en-PK", { timeZone: "Asia/Karachi" }) + " PKT";
+
+    const sample = data[0] || {};
+    const keys = Object.keys(sample).filter(k => !k.startsWith("_") && k !== "raw" && typeof sample[k] !== "object");
+
+    const formatHeader = (str) => {
+      return str
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, s => s.toUpperCase())
+        .trim();
+    };
+
+    const headersHtml = `<tr><th style="width: 40px; text-align: center;">Sr #</th>${keys.map(k => `<th>${formatHeader(k)}</th>`).join("")}</tr>`;
+
+    const rowsHtml = data.map((row, idx) => {
+      const cells = keys.map(k => {
+        const val = row[k];
+        return `<td>${val !== undefined && val !== null && val !== "" ? String(val) : "—"}</td>`;
+      }).join("");
+      return `<tr><td style="text-align: center; font-weight: 700;">${idx + 1}</td>${cells}</tr>`;
+    }).join("");
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${title} — Directorate General of Mines &amp; Minerals Punjab</title>
+  <style>
+    @page { size: A4 landscape; margin: 10mm; }
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      color: #0F172A;
+      background: #FFFFFF;
+      margin: 0;
+      padding: 16px;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .no-print-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #F8FAFC;
+      border: 1px solid #E2E8F0;
+      border-radius: 8px;
+      padding: 10px 16px;
+      margin-bottom: 16px;
+    }
+    .btn-print {
+      background: #059669;
+      color: #FFFFFF;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .report-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2.5px solid #059669;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .gov-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: #D97706;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .dept-name {
+      font-size: 17px;
+      font-weight: 800;
+      color: #0F172A;
+      letter-spacing: -0.01em;
+      margin: 1px 0;
+    }
+    .portal-tag {
+      font-size: 10.5px;
+      color: #64748B;
+      font-weight: 600;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 10px;
+      color: #475569;
+    }
+    .header-badge {
+      display: inline-block;
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+      font-weight: 700;
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-top: 4px;
+    }
+    .report-title-strip {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .report-title-strip h2 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0F172A;
+      margin: 0;
+    }
+    .report-title-strip span {
+      font-size: 11px;
+      color: #64748B;
+      font-weight: 600;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 10px;
+    }
+    th {
+      background: #F1F5F9;
+      color: #1E293B;
+      font-weight: 700;
+      padding: 6px 8px;
+      border: 1px solid #CBD5E1;
+      text-align: left;
+      font-size: 9.5px;
+      letter-spacing: 0.03em;
+    }
+    td {
+      padding: 5px 8px;
+      border: 1px solid #E2E8F0;
+      vertical-align: middle;
+    }
+    tr:nth-child(even) td {
+      background: #F8FAFC;
+    }
+    .report-footer {
+      border-top: 1px solid #E2E8F0;
+      padding-top: 10px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 9px;
+      color: #64748B;
+    }
+    @media print {
+      body { padding: 0; }
+      .no-print-bar { display: none !important; }
+      tr { page-break-inside: avoid; }
+      thead { display: table-header-group; }
+    }
+  </style>
+</head>
+<body>
+  <div class="no-print-bar">
+    <div>Official Printable Document generated for <strong>${title}</strong> (${data.length} records)</div>
+    <button class="btn-print" onclick="window.print()">Print / Save as PDF</button>
+  </div>
+  <div class="report-header">
+    <div class="header-left">
+      <div>
+        <div class="gov-label">Government of the Punjab</div>
+        <div class="dept-name">Directorate General of Mines &amp; Minerals</div>
+        <div class="portal-tag">Executive Operations &amp; Monitoring Portal</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div>Generated: <strong>${timeStr}</strong></div>
+      <div>Dataset: <strong>${categoryLabel}</strong></div>
+      <div class="header-badge">Official Record (${data.length} Records)</div>
+    </div>
+  </div>
+  <div class="report-title-strip">
+    <h2>${title}</h2>
+    <span>Showing all ${data.length} records</span>
+  </div>
+  <table>
+    <thead>${headersHtml}</thead>
+    <tbody>${rowsHtml}</tbody>
+  </table>
+  <div class="report-footer">
+    <span>Directorate General of Mines &amp; Minerals Punjab • Official Master Register</span>
+    <span>Confidential &amp; Sovereign Record • Printed via Executive Portal</span>
+  </div>
+  <script>
+    setTimeout(() => { window.print(); }, 400);
+  </script>
+</body>
+</html>`;
+
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
   }
 
   // -------------------------------------------------------------
