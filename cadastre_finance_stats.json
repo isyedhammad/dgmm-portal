@@ -1,0 +1,248 @@
+{
+  "SSM": {
+    "auctioned_installments": {
+      "due_amount": 12704592976,
+      "gross_due_amount": 12743865642,
+      "paid_amount": 2548749594,
+      "prior_fy_actualized_amount": 39272666,
+      "net_due_amount": 12704592976,
+      "recoverable_based_on_due": 10161781811,
+      "recoverable_based_on_gross_due": 10155843382,
+      "recoverable_based_on_net_due": 10161781811,
+      "recoverable_amount": 10161781811
+    },
+    "royalty_contract_installments": {
+      "due_amount": 9360697458,
+      "gross_due_amount": 9360697458,
+      "paid_amount": 5055679743,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 9360697458,
+      "recoverable_based_on_due": 4305017721.5,
+      "recoverable_based_on_gross_due": 4305017715,
+      "recoverable_based_on_net_due": 4305017721.5,
+      "recoverable_amount": 4305017721.5
+    },
+    "chalan_entries": {
+      "due_amount": 230860639,
+      "gross_due_amount": 230860639,
+      "paid_amount": 230762289,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 230860639,
+      "recoverable_based_on_due": 0,
+      "recoverable_based_on_gross_due": 98350,
+      "recoverable_based_on_net_due": 0,
+      "recoverable_amount": 0
+    },
+    "dangling_payments": {
+      "paid_amount": 1940000
+    },
+    "bank_guarantees": {
+      "total_amount": 0,
+      "invoked_amount": 0
+    },
+    "security_deposits": {
+      "total_amount": 0,
+      "forfeited_amount": 0
+    },
+    "blocks": {
+      "granted_count": 260,
+      "vacant_count": 108,
+      "extension_count": 0,
+      "upcoming_auction_count": 30,
+      "upcoming_auction_reserve_price_last_or_current": 249825000
+    },
+    "progress": {
+      "due_amount": 22296151073,
+      "gross_due_amount": 22335423739,
+      "prior_fy_actualized_amount": 39272666,
+      "net_due_amount": 22296151073,
+      "target_amount": 21340136572,
+      "full_year_target_amount": 21340136572,
+      "achieved_amount": 7837131626,
+      "recoverable_based_on_target": 13503004946,
+      "recoverable_based_on_due": 14466799532.5,
+      "recoverable_based_on_gross_due": 14459019447,
+      "recoverable_based_on_net_due": 14466799532.5,
+      "recoverable_amount": 14466799532.5,
+      "target_achieved_percentage": 36.72,
+      "due_achieved_percentage": 35.15
+    }
+  },
+  "LSM": {
+    "auctioned_installments": {
+      "due_amount": 0,
+      "gross_due_amount": 0,
+      "paid_amount": 0,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 0,
+      "recoverable_based_on_due": 0,
+      "recoverable_based_on_gross_due": 0,
+      "recoverable_based_on_net_due": 0,
+      "recoverable_amount": 0
+    },
+    "royalty_contract_installments": {
+      "due_amount": 0,
+      "gross_due_amount": 0,
+      "paid_amount": 0,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 0,
+      "recoverable_based_on_due": 0,
+      "recoverable_based_on_gross_due": 0,
+      "recoverable_based_on_net_due": 0,
+      "recoverable_amount": 0
+    },
+    "chalan_entries": {
+      "due_amount": 7311560679,
+      "gross_due_amount": 7311560679,
+      "paid_amount": 7299986939,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 7311560679,
+      "recoverable_based_on_due": 9319960,
+      "recoverable_based_on_gross_due": 11573740,
+      "recoverable_based_on_net_due": 9319960,
+      "recoverable_amount": 9319960
+    },
+    "dangling_payments": {
+      "paid_amount": 0
+    },
+    "bank_guarantees": {
+      "total_amount": 18326671508,
+      "invoked_amount": 0
+    },
+    "security_deposits": {
+      "total_amount": 0,
+      "forfeited_amount": 0
+    },
+    "blocks": {
+      "granted_count": 0,
+      "vacant_count": 0,
+      "extension_count": 0,
+      "upcoming_auction_count": 0,
+      "upcoming_auction_reserve_price_last_or_current": 0
+    },
+    "progress": {
+      "due_amount": 7311560679,
+      "gross_due_amount": 7311560679,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 7311560679,
+      "target_amount": 51872232565,
+      "full_year_target_amount": 51872232565,
+      "achieved_amount": 7299986939,
+      "recoverable_based_on_target": 44572245626,
+      "recoverable_based_on_due": 9319960,
+      "recoverable_based_on_gross_due": 11573740,
+      "recoverable_based_on_net_due": 9319960,
+      "recoverable_amount": 9319960,
+      "target_achieved_percentage": 14.07,
+      "due_achieved_percentage": 99.84
+    }
+  },
+  "MM": {
+    "auctioned_installments": {
+      "due_amount": 55610173714,
+      "gross_due_amount": 56502059476,
+      "paid_amount": 16771734034,
+      "prior_fy_actualized_amount": 891885762,
+      "net_due_amount": 55610173714,
+      "recoverable_based_on_due": 38972927214,
+      "recoverable_based_on_gross_due": 38838439680,
+      "recoverable_based_on_net_due": 38972927214,
+      "recoverable_amount": 38972927214
+    },
+    "royalty_contract_installments": {
+      "due_amount": 0,
+      "gross_due_amount": 0,
+      "paid_amount": 0,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 0,
+      "recoverable_based_on_due": 0,
+      "recoverable_based_on_gross_due": 0,
+      "recoverable_based_on_net_due": 0,
+      "recoverable_amount": 0
+    },
+    "chalan_entries": {
+      "due_amount": 993611347,
+      "gross_due_amount": 993611347,
+      "paid_amount": 1030621347,
+      "prior_fy_actualized_amount": 0,
+      "net_due_amount": 993611347,
+      "recoverable_based_on_due": 315000,
+      "recoverable_based_on_gross_due": 0,
+      "recoverable_based_on_net_due": 315000,
+      "recoverable_amount": 315000
+    },
+    "dangling_payments": {
+      "paid_amount": 845415716
+    },
+    "bank_guarantees": {
+      "total_amount": 0,
+      "invoked_amount": 0
+    },
+    "security_deposits": {
+      "total_amount": 0,
+      "forfeited_amount": 0
+    },
+    "blocks": {
+      "granted_count": 467,
+      "vacant_count": 39,
+      "extension_count": 0,
+      "upcoming_auction_count": 12,
+      "upcoming_auction_reserve_price_last_or_current": 1231450000
+    },
+    "progress": {
+      "due_amount": 56603785061,
+      "gross_due_amount": 57495670823,
+      "prior_fy_actualized_amount": 891885762,
+      "net_due_amount": 56603785061,
+      "target_amount": 41841333805,
+      "full_year_target_amount": 41841333805,
+      "achieved_amount": 18647771097,
+      "recoverable_based_on_target": 23193562708,
+      "recoverable_based_on_due": 38973242214,
+      "recoverable_based_on_gross_due": 37956013964,
+      "recoverable_based_on_net_due": 38973242214,
+      "recoverable_amount": 38973242214,
+      "target_achieved_percentage": 44.57,
+      "due_achieved_percentage": 32.94
+    }
+  },
+  "overall_progress": {
+    "due_amount": 86211496813,
+    "gross_due_amount": 87142655241,
+    "prior_fy_actualized_amount": 931158428,
+    "net_due_amount": 86211496813,
+    "target_amount": 115053702942,
+    "full_year_target_amount": 115053702942,
+    "achieved_amount": 33784889662,
+    "recoverable_based_on_target": 81268813280,
+    "recoverable_based_on_due": 53449361706.5,
+    "recoverable_based_on_gross_due": 52426607151,
+    "recoverable_based_on_net_due": 53449361706.5,
+    "recoverable_amount": 53449361706.5,
+    "target_achieved_percentage": 29.36,
+    "due_achieved_percentage": 39.19
+  },
+  "target_proration": {
+    "applied": false,
+    "factor": null,
+    "days_in_range": null,
+    "days_in_fiscal_year": null,
+    "date_filter_after": null,
+    "date_filter_before": null
+  },
+  "bank_guarantees": {
+    "total_amount": 18326671508,
+    "invoked_amount": 0
+  },
+  "security_deposits": {
+    "total_amount": 0,
+    "forfeited_amount": 0
+  },
+  "blocks": {
+    "granted_count": 727,
+    "vacant_count": 147,
+    "extension_count": 0,
+    "upcoming_auction_count": 42,
+    "upcoming_auction_reserve_price_last_or_current": 1481275000
+  }
+}

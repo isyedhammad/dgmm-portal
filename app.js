@@ -437,7 +437,21 @@ document.addEventListener("DOMContentLoaded", () => {
       search: "",
       page: 1,
       pageSize: 15
-    }
+    },
+
+    // Cadastre Division & Registry Intelligence
+    cadastre: {
+      mode: "concessions",     // "concessions" | "applications"
+      branch: "ALL",          // "ALL" | "LSM" | "SSM"
+      status: "ALL",
+      district: "ALL",
+      search: "",
+      page: 1,
+      pageSize: 15
+    },
+
+    // Spatial Map Layer
+    mapLayer: "cadastre"
   };
 
   // -------------------------------------------------------------
@@ -455,6 +469,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   applySavedConcessionEdits();
   initSidebar();
+  initCadastreListeners();
   initRulesTab();
   initModal();
   populateDropdowns();
@@ -543,6 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tabMeta = {
       "tab-overview": { section: "Executive Overview", title: "Overview" },
+      "tab-cadastre": { section: "Cadastre Intelligence", title: "Cadastre" },
       "tab-admin": { section: "Administration & Establishment", title: "Administration" },
       "tab-lsm": { section: "Mineral Operations", title: "Large-Scale" },
       "tab-sma": { section: "Mineral Operations", title: "Small-Scale" },
@@ -1608,6 +1624,9 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "tab-inspections":
         renderInspections();
+        break;
+      case "tab-cadastre":
+        renderCadastreRegistry();
         break;
     }
   }
@@ -3272,6 +3291,11 @@ document.addEventListener("DOMContentLoaded", () => {
   let activeMineralFilter = "ALL";
   let activeDivisionFilter = "ALL";
 
+  // -------------------------------------------------------------
+  // SPATIAL GIS MINERAL MAP & CADASTRE MULTIPOLYGON RENDERER
+  // -------------------------------------------------------------
+  let cadastreGeoJsonLayer = null;
+
   function renderMap() {
     if (!window.L) return;
     const mapContainer = document.getElementById("punjabGisMap");
@@ -3293,6 +3317,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
       polygonLayersGroup = L.layerGroup().addTo(mapInstance);
 
+      // Listeners for Cadastre Layer Switcher
+      document.getElementById("btnLayerCadastreBlocks")?.addEventListener("click", () => {
+        state.mapLayer = "cadastre";
+        document.querySelectorAll(".map-layer-selector-bar .layer-pill").forEach(p => p.classList.remove("active"));
+        document.getElementById("btnLayerCadastreBlocks")?.classList.add("active");
+        renderMapPolygons(true);
+      });
+
+      document.getElementById("btnLayerConcessions")?.addEventListener("click", () => {
+        state.mapLayer = "concessions";
+        document.querySelectorAll(".map-layer-selector-bar .layer-pill").forEach(p => p.classList.remove("active"));
+        document.getElementById("btnLayerConcessions")?.classList.add("active");
+        renderMapPolygons(true);
+      });
+
+      document.getElementById("btnLayerUpcomingAuctions")?.addEventListener("click", () => {
+        state.mapLayer = "upcoming";
+        document.querySelectorAll(".map-layer-selector-bar .layer-pill").forEach(p => p.classList.remove("active"));
+        document.getElementById("btnLayerUpcomingAuctions")?.classList.add("active");
+        renderMapPolygons(true);
+      });
+
       // Listeners for dropdowns
       document.getElementById("mapDivisionFilter")?.addEventListener("change", (e) => {
         activeDivisionFilter = e.target.value;
@@ -3307,6 +3353,9 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("btnResetMapView")?.addEventListener("click", () => {
         activeMineralFilter = "ALL";
         activeDivisionFilter = "ALL";
+        state.mapLayer = "cadastre";
+        document.querySelectorAll(".map-layer-selector-bar .layer-pill").forEach(p => p.classList.remove("active"));
+        document.getElementById("btnLayerCadastreBlocks")?.classList.add("active");
         const minSel = document.getElementById("mapMineralFilter");
         if (minSel) minSel.value = "ALL";
         const divSel = document.getElementById("mapDivisionFilter");
@@ -3326,6 +3375,59 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function populateMineralLegend() {
     const legendContainer = document.getElementById("mapMineralLegendList");
+    if (!legendContainer) return;
+
+    if (state.mapLayer === "cadastre" || state.mapLayer === "upcoming") {
+      const geoData = (window.DGM_DATA && window.DGM_DATA.cadastreBlocksGeoJson) || { features: [] };
+      const upcomingCount = geoData.features.filter(f => f.properties.isUpcoming).length;
+      const regularCount = geoData.features.length - upcomingCount;
+
+      legendContainer.innerHTML = `
+        <div class="map-legend-item ${state.mapLayer === 'upcoming' ? 'active' : ''}" id="legendRowUpcoming">
+          <div class="legend-item-left">
+            <span class="legend-color-dot" style="background: #F59E0B; border: 1.5px solid #B45309;"></span>
+            <span style="font-weight: 700; color: var(--text-main);">Upcoming Auction Blocks</span>
+          </div>
+          <div class="legend-item-meta">
+            <span class="legend-badge-count" style="background: #FEF3C7; color: #B45309; font-weight:800;">${upcomingCount}</span>
+            <span class="legend-acreage">ERP Rs 1.48B</span>
+          </div>
+        </div>
+        <div class="map-legend-item ${state.mapLayer === 'cadastre' ? 'active' : ''}" id="legendRowActiveBlocks">
+          <div class="legend-item-left">
+            <span class="legend-color-dot" style="background: #10B981; border: 1.5px solid #06462A;"></span>
+            <span style="font-weight: 700; color: var(--text-main);">Active Cadastre Survey Blocks</span>
+          </div>
+          <div class="legend-item-meta">
+            <span class="legend-badge-count" style="background: #ECFDF5; color: #065F46; font-weight:800;">${regularCount}</span>
+            <span class="legend-acreage">MultiPolygon</span>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("legendRowUpcoming")?.addEventListener("click", () => {
+        state.mapLayer = state.mapLayer === "upcoming" ? "cadastre" : "upcoming";
+        document.querySelectorAll(".map-layer-selector-bar .layer-pill").forEach(p => p.classList.remove("active"));
+        if (state.mapLayer === "upcoming") {
+          document.getElementById("btnLayerUpcomingAuctions")?.classList.add("active");
+        } else {
+          document.getElementById("btnLayerCadastreBlocks")?.classList.add("active");
+        }
+        populateMineralLegend();
+        renderMapPolygons(true);
+      });
+
+      document.getElementById("legendRowActiveBlocks")?.addEventListener("click", () => {
+        state.mapLayer = "cadastre";
+        document.querySelectorAll(".map-layer-selector-bar .layer-pill").forEach(p => p.classList.remove("active"));
+        document.getElementById("btnLayerCadastreBlocks")?.classList.add("active");
+        populateMineralLegend();
+        renderMapPolygons(true);
+      });
+
+      return;
+    }
+
     const legendData = (window.DGM_DATA && window.DGM_DATA.mineralLegend) || [];
     const minSelect = document.getElementById("mapMineralFilter");
 
@@ -3338,45 +3440,160 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    if (legendContainer && legendContainer.children.length === 0) {
-      legendContainer.innerHTML = legendData.map(item => `
-        <div class="map-legend-item" data-category="${item.category}">
-          <div class="legend-item-left">
-            <span class="legend-color-dot" style="background: ${item.color}; border: 1.5px solid ${item.stroke};"></span>
-            <span style="font-weight: 600; color: var(--text-main);">${item.label}</span>
-          </div>
-          <div class="legend-item-meta">
-            <span class="legend-badge-count">${item.count}</span>
-            <span class="legend-acreage">${Math.round(item.totalArea).toLocaleString()} ac</span>
-          </div>
+    legendContainer.innerHTML = legendData.map(item => `
+      <div class="map-legend-item" data-category="${item.category}">
+        <div class="legend-item-left">
+          <span class="legend-color-dot" style="background: ${item.color}; border: 1.5px solid ${item.stroke};"></span>
+          <span style="font-weight: 600; color: var(--text-main);">${item.label}</span>
         </div>
-      `).join("");
+        <div class="legend-item-meta">
+          <span class="legend-badge-count">${item.count}</span>
+          <span class="legend-acreage">${Math.round(item.totalArea).toLocaleString()} ac</span>
+        </div>
+      </div>
+    `).join("");
 
-      legendContainer.querySelectorAll(".map-legend-item").forEach(itemEl => {
-        itemEl.addEventListener("click", () => {
-          const cat = itemEl.getAttribute("data-category");
-          if (activeMineralFilter === cat) {
-            activeMineralFilter = "ALL";
-            itemEl.classList.remove("active");
-          } else {
-            activeMineralFilter = cat;
-            legendContainer.querySelectorAll(".map-legend-item").forEach(el => el.classList.remove("active"));
-            itemEl.classList.add("active");
-          }
-          const minSel = document.getElementById("mapMineralFilter");
-          if (minSel) minSel.value = activeMineralFilter;
-          renderMapPolygons(true);
-        });
+    legendContainer.querySelectorAll(".map-legend-item").forEach(itemEl => {
+      itemEl.addEventListener("click", () => {
+        const cat = itemEl.getAttribute("data-category");
+        if (activeMineralFilter === cat) {
+          activeMineralFilter = "ALL";
+          itemEl.classList.remove("active");
+        } else {
+          activeMineralFilter = cat;
+          legendContainer.querySelectorAll(".map-legend-item").forEach(el => el.classList.remove("active"));
+          itemEl.classList.add("active");
+        }
+        const minSel = document.getElementById("mapMineralFilter");
+        if (minSel) minSel.value = activeMineralFilter;
+        renderMapPolygons(true);
       });
-    }
+    });
   }
 
   function renderMapPolygons(autoZoom = false) {
     if (!mapInstance || !polygonLayersGroup) return;
     polygonLayersGroup.clearLayers();
 
-    const allPolygons = (window.DGM_DATA && window.DGM_DATA.mapPolygons) || [];
     const hoverCard = document.getElementById("mapHoverInfoCard");
+    const badgeTotal = document.getElementById("mapLegendTotalBadge");
+    const bounds = L.latLngBounds();
+    const canvasRenderer = L.canvas({ padding: 0.5 });
+
+    // Mode A: Official Cadastre MultiPolygon Blocks (825 Features)
+    if (state.mapLayer === "cadastre" || state.mapLayer === "upcoming") {
+      populateMineralLegend();
+      const geoCollection = (window.DGM_DATA && window.DGM_DATA.cadastreBlocksGeoJson) || { features: [] };
+      let features = geoCollection.features || [];
+
+      if (state.mapLayer === "upcoming") {
+        features = features.filter(f => f.properties && f.properties.isUpcoming);
+      }
+
+      if (activeDivisionFilter !== "ALL") {
+        features = features.filter(f => {
+          const dist = (f.properties && f.properties.district) || "";
+          return dist.toLowerCase().includes(activeDivisionFilter.toLowerCase());
+        });
+      }
+
+      if (badgeTotal) {
+        badgeTotal.textContent = `${features.length} of 825 Cadastre Blocks`;
+      }
+
+      features.forEach(f => {
+        if (!f.geometry || !f.geometry.coordinates) return;
+        const props = f.properties || {};
+        const isUp = !!props.isUpcoming;
+
+        // Leaflet geoJSON handles MultiPolygon natively
+        const geoLayer = L.geoJSON(f, {
+          renderer: canvasRenderer,
+          style: {
+            color: isUp ? "#B45309" : "#0A6238",
+            fillColor: isUp ? "#F59E0B" : "#10B981",
+            weight: isUp ? 2.5 : 1.3,
+            fillOpacity: isUp ? 0.72 : 0.45,
+            smoothFactor: 1
+          }
+        });
+
+        geoLayer.on("mouseover", () => {
+          geoLayer.setStyle({ weight: 3.5, fillOpacity: 0.88, color: "#FFFFFF" });
+          if (hoverCard) {
+            const badge = document.getElementById("hoverMineralBadge");
+            if (badge) {
+              badge.textContent = isUp ? "Upcoming Auction" : "Cadastre Auction Block";
+              badge.style.background = isUp ? "#FEF3C7" : "rgba(10, 98, 56, 0.15)";
+              badge.style.color = isUp ? "#B45309" : "#0A6238";
+            }
+            const divTag = document.getElementById("hoverDivisionTag");
+            if (divTag) divTag.textContent = props.district || "Punjab Cadastre";
+            const title = document.getElementById("hoverLeaseTitle");
+            if (title) title.textContent = props.name || props.code;
+            const no = document.getElementById("hoverLeaseNo");
+            if (no) no.textContent = props.code || "N/A";
+            const lessee = document.getElementById("hoverLessee");
+            if (lessee) lessee.textContent = `Reserve: ${formatPKR(props.reservePrice || 0)}`;
+            const dist = document.getElementById("hoverDistrict");
+            if (dist) dist.textContent = props.district || "Punjab";
+            const area = document.getElementById("hoverArea");
+            if (area) area.textContent = props.aucDate1 ? (`Auction: ${props.aucDate1}`) : "Survey Zone";
+            const coords = document.getElementById("hoverCoords");
+            if (coords) coords.textContent = `Official MCIS MultiPolygon Boundary`;
+
+            hoverCard.style.display = "block";
+          }
+        });
+
+        geoLayer.on("mouseout", () => {
+          geoLayer.setStyle({
+            color: isUp ? "#B45309" : "#0A6238",
+            fillColor: isUp ? "#F59E0B" : "#10B981",
+            weight: isUp ? 2.5 : 1.3,
+            fillOpacity: isUp ? 0.72 : 0.45
+          });
+          if (hoverCard) hoverCard.style.display = "none";
+        });
+
+        geoLayer.on("click", (e) => {
+          const b = geoLayer.getBounds();
+          if (b && b.isValid()) {
+            mapInstance.fitBounds(b.pad(0.5), { maxZoom: 13 });
+          }
+          const popupHtml = `
+            <div style="font-family: inherit; font-size: 0.82rem; line-height: 1.5; min-width: 220px; color: #0F172A;">
+              <div style="font-weight: 800; font-size: 0.95rem; color: #0A6238; margin-bottom: 2px;">${props.name || 'Auction Block'}</div>
+              <div style="font-family: monospace; font-size: 0.72rem; color: #64748B; margin-bottom: 8px;">${props.code}</div>
+              <div style="margin-bottom: 4px;"><strong>District:</strong> ${props.district}</div>
+              <div style="margin-bottom: 4px;"><strong>Reserve Price:</strong> <span style="color: #059669; font-weight: 700;">${formatPKR(props.reservePrice || 0)}</span></div>
+              <div style="margin-bottom: 4px;"><strong>1st Auction:</strong> ${props.aucDate1 || 'N/A'}</div>
+              <div style="margin-bottom: 4px;"><strong>2nd Auction:</strong> ${props.aucDate2 || 'N/A'}</div>
+              <div style="margin-bottom: 4px;"><strong>3rd Auction:</strong> ${props.aucDate3 || 'N/A'}</div>
+              <div style="margin-top: 8px;">
+                ${isUp 
+                  ? '<span style="background: #FEF3C7; color: #B45309; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;"><i class="fa-solid fa-gavel"></i> Upcoming Auction</span>'
+                  : '<span style="background: #ECFDF5; color: #047857; padding: 3px 8px; border-radius: 4px; font-weight: 700; font-size: 0.72rem;"><i class="fa-solid fa-check"></i> Active Cadastre Block</span>'}
+              </div>
+            </div>
+          `;
+          geoLayer.bindPopup(popupHtml).openPopup();
+        });
+
+        geoLayer.addTo(polygonLayersGroup);
+        const b = geoLayer.getBounds();
+        if (b && b.isValid()) bounds.extend(b);
+      });
+
+      if (autoZoom && bounds.isValid()) {
+        mapInstance.fitBounds(bounds.pad(0.08));
+      }
+      return;
+    }
+
+    // Mode B: Concession Boundaries (1,260 Polygons)
+    populateMineralLegend();
+    const allPolygons = (window.DGM_DATA && window.DGM_DATA.mapPolygons) || [];
 
     const filtered = allPolygons.filter(c => {
       if (activeDivisionFilter !== "ALL" && c.division !== activeDivisionFilter) return false;
@@ -3388,13 +3605,9 @@ document.addEventListener("DOMContentLoaded", () => {
       return true;
     });
 
-    const badgeTotal = document.getElementById("mapLegendTotalBadge");
     if (badgeTotal) {
       badgeTotal.textContent = `${filtered.length} of ${allPolygons.length} Polygons`;
     }
-
-    const bounds = L.latLngBounds();
-    const canvasRenderer = L.canvas({ padding: 0.5 });
 
     filtered.forEach(c => {
       if (!c.coords || c.coords.length < 3) return;
@@ -4896,5 +5109,384 @@ function renderInspections() {
       return `Rs ${(num / 1e6).toFixed(2)}M`;
     }
     return `Rs ${num.toLocaleString("en-PK")}`;
+  }
+
+// -------------------------------------------------------------
+  // OFFICIAL CADASTRE REGISTRY EXPLORER (1,676 Titles & 1,434 Apps)
+  // -------------------------------------------------------------
+  let cadastreFiltersPopulated = false;
+
+  function populateCadastreFilters(dataset, isConc) {
+    const statusSelect = document.getElementById("cadastreStatusSelect");
+    const distSelect = document.getElementById("cadastreDistrictSelect");
+
+    if (statusSelect) {
+      const statuses = [...new Set(dataset.map(d => d.status).filter(Boolean))].sort();
+      statusSelect.innerHTML = '<option value="ALL">All Statuses</option>' + statuses.map(s => `<option value="${s}">${s}</option>`).join('');
+      statusSelect.value = state.cadastre.status || "ALL";
+    }
+
+    if (distSelect) {
+      const districts = [...new Set(dataset.map(d => d.dist).filter(Boolean))].sort();
+      distSelect.innerHTML = '<option value="ALL">All Districts</option>' + districts.map(d => `<option value="${d}">${d}</option>`).join('');
+      distSelect.value = state.cadastre.district || "ALL";
+    }
+  }
+
+  function renderCadastreRegistry() {
+    const concs = (window.DGM_DATA && window.DGM_DATA.cadastreConcessions) || [];
+    const apps = (window.DGM_DATA && window.DGM_DATA.cadastreApplications) || [];
+    const statsConc = (window.DGM_DATA && window.DGM_DATA.cadastreConcessionsSummary) || {};
+    const statsApp = (window.DGM_DATA && window.DGM_DATA.cadastreApplicationsSummary) || {};
+
+    const mode = state.cadastre.mode || 'concessions';
+    const isConc = mode === 'concessions';
+    const rawList = isConc ? concs : apps;
+
+    // Toggle button active classes
+    const btnConc = document.getElementById("btnCadastreModeConcessions");
+    const btnApp = document.getElementById("btnCadastreModeApplications");
+    if (btnConc) btnConc.classList.toggle("active", isConc);
+    if (btnApp) btnApp.classList.toggle("active", !isConc);
+
+    // Update count badges
+    const concCountEl = document.getElementById("cadastreConcessionsTotalCount");
+    if (concCountEl) concCountEl.textContent = concs.length.toLocaleString();
+    const appCountEl = document.getElementById("cadastreApplicationsTotalCount");
+    if (appCountEl) appCountEl.textContent = apps.length.toLocaleString();
+
+    // Render Dynamic Stat Strip
+    const statStrip = document.getElementById("cadastreStatStrip");
+    if (statStrip) {
+      if (isConc) {
+        statStrip.innerHTML = `
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #0A6238;">${(statsConc.total || concs.length).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Total Concessions</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #059669;">${(statsConc.byStatus?.Valid || 994).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Valid Titles</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #2563EB;">${(statsConc.byType?.ML || 1038).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Mining Leases</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #D97706;">${(statsConc.byType?.PL || 578).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Prospecting Lic</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #DC2626;">${(statsConc.byStatus?.Cancelled || 521).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Cancelled</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #7C3AED;">${(statsConc.byStatus?.Converted || 102).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Converted</div>
+          </div>
+        `;
+      } else {
+        statStrip.innerHTML = `
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #0A6238;">${(statsApp.total || apps.length).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Total Applications</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #2563EB;">${(statsApp.byStatus?.Filed || 1217).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Filed Applications</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #059669;">${(statsApp.byStatus?.Granted || 53).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Granted</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #D97706;">${(statsApp.byBranch?.SSM || 1120).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Small Scale Mining</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #4F46E5;">${(statsApp.byBranch?.LSM || 314).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">Large Scale Mining</div>
+          </div>
+          <div class="cadastre-stat-pill-box">
+            <div class="cadastre-stat-pill-num" style="color: #059669;">${(63).toLocaleString()}</div>
+            <div class="cadastre-stat-pill-lbl">In Pipeline</div>
+          </div>
+        `;
+      }
+    }
+
+    // Populate filters on dataset switch
+    populateCadastreFilters(rawList, isConc);
+
+    // Apply filters
+    const q = (state.cadastre.search || '').toLowerCase();
+    const b = state.cadastre.branch || 'ALL';
+    const s = state.cadastre.status || 'ALL';
+    const d = state.cadastre.district || 'ALL';
+
+    const filtered = rawList.filter(item => {
+      if (b !== 'ALL' && item.branch !== b) return false;
+      if (s !== 'ALL' && item.status !== s) return false;
+      if (d !== 'ALL' && item.dist !== d) return false;
+      if (q) {
+        const match = (item.no && item.no.toLowerCase().includes(q)) ||
+                      (item.client && item.client.toLowerCase().includes(q)) ||
+                      (item.dist && item.dist.toLowerCase().includes(q)) ||
+                      (item.min && item.min.toLowerCase().includes(q)) ||
+                      (item.loc && item.loc.toLowerCase().includes(q));
+        if (!match) return false;
+      }
+      return true;
+    });
+
+    // Update badge counter
+    const counter = document.getElementById("cadastreCounterBadge");
+    if (counter) {
+      counter.innerHTML = `<i class="fa-solid fa-list-check"></i> Showing ${filtered.length.toLocaleString()} of ${rawList.length.toLocaleString()} ${isConc ? 'Concession Titles' : 'Applications'}`;
+    }
+
+    // Render Table Head
+    const thead = document.getElementById("cadastreTableHead");
+    if (thead) {
+      if (isConc) {
+        thead.innerHTML = `
+          <tr>
+            <th>Concession No</th>
+            <th>Client / Titleholder</th>
+            <th>Branch</th>
+            <th>District</th>
+            <th>Mineral</th>
+            <th>Type</th>
+            <th>Acreage</th>
+            <th>Grant Date</th>
+            <th>Expiry Date</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        `;
+      } else {
+        thead.innerHTML = `
+          <tr>
+            <th>Application No</th>
+            <th>Applicant Name</th>
+            <th>Branch</th>
+            <th>District</th>
+            <th>Mineral</th>
+            <th>Type</th>
+            <th>Acreage</th>
+            <th>App Date</th>
+            <th>Tracking Status</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        `;
+      }
+    }
+
+    // Pagination calculation
+    const page = state.cadastre.page || 1;
+    const pageSize = state.cadastre.pageSize || 15;
+    const totalPages = Math.ceil(filtered.length / pageSize) || 1;
+    const curPage = Math.min(Math.max(1, page), totalPages);
+    state.cadastre.page = curPage;
+
+    const startIdx = (curPage - 1) * pageSize;
+    const pageItems = filtered.slice(startIdx, startIdx + pageSize);
+
+    // Render Table Body
+    const tbody = document.getElementById("cadastreTableBody");
+    if (tbody) {
+      if (pageItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; padding: 2.5rem; color: var(--text-muted);"><i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block; opacity: 0.4;"></i>No cadastre records match the selected search criteria.</td></tr>`;
+      } else if (isConc) {
+        tbody.innerHTML = pageItems.map(item => {
+          const isLsm = item.branch === 'LSM';
+          let statusBadge = 'badge-granted';
+          if (item.status === 'Cancelled') statusBadge = 'badge-cancelled';
+          else if (item.status === 'Expired') statusBadge = 'badge-expired';
+          else if (item.status === 'Converted') statusBadge = 'badge-pending';
+          else if (item.status === 'Under Litigation') statusBadge = 'badge-litigation';
+
+          return `
+            <tr>
+              <td style="font-family: var(--font-mono, monospace); font-weight: 700; color: var(--text-main); font-size: 0.78rem;">${item.no || 'N/A'}</td>
+              <td style="font-weight: 600; color: var(--text-main); max-width: 260px;" title="${item.client}">${item.client}</td>
+              <td><span class="branch-pill ${isLsm ? 'pill-lsm' : 'pill-sma'}">${item.branch}</span></td>
+              <td>${item.dist || 'N/A'}</td>
+              <td><strong>${item.min || 'N/A'}</strong></td>
+              <td><span style="font-size: 0.75rem; color: var(--text-sub);">${item.type}</span></td>
+              <td>${(item.area || 0).toLocaleString()} ac</td>
+              <td>${item.grant || 'N/A'}</td>
+              <td>${item.exp || 'N/A'}</td>
+              <td><span class="badge-status-pill ${statusBadge}">${item.status}</span></td>
+              <td>
+                <button class="btn-table-action" onclick="window.viewCadastreItem('conc', ${item.id})" title="Inspect Official Dossier">
+                  <i class="fa-solid fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        tbody.innerHTML = pageItems.map(item => {
+          const isLsm = item.branch === 'LSM';
+          let statusBadge = 'badge-pending';
+          if (item.status === 'Granted' || item.status === 'Approved') statusBadge = 'badge-granted';
+          else if (item.status === 'Deferred') statusBadge = 'badge-expired';
+
+          return `
+            <tr>
+              <td style="font-family: var(--font-mono, monospace); font-weight: 700; color: var(--text-main); font-size: 0.78rem;">${item.no || 'N/A'}</td>
+              <td style="font-weight: 600; color: var(--text-main); max-width: 260px;" title="${item.client}">${item.client}</td>
+              <td><span class="branch-pill ${isLsm ? 'pill-lsm' : 'pill-sma'}">${item.branch}</span></td>
+              <td>${item.dist || 'N/A'}</td>
+              <td><strong>${item.min || 'N/A'}</strong></td>
+              <td><span style="font-size: 0.75rem; color: var(--text-sub);">${item.type}</span></td>
+              <td>${(item.area || 0).toLocaleString()} ac</td>
+              <td>${item.date || 'N/A'}</td>
+              <td><span style="font-size: 0.74rem; color: #0A6238; font-weight: 600;"><i class="fa-solid fa-route"></i> ${item.track || 'Scrutiny'}</span></td>
+              <td><span class="badge-status-pill ${statusBadge}">${item.status}</span></td>
+              <td>
+                <button class="btn-table-action" onclick="window.viewCadastreItem('app', ${item.id})" title="Inspect Application Dossier">
+                  <i class="fa-solid fa-eye"></i> View
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    // Update pagination info
+    const pageInfo = document.getElementById("cadastrePageInfo");
+    if (pageInfo) {
+      const endIdx = Math.min(startIdx + pageSize, filtered.length);
+      pageInfo.textContent = filtered.length > 0
+        ? `Showing ${startIdx + 1} to ${endIdx} of ${filtered.length.toLocaleString()} records (Page ${curPage} of ${totalPages})`
+        : `0 records found`;
+    }
+
+    const prevBtn = document.getElementById("btnPrevCadastre");
+    const nextBtn = document.getElementById("btnNextCadastre");
+    if (prevBtn) prevBtn.disabled = curPage <= 1;
+    if (nextBtn) nextBtn.disabled = curPage >= totalPages;
+  }
+
+  // Global helper to view cadastre item in modal
+  window.viewCadastreItem = function(type, id) {
+    let item = null;
+    if (type === 'conc') {
+      const concs = (window.DGM_DATA && window.DGM_DATA.cadastreConcessions) || [];
+      item = concs.find(c => c.id === id);
+      if (item) {
+        openConcessionModal({
+          id: 'cadastre-conc-' + item.id,
+          sr: item.id,
+          division: item.branch === 'LSM' ? 'Large Scale Mining' : 'Small Scale Mining',
+          mineral: item.min,
+          district: item.dist,
+          leaseNo: item.no,
+          lessee: item.client,
+          dateGrant: item.grant,
+          dateExpiry: item.exp,
+          area: item.area,
+          status: item.status,
+          location: item.loc,
+          mode: item.type
+        });
+      }
+    } else {
+      const apps = (window.DGM_DATA && window.DGM_DATA.cadastreApplications) || [];
+      item = apps.find(a => a.id === id);
+      if (item) {
+        openConcessionModal({
+          id: 'cadastre-app-' + item.id,
+          sr: item.id,
+          division: item.branch === 'LSM' ? 'Large Scale Mining' : 'Small Scale Mining',
+          mineral: item.min,
+          district: item.dist,
+          leaseNo: item.no,
+          lessee: item.client,
+          dateGrant: item.date,
+          dateExpiry: 'Pending Scrutiny',
+          area: item.area,
+          status: item.status,
+          location: item.loc,
+          mode: `${item.type} (Status: ${item.track || 'Scrutiny'})`
+        });
+      }
+    }
+  };
+
+  // Cadastre Event Listeners Setup
+  function initCadastreListeners() {
+    document.getElementById("btnCadastreModeConcessions")?.addEventListener("click", () => {
+      state.cadastre.mode = "concessions";
+      state.cadastre.page = 1;
+      state.cadastre.status = "ALL";
+      state.cadastre.district = "ALL";
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("btnCadastreModeApplications")?.addEventListener("click", () => {
+      state.cadastre.mode = "applications";
+      state.cadastre.page = 1;
+      state.cadastre.status = "ALL";
+      state.cadastre.district = "ALL";
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("cadastreSearchInput")?.addEventListener("input", (e) => {
+      state.cadastre.search = e.target.value.trim();
+      state.cadastre.page = 1;
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("cadastreBranchSelect")?.addEventListener("change", (e) => {
+      state.cadastre.branch = e.target.value;
+      state.cadastre.page = 1;
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("cadastreStatusSelect")?.addEventListener("change", (e) => {
+      state.cadastre.status = e.target.value;
+      state.cadastre.page = 1;
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("cadastreDistrictSelect")?.addEventListener("change", (e) => {
+      state.cadastre.district = e.target.value;
+      state.cadastre.page = 1;
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("btnResetCadastreFilters")?.addEventListener("click", () => {
+      state.cadastre.search = "";
+      state.cadastre.branch = "ALL";
+      state.cadastre.status = "ALL";
+      state.cadastre.district = "ALL";
+      state.cadastre.page = 1;
+      const inp = document.getElementById("cadastreSearchInput");
+      if (inp) inp.value = "";
+      const bSel = document.getElementById("cadastreBranchSelect");
+      if (bSel) bSel.value = "ALL";
+      const sSel = document.getElementById("cadastreStatusSelect");
+      if (sSel) sSel.value = "ALL";
+      const dSel = document.getElementById("cadastreDistrictSelect");
+      if (dSel) dSel.value = "ALL";
+      renderCadastreRegistry();
+    });
+
+    document.getElementById("btnPrevCadastre")?.addEventListener("click", () => {
+      if (state.cadastre.page > 1) {
+        state.cadastre.page--;
+        renderCadastreRegistry();
+      }
+    });
+
+    document.getElementById("btnNextCadastre")?.addEventListener("click", () => {
+      state.cadastre.page++;
+      renderCadastreRegistry();
+    });
   }
 });

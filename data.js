@@ -57058,3 +57058,5 @@ window.DGM_DATA.portalInspections = [
     "findings": "Excavation zone compliance inspected. Grant validity: 2022-01-28 00:00:00 to 2024-01-27 00:00:00. Installment due date: 06-01-2024."
   }
 ];
+
+// ===================================================================

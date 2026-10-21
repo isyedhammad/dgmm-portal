@@ -231,6 +231,17 @@
         </div>
       </div>
 
+      <!-- Cadastre Division & Registry -->
+      <button class="nav-link" data-tab="tab-cadastre" id="navBtnCadastre">
+        <div class="nav-link-content">
+          <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.12); color: #0a6238;"><i class="fa-solid fa-satellite-dish"></i></span>
+          <span>Cadastre</span>
+        </div>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-cadastre">1,676</span>
+        </div>
+      </button>
+
       <!-- Spatial Intelligence: GIS Mineral Map -->
       <button class="nav-link" data-tab="tab-map" id="navBtnMap">
         <div class="nav-link-content">
@@ -1057,6 +1068,22 @@
           </div>
 
           <!-- Split View: Mineral Legend Table + Interactive Map Viewport -->
+          <!-- Official Cadastre Spatial Layer Switcher -->
+          <div class="map-layer-selector-bar">
+            <button class="layer-pill active" id="btnLayerCadastreBlocks" data-layer="cadastre">
+              <i class="fa-solid fa-shapes"></i>
+              <span>Official Cadastre Blocks (825)</span>
+            </button>
+            <button class="layer-pill" id="btnLayerConcessions" data-layer="concessions">
+              <i class="fa-solid fa-draw-polygon"></i>
+              <span>Concession Boundaries (1,260)</span>
+            </button>
+            <button class="layer-pill" id="btnLayerUpcomingAuctions" data-layer="upcoming">
+              <i class="fa-solid fa-gavel"></i>
+              <span>Upcoming Auctions Only (42)</span>
+            </button>
+          </div>
+
           <div class="map-layout-grid">
             
             <!-- Side Panel: Interactive Mineral Legend Table -->
@@ -1109,6 +1136,255 @@
            ===================================================== -->
       <div class="tab-pane" id="tab-financials">
         
+        <!-- OFFICIAL MINING CADASTRE FISCAL INTELLIGENCE CONSOLE -->
+        <div class="cadastre-fiscal-console">
+          <div class="cadastre-fiscal-banner">
+            <div class="cadastre-banner-left">
+              <div class="cadastre-banner-emblem">
+                <i class="fa-solid fa-building-columns"></i>
+              </div>
+              <div>
+                <div class="cadastre-banner-badge-row">
+                  <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals</span>
+                  <span class="cadastre-badge-live"><i class="fa-solid fa-circle"></i> Authenticated Cadastre API Snapshot</span>
+                </div>
+                <h2 class="cadastre-banner-title">Punjab Mining Cadastre Fiscal Intelligence Console</h2>
+                <p class="cadastre-banner-desc">Audited provincial revenue position, assessment vs net dues, and statutory bank guarantees from the official Punjab Mining Cadastre System (MCIS)</p>
+              </div>
+            </div>
+            <div class="cadastre-banner-actions">
+              <a href="https://mining-cadastre.geosoftsolution.com/dashboard/home" target="_blank" rel="noopener noreferrer" class="btn-cadastre-ext" title="Launch Official Mining Cadastre Portal">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                <span>Cadastre Portal</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Top Rollup KPI Row (5 Cards) -->
+          <div class="cadastre-kpi-grid">
+            <div class="cadastre-kpi-card">
+              <div class="cadastre-kpi-label"><i class="fa-solid fa-bullseye"></i> Fiscal Year Target</div>
+              <div class="cadastre-kpi-value">PKR 115.05B</div>
+              <div class="cadastre-kpi-detail">Provincial target (LSM, MM, SSM)</div>
+              <div class="cadastre-kpi-subval">Rs 115,053,702,942</div>
+            </div>
+            <div class="cadastre-kpi-card">
+              <div class="cadastre-kpi-label"><i class="fa-solid fa-file-invoice-dollar"></i> Net Dues Assessed</div>
+              <div class="cadastre-kpi-value">PKR 86.21B</div>
+              <div class="cadastre-kpi-detail">Legally enforceable demand</div>
+              <div class="cadastre-kpi-subval">Rs 86,211,496,813</div>
+            </div>
+            <div class="cadastre-kpi-card cadastre-kpi-highlight">
+              <div class="cadastre-kpi-label"><i class="fa-solid fa-hand-holding-dollar"></i> Total Realized / Paid</div>
+              <div class="cadastre-kpi-value cadastre-val-realized">PKR 33.78B</div>
+              <div class="cadastre-kpi-detail"><strong>39.19% of Net Due</strong> • 29.36% Target</div>
+              <div class="cadastre-kpi-subval">Rs 33,784,889,662</div>
+            </div>
+            <div class="cadastre-kpi-card">
+              <div class="cadastre-kpi-label"><i class="fa-solid fa-scale-unbalanced"></i> Recoverable Balance</div>
+              <div class="cadastre-kpi-value cadastre-val-rec">PKR 53.45B</div>
+              <div class="cadastre-kpi-detail">Net outstanding enforceable due</div>
+              <div class="cadastre-kpi-subval">Rs 53,449,361,706</div>
+            </div>
+            <div class="cadastre-kpi-card cadastre-kpi-guarantee">
+              <div class="cadastre-kpi-label"><i class="fa-solid fa-vault"></i> Bank Guarantees Held</div>
+              <div class="cadastre-kpi-value cadastre-val-sec">PKR 18.33B</div>
+              <div class="cadastre-kpi-detail">100% Large Scale Mining (Uninvoked)</div>
+              <div class="cadastre-kpi-subval">Rs 18,326,671,508</div>
+            </div>
+          </div>
+
+          <!-- Dual Progress Meter Bar -->
+          <div class="cadastre-progress-container">
+            <div class="cadastre-progress-box">
+              <div class="cadastre-progress-label-row">
+                <span><i class="fa-solid fa-chart-line"></i> Annual Target Achievement (PKR 33.78B / 115.05B)</span>
+                <span class="cadastre-progress-pct">29.36%</span>
+              </div>
+              <div class="cadastre-progress-track">
+                <div class="cadastre-progress-fill target-fill" style="width: 29.36%;"></div>
+              </div>
+              <div class="cadastre-progress-subtext">Remaining target gap: PKR 81.27 Billion across provincial formations</div>
+            </div>
+            <div class="cadastre-progress-box">
+              <div class="cadastre-progress-label-row">
+                <span><i class="fa-solid fa-circle-check"></i> Net Due Collection Efficiency (PKR 33.78B / 86.21B)</span>
+                <span class="cadastre-progress-pct highlight-pct">39.19%</span>
+              </div>
+              <div class="cadastre-progress-track">
+                <div class="cadastre-progress-fill due-fill" style="width: 39.19%;"></div>
+              </div>
+              <div class="cadastre-progress-subtext">Outstanding recoverable balance against assessed dues: PKR 53.45 Billion</div>
+            </div>
+          </div>
+
+          <!-- Three Branch Deep Dive Cards (LSM, MM, SSM) -->
+          <div class="cadastre-branches-grid">
+            <!-- LSM Card -->
+            <div class="cadastre-branch-card branch-lsm">
+              <div class="cadastre-branch-header">
+                <div class="cadastre-branch-title-wrap">
+                  <span class="branch-pill pill-lsm">LSM</span>
+                  <div>
+                    <h4 class="cadastre-branch-name">Large Scale Mining</h4>
+                    <div class="cadastre-branch-sub">Cement &amp; Strategic Concessions</div>
+                  </div>
+                </div>
+                <span class="cadastre-branch-badge badge-top-perf"><i class="fa-solid fa-trophy"></i> 99.84% Dues Efficiency</span>
+              </div>
+              <div class="cadastre-branch-stats">
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Statutory Fiscal Target</span>
+                  <span class="stat-val">PKR 51.87 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Net Due Assessed</span>
+                  <span class="stat-val">PKR 7.31 Billion</span>
+                </div>
+                <div class="branch-stat-row highlight-row">
+                  <span class="stat-lbl">Total Realized / Paid</span>
+                  <span class="stat-val val-green">PKR 7.30 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Recoverable Balance</span>
+                  <span class="stat-val val-muted">PKR 9.32 Million</span>
+                </div>
+                <div class="branch-stat-row guarantee-row">
+                  <span class="stat-lbl"><i class="fa-solid fa-lock"></i> Statutory Bank Guarantees</span>
+                  <span class="stat-val val-gold">PKR 18.33 Billion</span>
+                </div>
+              </div>
+              <div class="cadastre-branch-meta">
+                <span><i class="fa-solid fa-receipt"></i> 100% Paid via Chalan</span>
+                <span><i class="fa-solid fa-file-contract"></i> 140 Concessions</span>
+              </div>
+            </div>
+
+            <!-- MM Card -->
+            <div class="cadastre-branch-card branch-mm">
+              <div class="cadastre-branch-header">
+                <div class="cadastre-branch-title-wrap">
+                  <span class="branch-pill pill-mm">MM</span>
+                  <div>
+                    <h4 class="cadastre-branch-name">Minor Minerals</h4>
+                    <div class="cadastre-branch-sub">Sand, Gravel, Stone &amp; Bajri</div>
+                  </div>
+                </div>
+                <span class="cadastre-branch-badge"><i class="fa-solid fa-gavel"></i> 467 Active Blocks</span>
+              </div>
+              <div class="cadastre-branch-stats">
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Statutory Fiscal Target</span>
+                  <span class="stat-val">PKR 41.84 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Net Due Assessed</span>
+                  <span class="stat-val">PKR 56.60 Billion</span>
+                </div>
+                <div class="branch-stat-row highlight-row">
+                  <span class="stat-lbl">Total Realized / Paid</span>
+                  <span class="stat-val val-green">PKR 18.65 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Auction Installments Paid</span>
+                  <span class="stat-val">PKR 16.77B (Due: 55.61B)</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Chalans &amp; Dangling</span>
+                  <span class="stat-val">PKR 1.88 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Recoverable Balance</span>
+                  <span class="stat-val val-red">PKR 38.97 Billion</span>
+                </div>
+              </div>
+              <div class="cadastre-branch-meta">
+                <span><i class="fa-solid fa-check"></i> 467 Granted Blocks</span>
+                <span><i class="fa-solid fa-tag"></i> 12 Upcoming (Rs 1.23B ERP)</span>
+              </div>
+            </div>
+
+            <!-- SSM Card -->
+            <div class="cadastre-branch-card branch-ssm">
+              <div class="cadastre-branch-header">
+                <div class="cadastre-branch-title-wrap">
+                  <span class="branch-pill pill-sma">SSM</span>
+                  <div>
+                    <h4 class="cadastre-branch-name">Small Scale Mining</h4>
+                    <div class="cadastre-branch-sub">Coal, Silica Sand, Fireclay &amp; Salt</div>
+                  </div>
+                </div>
+                <span class="cadastre-branch-badge"><i class="fa-solid fa-handshake"></i> Rs 5.06B Royalties</span>
+              </div>
+              <div class="cadastre-branch-stats">
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Statutory Fiscal Target</span>
+                  <span class="stat-val">PKR 21.34 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Net Due Assessed</span>
+                  <span class="stat-val">PKR 22.30 Billion</span>
+                </div>
+                <div class="branch-stat-row highlight-row">
+                  <span class="stat-lbl">Total Realized / Paid</span>
+                  <span class="stat-val val-green">PKR 7.84 Billion</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Royalty Contracts Paid</span>
+                  <span class="stat-val">PKR 5.06B (Due: 9.36B)</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Auction Installments Paid</span>
+                  <span class="stat-val">PKR 2.55B (Due: 12.70B)</span>
+                </div>
+                <div class="branch-stat-row">
+                  <span class="stat-lbl">Recoverable Balance</span>
+                  <span class="stat-val val-red">PKR 14.47 Billion</span>
+                </div>
+              </div>
+              <div class="cadastre-branch-meta">
+                <span><i class="fa-solid fa-check"></i> 260 Granted Blocks</span>
+                <span><i class="fa-solid fa-tag"></i> 30 Upcoming (Rs 249.8M ERP)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Minor Mineral Cadastre Auction Blocks Bar -->
+          <div class="cadastre-blocks-banner">
+            <div class="blocks-banner-item">
+              <i class="fa-solid fa-cubes"></i>
+              <div>
+                <div class="blocks-num">874</div>
+                <div class="blocks-label">Total Monitored Blocks</div>
+              </div>
+            </div>
+            <div class="blocks-divider"></div>
+            <div class="blocks-banner-item">
+              <i class="fa-solid fa-circle-check" style="color: #10B981;"></i>
+              <div>
+                <div class="blocks-num">727</div>
+                <div class="blocks-label">Granted / Active Blocks (83.2%)</div>
+              </div>
+            </div>
+            <div class="blocks-divider"></div>
+            <div class="blocks-banner-item">
+              <i class="fa-solid fa-circle-notch" style="color: #94A3B8;"></i>
+              <div>
+                <div class="blocks-num">147</div>
+                <div class="blocks-label">Vacant Blocks (16.8%)</div>
+              </div>
+            </div>
+            <div class="blocks-divider"></div>
+            <div class="blocks-banner-item">
+              <i class="fa-solid fa-gavel" style="color: #F59E0B;"></i>
+              <div>
+                <div class="blocks-num">42 Blocks</div>
+                <div class="blocks-label">Upcoming Auctions (ERP: PKR 1.48B)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div class="kpi-grid">
           <div class="kpi-card">
             <div>
@@ -1589,6 +1865,118 @@
             <div class="pagination-btns">
               <button class="btn-page" id="btnPrevInspections"><i class="fa-solid fa-chevron-left"></i> Previous</button>
               <button class="btn-page" id="btnNextInspections">Next <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =====================================================
+           TAB: CADASTRE DIVISION & REGISTRY INTELLIGENCE
+           ===================================================== -->
+      <div class="tab-pane" id="tab-cadastre">
+        
+        <!-- Official Cadastre Hero Banner -->
+        <div class="cadastre-fiscal-banner" style="margin-bottom: 1.25rem;">
+          <div class="cadastre-banner-left">
+            <div class="cadastre-banner-emblem">
+              <i class="fa-solid fa-satellite-dish"></i>
+            </div>
+            <div>
+              <div class="cadastre-banner-badge-row">
+                <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Punjab Mining Cadastre System</span>
+                <span class="cadastre-badge-live"><i class="fa-solid fa-circle"></i> Authenticated Cadastre Database</span>
+              </div>
+              <h2 class="cadastre-banner-title">Directorate General of Mines &amp; Minerals — Official Cadastre Registry</h2>
+              <p class="cadastre-banner-desc">Complete provincial database of 1,676 Concession Titles, 1,434 Concession Applications, and 825 Surveyed MultiPolygon Auction Blocks synchronized directly from MCIS.</p>
+            </div>
+          </div>
+          <div class="cadastre-banner-actions">
+            <a href="https://mining-cadastre.geosoftsolution.com/dashboard/home" target="_blank" rel="noopener noreferrer" class="btn-cadastre-ext">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Launch Cadastre Portal</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Mode Selector: Concessions vs Applications -->
+        <div class="cadastre-mode-bar">
+          <button class="cadastre-mode-btn active" id="btnCadastreModeConcessions" data-cadastre-mode="concessions">
+            <i class="fa-solid fa-file-contract"></i>
+            <span>Concessions &amp; Titles</span>
+            <span class="cadastre-mode-count" id="cadastreConcessionsTotalCount">1,676</span>
+          </button>
+          <button class="cadastre-mode-btn" id="btnCadastreModeApplications" data-cadastre-mode="applications">
+            <i class="fa-solid fa-file-signature"></i>
+            <span>Concession Applications</span>
+            <span class="cadastre-mode-count" id="cadastreApplicationsTotalCount">1,434</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Stat Strip -->
+        <div class="cadastre-stat-strip" id="cadastreStatStrip">
+          <!-- Populated by renderCadastreStats() -->
+        </div>
+
+        <!-- Search and Filters Section -->
+        <div class="card-section" style="margin-bottom: 1.5rem;">
+          <div class="filters-inline-grid" style="grid-template-columns: 2fr 1fr 1fr 1fr auto;">
+            <div class="filter-control-wrap">
+              <label class="filter-label">Search Cadastre Registry</label>
+              <div class="search-input-wrap">
+                <i class="fa-solid fa-magnifying-glass search-icon-inside"></i>
+                <input type="text" class="smart-input" id="cadastreSearchInput" placeholder="Search by Concession/App No, Client, District, Mineral...">
+              </div>
+            </div>
+            <div class="filter-control-wrap">
+              <label class="filter-label">Branch Division</label>
+              <select class="smart-select" id="cadastreBranchSelect">
+                <option value="ALL">All Branches</option>
+                <option value="LSM">Large Scale Mining (LSM)</option>
+                <option value="SSM">Small Scale Mining (SSM)</option>
+              </select>
+            </div>
+            <div class="filter-control-wrap">
+              <label class="filter-label">Status</label>
+              <select class="smart-select" id="cadastreStatusSelect">
+                <option value="ALL">All Statuses</option>
+              </select>
+            </div>
+            <div class="filter-control-wrap">
+              <label class="filter-label">District</label>
+              <select class="smart-select" id="cadastreDistrictSelect">
+                <option value="ALL">All Districts</option>
+              </select>
+            </div>
+            <div class="filter-control-wrap" style="flex: 0 0 auto;">
+              <label class="filter-label">&nbsp;</label>
+              <button class="btn-reset-filters" id="btnResetCadastreFilters" title="Reset Cadastre Filters">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+              </button>
+            </div>
+          </div>
+          <div class="active-chips-row">
+            <span class="active-counter-badge" id="cadastreCounterBadge"><i class="fa-solid fa-list-check"></i> Showing records</span>
+          </div>
+        </div>
+
+        <!-- Cadastre Data Table -->
+        <div class="card-section">
+          <div class="table-scroll-container">
+            <table class="table-clean" id="tableCadastre">
+              <thead id="cadastreTableHead">
+                <!-- Dynamically injected -->
+              </thead>
+              <tbody id="cadastreTableBody">
+                <!-- Dynamically injected -->
+              </tbody>
+            </table>
+          </div>
+          <div class="table-pagination">
+            <span id="cadastrePageInfo">Showing 1 to 15 records</span>
+            <div class="pagination-btns">
+              <button class="btn-page" id="btnPrevCadastre"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+              <button class="btn-page" id="btnNextCadastre">Next <i class="fa-solid fa-chevron-right"></i></button>
             </div>
           </div>
         </div>
@@ -2240,6 +2628,7 @@
 
 <!-- Compiled In-Memory Master Database -->
 <script src="data.js"></script>
+<script src="cadastre_data.js"></script>
 <script src="admin_data.js"></script>
 <script src="map_polygons.js"></script>
 <script src="rules_data.js"></script>

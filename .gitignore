@@ -24,3 +24,6 @@ GR - Data/
 Licensing Data/
 Notes/
 *.xlsx
+
+temp_chrome_profile*
+
