@@ -531,16 +531,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const breadcrumbTitle = document.getElementById("activeBreadcrumbTitle");
 
     const tabMeta = {
-      "tab-overview": { section: "Executive Overview", title: "Senior Management Summary Dashboard" },
-      "tab-admin": { section: "Administration & Establishment", title: "Administration Division & Human Capital Master Register" },
+      "tab-overview": { section: "Executive Overview", title: "Summary Dashboard" },
+      "tab-admin": { section: "Administration & Establishment", title: "Administration Division" },
       "tab-lsm": { section: "Mineral Operations", title: "Large Scale Mining" },
       "tab-sma": { section: "Mineral Operations", title: "Small Scale Mining" },
       "tab-mm": { section: "Mineral Operations", title: "Minor Minerals" },
-      "tab-rules": { section: "Statutory & Regulatory Governance", title: "Relevant Rules & Acts (PMCR 2002 & Punjab Mines and Minerals Act 2025)" },
-      "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map of Punjab Province" },
-      "tab-financials": { section: "Financial Intelligence", title: "5-Year Revenue, Royalty & Output Analytics" },
-      "tab-epa": { section: "Regulatory Clearances", title: "EPA Environmental Clearances (151 Concession Cases)" },
-      "tab-appeals": { section: "Legal Proceedings", title: "Appellate Authority Pendency Tracker" }
+      "tab-rules": { section: "Statutory Governance", title: "Relevant Rules & Acts" },
+      "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map" },
+      "tab-financials": { section: "Financial Intelligence", title: "Revenue & Royalties" },
+      "tab-epa": { section: "Regulatory Clearances", title: "EPA Clearances" },
+      "tab-appeals": { section: "Legal Proceedings", title: "Appellate Authority" }
     };
 
     function activateTab(tabId) {
