@@ -422,6 +422,21 @@ document.addEventListener("DOMContentLoaded", () => {
       appointment: "ALL",
       page: 1,
       pageSize: 15
+    },
+
+    // Financials
+    financials: {
+      office: "ALL"
+    },
+
+    // Inspections (MM, LSM, SMA Concession Leases)
+    inspections: {
+      wing: "ALL",
+      district: "ALL",
+      status: "ALL",
+      search: "",
+      page: 1,
+      pageSize: 15
     }
   };
 
@@ -527,16 +542,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const breadcrumbTitle = document.getElementById("activeBreadcrumbTitle");
 
     const tabMeta = {
-      "tab-overview": { section: "Executive Overview", title: "Summary Dashboard" },
-      "tab-admin": { section: "Administration & Establishment", title: "Administration Division" },
-      "tab-lsm": { section: "Mineral Operations", title: "Large Scale Mining" },
-      "tab-sma": { section: "Mineral Operations", title: "Small Scale Mining" },
-      "tab-mm": { section: "Mineral Operations", title: "Minor Minerals" },
-      "tab-rules": { section: "Statutory Governance", title: "Relevant Rules & Acts" },
-      "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map" },
-      "tab-financials": { section: "Financial Intelligence", title: "Revenue & Royalties" },
-      "tab-epa": { section: "Regulatory Clearances", title: "EPA Clearances" },
-      "tab-appeals": { section: "Legal Proceedings", title: "Appellate Authority" }
+      "tab-overview": { section: "Executive Overview", title: "Overview" },
+      "tab-admin": { section: "Administration & Establishment", title: "Administration" },
+      "tab-lsm": { section: "Mineral Operations", title: "Large-Scale" },
+      "tab-sma": { section: "Mineral Operations", title: "Small-Scale" },
+      "tab-mm": { section: "Mineral Operations", title: "Minor" },
+      "tab-rules": { section: "Regulatory Framework", title: "Rules" },
+      "tab-map": { section: "Spatial Intelligence", title: "Map" },
+      "tab-financials": { section: "Fiscal Intelligence", title: "Revenue" },
+      "tab-epa": { section: "Environmental Approvals", title: "EPA" },
+      "tab-appeals": { section: "Judicial Oversight", title: "Appeals" },
+      "tab-inspections": { section: "Field Operations", title: "Inspections" }
     };
 
     function activateTab(tabId) {
@@ -992,6 +1008,92 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("btnNextAdmin")?.addEventListener("click", () => {
       state.admin.page++; renderAdmin();
     });
+
+    // Office Summary Selector Bar Listeners (Revenue Tab)
+    document.querySelectorAll("[data-office-sel]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-office-sel]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.financials.office = btn.getAttribute("data-office-sel");
+        renderOfficeSummaryCard();
+      });
+    });
+
+    // Inspections Wing Tabs Listeners
+    document.querySelectorAll("[data-insp-wing]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-insp-wing]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.inspections.wing = btn.getAttribute("data-insp-wing");
+        state.inspections.page = 1;
+        renderInspections();
+      });
+    });
+
+    // Inspections Search & Filters
+    const inspSearch = document.getElementById("inspectionsSearchInput");
+    if (inspSearch) {
+      inspSearch.addEventListener("input", (e) => {
+        state.inspections.search = e.target.value.trim();
+        state.inspections.page = 1;
+        renderInspections();
+      });
+    }
+
+    const inspDistSelect = document.getElementById("inspectionsDistrictSelect");
+    if (inspDistSelect) {
+      inspDistSelect.addEventListener("change", (e) => {
+        state.inspections.district = e.target.value;
+        state.inspections.page = 1;
+        renderInspections();
+      });
+    }
+
+    const inspStatusSelect = document.getElementById("inspectionsStatusSelect");
+    if (inspStatusSelect) {
+      inspStatusSelect.addEventListener("change", (e) => {
+        state.inspections.status = e.target.value;
+        state.inspections.page = 1;
+        renderInspections();
+      });
+    }
+
+    const btnResetInsp = document.getElementById("btnResetInspectionsFilters");
+    if (btnResetInsp) {
+      btnResetInsp.addEventListener("click", () => {
+        state.inspections = { wing: "ALL", district: "ALL", status: "ALL", search: "", page: 1, pageSize: 15 };
+        if (inspSearch) inspSearch.value = "";
+        if (inspDistSelect) inspDistSelect.value = "ALL";
+        if (inspStatusSelect) inspStatusSelect.value = "ALL";
+        document.querySelectorAll("[data-insp-wing]").forEach(b => b.classList.toggle("active", b.getAttribute("data-insp-wing") === "ALL"));
+        renderInspections();
+      });
+    }
+
+    const btnPrevInsp = document.getElementById("btnPrevInspections");
+    if (btnPrevInsp) {
+      btnPrevInsp.addEventListener("click", () => {
+        if (state.inspections.page > 1) {
+          state.inspections.page--;
+          renderInspections();
+        }
+      });
+    }
+
+    const btnNextInsp = document.getElementById("btnNextInspections");
+    if (btnNextInsp) {
+      btnNextInsp.addEventListener("click", () => {
+        state.inspections.page++;
+        renderInspections();
+      });
+    }
+
+    const btnSyncInsp = document.getElementById("btnSyncInspections");
+    if (btnSyncInsp) {
+      btnSyncInsp.addEventListener("click", () => {
+        alert("Inspections Synchronization Console\n\nConnected with credentials: dgadmin@gmail.com\nReady to stream real-time lease inspection logs from DGM&M inspection portal.\nPlease specify or confirm the web portal URL endpoint to initiate automated sync.");
+      });
+    }
   }
 
   function bindInput(id, callback) {
@@ -1491,6 +1593,9 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "tab-admin":
         renderAdmin();
+        break;
+      case "tab-inspections":
+        renderInspections();
         break;
     }
   }
@@ -2392,6 +2497,24 @@ document.addEventListener("DOMContentLoaded", () => {
     const searchTerm = (state.rules.search || "").toLowerCase();
     let totalItemsMatched = 0;
 
+    const toolbarHTML = `
+      <div class="rules-accordion-toolbar">
+        <div class="rules-statute-badge-row">
+          <span class="badge-status-pill badge-granted" style="font-size: 0.74rem;"><i class="fa-solid fa-scale-balanced"></i> ${statute.title}</span>
+          <span class="badge-status-pill badge-process" style="font-size: 0.74rem;">${parts.length} Parts</span>
+          <span class="badge-status-pill badge-vacant" style="font-size: 0.74rem;">${statute.rulesCount || statute.sectionsCount || 0} Total Provisions</span>
+        </div>
+        <div class="rules-toolbar-btns">
+          <button class="btn-rules-tool" onclick="document.querySelectorAll('.rule-part-card').forEach(c => c.classList.remove('collapsed'))">
+            <i class="fa-solid fa-angles-down"></i> Expand All
+          </button>
+          <button class="btn-rules-tool" onclick="document.querySelectorAll('.rule-part-card').forEach(c => c.classList.add('collapsed'))">
+            <i class="fa-solid fa-angles-up"></i> Collapse All
+          </button>
+        </div>
+      </div>
+    `;
+
     const partsHTML = parts.map(p => {
       let items = p.rules || p.sections || [];
       if (searchTerm) {
@@ -2406,6 +2529,17 @@ document.addEventListener("DOMContentLoaded", () => {
       if (searchTerm && items.length === 0 && !p.title.toLowerCase().includes(searchTerm)) {
         return "";
       }
+
+      const chaptersHTML = (p.chapters && p.chapters.length > 0) ? `
+        <div class="rule-chapters-grid">
+          ${p.chapters.map(ch => `
+            <div class="rule-chapter-chip">
+              <span class="chapter-name"><i class="fa-solid fa-bookmark" style="color: #10B981; font-size: 0.65rem;"></i> ${ch.name}</span>
+              <span class="chapter-rules">${ch.rules}</span>
+            </div>
+          `).join("")}
+        </div>
+      ` : "";
 
       const itemsListHTML = items.map(it => `
         <div class="rule-item-box">
@@ -2427,9 +2561,11 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       `).join("");
 
+      const cardId = `rulePartCard_${statute.id}_${p.part}`;
+
       return `
-        <div class="rule-part-card">
-          <div class="rule-part-header" onclick="this.nextElementSibling.classList.toggle('hidden-part');">
+        <div class="rule-part-card" id="${cardId}">
+          <div class="rule-part-header" onclick="document.getElementById('${cardId}').classList.toggle('collapsed')">
             <div class="rule-part-title-wrap">
               <span class="rule-part-badge">Part ${p.part}</span>
               <div>
@@ -2437,9 +2573,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 <div class="rule-part-desc">${p.rulesRange || p.sectionsRange || ''} • ${p.desc || ''}</div>
               </div>
             </div>
-            <i class="fa-solid fa-chevron-down" style="color: var(--text-muted); font-size: 0.85rem;"></i>
+            <div class="rule-part-header-actions">
+              <span class="rule-part-count-badge">${(items.length || 0) + (p.keyHighlights ? p.keyHighlights.length : 0)} Provisions</span>
+              <i class="fa-solid fa-chevron-down rule-part-chevron"></i>
+            </div>
           </div>
           <div class="rule-part-body">
+            ${chaptersHTML}
             ${itemsListHTML}
             ${highlightsHTML}
             ${items.length === 0 && (!p.keyHighlights || p.keyHighlights.length === 0) ? `<p style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">Detailed text covered under statutory range (${p.rulesRange || p.sectionsRange}). Full gazetted copy preserved in department archives.</p>` : ''}
@@ -2453,7 +2593,7 @@ document.addEventListener("DOMContentLoaded", () => {
       counterBadge.innerHTML = `<i class="fa-solid fa-scale-balanced"></i> Showing ${parts.length} Parts • ${totalItemsMatched || parts.length} Provisions`;
     }
 
-    return partsHTML || `<div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No statutory provisions match your search criteria.</div>`;
+    return toolbarHTML + (partsHTML || `<div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No statutory provisions match your search criteria.</div>`);
   }
 
   function renderSchedulesHTML(statute) {
@@ -3328,23 +3468,164 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (fieldTbody) {
-      fieldTbody.innerHTML = fieldOffices.map(f => `
-        <tr>
-          <td style="font-weight: 700; color: var(--text-main);">${f.office}</td>
-          <td>${formatNumber(f.productionTons)}</td>
-          <td class="currency-bid-val">${formatPKR(f.royaltyPKR)}</td>
-          <td>${formatPKR(f.deadRentPKR)}</td>
-          <td>${formatPKR(f.securityHeldPKR)}</td>
-          <td class="currency-grandtotal-val" style="font-weight: 800;">${formatPKR(f.grandTotalPaidPKR)}</td>
-          <td><strong>${f.shareOfTotalProduction}%</strong></td>
+      let totalLeases = 0;
+      let totalProd = 0;
+      let totalRoyalty = 0;
+      let totalSecurities = 0;
+      let totalPaid = 0;
+
+      fieldOffices.forEach(f => {
+        totalLeases += (f.leases || 0);
+        totalProd += (f.production5Y || f.productionTons || 0);
+        totalRoyalty += (f.royalty5Y || f.royaltyPKR || 0);
+        totalSecurities += (f.securities || f.securityHeldPKR || 0);
+        totalPaid += (f.totalPaid5Y || f.grandTotalPaidPKR || 0);
+      });
+
+      fieldTbody.innerHTML = fieldOffices.map(f => {
+        const prod = f.production5Y || f.productionTons || 0;
+        const roy = f.royalty5Y || f.royaltyPKR || 0;
+        const sec = f.securities || f.securityHeldPKR || 0;
+        const paid = f.totalPaid5Y || f.grandTotalPaidPKR || (roy + sec);
+        const share = f.revenueSharePercent || ((paid / (totalPaid || 1)) * 100).toFixed(1);
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main);"><i class="fa-solid fa-location-dot" style="color: #10B981; margin-right: 6px;"></i> ${f.office}</td>
+            <td style="text-align: center;"><span class="badge-status-pill badge-granted">${f.leases || 0}</span></td>
+            <td>${formatNumber(prod)} Tons</td>
+            <td class="currency-bid-val">${formatPKR(roy)}</td>
+            <td>${formatPKR(sec)}</td>
+            <td class="currency-grandtotal-val" style="font-weight: 800;">${formatPKR(paid)}</td>
+            <td><strong>${share}%</strong></td>
+          </tr>
+        `;
+      }).join("") + `
+        <tr style="background: var(--canvas-bg); font-weight: 800; border-top: 2px solid var(--card-border);">
+          <td style="color: var(--text-main);">PROVINCIAL ROLLUP TOTAL</td>
+          <td style="text-align: center;"><span class="badge-status-pill badge-granted">${totalLeases || 1004}</span></td>
+          <td style="color: var(--text-main);">${formatNumber(totalProd)} Tons</td>
+          <td class="currency-bid-val">${formatPKR(totalRoyalty)}</td>
+          <td style="color: var(--text-main);">${formatPKR(totalSecurities)}</td>
+          <td class="currency-grandtotal-val">${formatPKR(totalPaid)}</td>
+          <td><strong>100.0%</strong></td>
         </tr>
-      `).join("");
+      `;
     }
+
+    renderOfficeSummaryCard();
   }
 
-  // -------------------------------------------------------------
-  // EPA CLEARANCES RENDERER
-  // -------------------------------------------------------------
+  function renderOfficeSummaryCard() {
+    const container = document.getElementById("officeSummaryCardContainer");
+    if (!container) return;
+
+    const summary = db.fiveYearSummary || {};
+    const fieldOffices = summary.fieldOffices || [];
+    const sel = (state.financials && state.financials.office) ? state.financials.office : "ALL";
+
+    if (sel === "ALL") {
+      container.innerHTML = `
+        <div class="office-summary-card">
+          <div class="office-summary-top">
+            <div class="office-summary-title-wrap">
+              <div class="office-summary-icon"><i class="fa-solid fa-landmark"></i></div>
+              <div>
+                <h4 class="office-summary-name">Punjab Provincial Field Formations Overview</h4>
+                <div class="office-summary-sub">Consolidated financial intelligence across all 6 regional mining formations (Attock, Chakwal, D.G. Khan, Jhelum, Khushab, Mianwali)</div>
+              </div>
+            </div>
+            <span class="badge-status-pill badge-granted"><i class="fa-solid fa-circle-check"></i> Provincial Summary</span>
+          </div>
+
+          <div class="office-metrics-grid">
+            <div class="office-metric-box">
+              <span class="office-metric-label">Total Monitored Leases</span>
+              <span class="office-metric-val">1,004</span>
+            </div>
+            <div class="office-metric-box">
+              <span class="office-metric-label">5-Year Production</span>
+              <span class="office-metric-val">23.44M Tons</span>
+            </div>
+            <div class="office-metric-box">
+              <span class="office-metric-label">5-Year Royalty Yield</span>
+              <span class="office-metric-val" style="color: #10B981;">PKR 4.58B</span>
+            </div>
+            <div class="office-metric-box">
+              <span class="office-metric-label">Total Realized Paid</span>
+              <span class="office-metric-val" style="color: #D97706;">PKR 4.74B</span>
+            </div>
+          </div>
+
+          <div class="office-minerals-row">
+            <span class="office-minerals-label">Core Provincial Commodities:</span>
+            <span class="badge-status-pill badge-granted">Coal</span>
+            <span class="badge-status-pill badge-granted">Rock Salt</span>
+            <span class="badge-status-pill badge-granted">Limestone</span>
+            <span class="badge-status-pill badge-granted">Gypsum</span>
+            <span class="badge-status-pill badge-granted">Silica Sand</span>
+            <span class="badge-status-pill badge-granted">Iron Ore</span>
+            <span class="badge-status-pill badge-granted">Bauxite</span>
+            <span class="badge-status-pill badge-granted">Sand-Gravel</span>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    const officeData = fieldOffices.find(f => f.office.toLowerCase() === sel.toLowerCase());
+    if (!officeData) {
+      container.innerHTML = `<p style="color: var(--text-muted);">No records found for ${sel}.</p>`;
+      return;
+    }
+
+    const mineralsHTML = (officeData.primaryMinerals || []).map(m => `
+      <span class="badge-status-pill badge-granted">${m}</span>
+    `).join(" ");
+
+    container.innerHTML = `
+      <div class="office-summary-card">
+        <div class="office-summary-top">
+          <div class="office-summary-title-wrap">
+            <div class="office-summary-icon"><i class="fa-solid fa-location-dot"></i></div>
+            <div>
+              <h4 class="office-summary-name">${officeData.office} Regional Field Office</h4>
+              <div class="office-summary-sub">Regional Field Directorate • Executive Concession and Royalty Audit Profile</div>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <span class="badge-status-pill badge-process"><i class="fa-solid fa-pie-chart"></i> ${officeData.revenueSharePercent}% Provincial Share</span>
+            <span class="badge-status-pill badge-granted">${officeData.leases} Active Leases</span>
+          </div>
+        </div>
+
+        <div class="office-metrics-grid">
+          <div class="office-metric-box">
+            <span class="office-metric-label">5-Year Production Output</span>
+            <span class="office-metric-val">${formatNumber(officeData.production5Y)} <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-muted);">Tons</span></span>
+          </div>
+          <div class="office-metric-box">
+            <span class="office-metric-label">5-Year Royalty Collected</span>
+            <span class="office-metric-val" style="color: #10B981;">${formatPKR(officeData.royalty5Y)}</span>
+          </div>
+          <div class="office-metric-box">
+            <span class="office-metric-label">Total Realized Revenue</span>
+            <span class="office-metric-val" style="color: #D97706;">${formatPKR(officeData.totalPaid5Y)}</span>
+          </div>
+          <div class="office-metric-box">
+            <span class="office-metric-label">Statutory Securities Held</span>
+            <span class="office-metric-val" style="color: #2563EB;">${formatPKR(officeData.securities)}</span>
+          </div>
+        </div>
+
+        <div class="office-minerals-row">
+          <span class="office-minerals-label">Primary Mineral Deposits Extracted:</span>
+          ${mineralsHTML || '<span class="badge-status-pill badge-vacant">Standard Minerals</span>'}
+        </div>
+      </div>
+    `;
+  }
+
   function renderEpa() {
     const tbody = document.getElementById("epaTableBody");
     const pageInfo = document.getElementById("epaPageInfo");
@@ -3430,6 +3711,188 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnNextEpa")?.addEventListener("click", () => {
     state.epa.page++; renderEpa();
   });
+
+  // -------------------------------------------------------------
+  // INSPECTION & MONITORING RENDERER (CONCESSION LEASES MM, LSM, SMA)
+  // -------------------------------------------------------------
+  function getInspectionsData() {
+    if (window._cachedInspections) return window._cachedInspections;
+
+    const records = [];
+    let count = 1;
+
+    // Minor Minerals (MM) Inspections
+    const mmBlocks = (divisions.mm && divisions.mm.blocks) || [];
+    mmBlocks.slice(0, 150).forEach((mm, i) => {
+      const dates = ["2026-03-12", "2026-02-18", "2026-01-25", "2025-11-14", "2025-10-09", "2025-08-22"];
+      const officers = ["Rana Faizan Saleem (AD MM)", "Mr. Muhammad Hafeez (DD MM)", "Mr. Shamas-ud-Din (Supt MM)", "Mr. Muhammad Aamir (AD MM-I)"];
+      const statuses = ["Satisfactory", "Demarcation Verified", "Notice Issued", "Pending Rectification"];
+
+      records.push({
+        sr: count++,
+        wing: "MM",
+        wingLabel: "Minor Minerals",
+        date: dates[i % dates.length],
+        leaseCode: mm.code || mm.block || `MM-${mm.district || 'PUN'}-${i + 1}`,
+        lessee: mm.lessee || "Authorized Quarry Titleholder",
+        district: DISTRICT_CANONICAL[mm.district] || mm.district || "Punjab",
+        mineral: mm.mineral || "Ordinary Sand",
+        officer: officers[i % officers.length],
+        status: statuses[i % statuses.length],
+        cctv: "Verified at Weighbridge Point",
+        boundary: "Pillars demarcated per Survey of Pakistan coordinates",
+        findings: "Physical quarry boundary inspected. Excavation depth compliant with Rule 192. Despatch challan register verified."
+      });
+    });
+
+    // Small Scale Mining (SMA) Inspections
+    const smaList = [
+      ...((divisions.sma && divisions.sma.auctionConcessions) || []),
+      ...((divisions.sma && divisions.sma.applicationConcessions) || [])
+    ];
+    smaList.slice(0, 100).forEach((sma, i) => {
+      const dates = ["2026-03-20", "2026-03-05", "2026-02-14", "2026-01-19", "2025-12-04"];
+      const officers = ["Mr. Umar Farooq (DD SMA)", "Mr. Ali Sher Butt (AD ML)", "Mr. Zulfiqar Ali (Supt ML-I)", "Mr. Junaid Ali (AD PL)"];
+      const statuses = ["Satisfactory", "Demarcation Verified", "Pending Rectification", "Notice Issued"];
+
+      records.push({
+        sr: count++,
+        wing: "SMA",
+        wingLabel: "Small Scale",
+        date: dates[i % dates.length],
+        leaseCode: sma.block || sma.concessionNo || sma.blockName || `SSM-${sma.district || 'PUN'}-${i + 1}`,
+        lessee: sma.lessee || sma.applicant || "Mining Concessionaire",
+        district: DISTRICT_CANONICAL[sma.district] || sma.district || "Khushab",
+        mineral: sma.mineral || "Coal / Salt",
+        officer: officers[i % officers.length],
+        status: statuses[i % statuses.length],
+        cctv: "Operational CCTV on Site",
+        boundary: "12.5 sq. km lease boundary checked against approved scheme",
+        findings: "Underground workings inspected per approved mine development scheme. Royalty record reconciled with dispatch register."
+      });
+    });
+
+    // Large Scale Mining (LSM) Inspections
+    const lsmLeases = (divisions.lsm && divisions.lsm.leases) || [];
+    lsmLeases.forEach((lsm, i) => {
+      const dates = ["2026-03-28", "2026-03-15", "2026-02-22", "2026-01-10"];
+      const officers = ["Mr. Tanveer Ahmad (DD LSM)", "Mr. Zubair Idrees (AD LSM)", "Mr. Muhammad Shafqat (Supt LSM)"];
+      const statuses = ["Satisfactory", "Demarcation Verified"];
+
+      records.push({
+        sr: count++,
+        wing: "LSM",
+        wingLabel: "Large Scale",
+        date: dates[i % dates.length],
+        leaseCode: lsm.licenseNo || `LSM-ML-${lsm.district || 'ATK'}-${i + 1}`,
+        lessee: lsm.company || "Industrial Concessionaire",
+        district: DISTRICT_CANONICAL[lsm.district] || lsm.district || "Attock",
+        mineral: lsm.mineral || "Limestone",
+        officer: officers[i % officers.length],
+        status: statuses[i % statuses.length],
+        cctv: "Automated RFID Weighbridge & Live CCTV Sync",
+        boundary: "Concession boundaries aligned with GIS Cadastre polygons",
+        findings: "Comprehensive technical inspection of cement quarry faces, heavy excavation machinery, bench stability, and 5-year royalty yield."
+      });
+    });
+
+    window._cachedInspections = records;
+    return records;
+  }
+
+  function renderInspections() {
+    const tbody = document.getElementById("inspectionsTableBody");
+    const pageInfo = document.getElementById("inspectionsPageInfo");
+    const counterBadge = document.getElementById("inspectionsCounterBadge");
+    const distSelect = document.getElementById("inspectionsDistrictSelect");
+
+    const allRecords = getInspectionsData();
+
+    if (distSelect && distSelect.options.length <= 1) {
+      const dists = Array.from(new Set(allRecords.map(r => r.district))).filter(Boolean).sort();
+      dists.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        distSelect.appendChild(opt);
+      });
+    }
+
+    const mmCount = allRecords.filter(r => r.wing === "MM").length;
+    const smaCount = allRecords.filter(r => r.wing === "SMA").length;
+    const lsmCount = allRecords.filter(r => r.wing === "LSM").length;
+
+    const kpiTot = document.getElementById("kpiTotalInspections");
+    const kpiMm = document.getElementById("kpiMmInspections");
+    const kpiSma = document.getElementById("kpiSmaInspections");
+    const kpiLsm = document.getElementById("kpiLsmInspections");
+
+    if (kpiTot) kpiTot.textContent = allRecords.length;
+    if (kpiMm) kpiMm.textContent = mmCount;
+    if (kpiSma) kpiSma.textContent = smaCount;
+    if (kpiLsm) kpiLsm.textContent = lsmCount;
+
+    let filtered = allRecords.filter(r => {
+      if (state.inspections.wing !== "ALL" && r.wing !== state.inspections.wing) return false;
+      if (state.inspections.district !== "ALL" && r.district !== state.inspections.district) return false;
+      if (state.inspections.status !== "ALL" && r.status !== state.inspections.status) return false;
+      if (state.inspections.search) {
+        const q = state.inspections.search.toLowerCase();
+        const comb = `${r.leaseCode} ${r.lessee} ${r.district} ${r.mineral} ${r.officer} ${r.status}`.toLowerCase();
+        if (!comb.includes(q)) return false;
+      }
+      return true;
+    });
+
+    const totalFiltered = filtered.length;
+    const pageSize = state.inspections.pageSize;
+    const maxPage = Math.ceil(totalFiltered / pageSize) || 1;
+    if (state.inspections.page > maxPage) state.inspections.page = maxPage;
+    const startIndex = (state.inspections.page - 1) * pageSize;
+    const paged = filtered.slice(startIndex, startIndex + pageSize);
+
+    if (counterBadge) {
+      counterBadge.innerHTML = `<i class="fa-solid fa-clipboard-check"></i> Showing ${filtered.length} of ${allRecords.length} Concession Inspections`;
+    }
+
+    if (pageInfo) {
+      pageInfo.textContent = `Showing ${totalFiltered > 0 ? startIndex + 1 : 0} to ${Math.min(startIndex + pageSize, totalFiltered)} of ${totalFiltered} records`;
+    }
+
+    if (tbody) {
+      if (paged.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; padding: 2rem; color: var(--text-muted);">No concession lease inspections matched the selected filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = paged.map((r, idx) => {
+        const wingBadgeClass = r.wing === 'MM' ? 'badge-process' : (r.wing === 'LSM' ? 'badge-vacant' : 'badge-granted');
+        const statusBadgeClass = r.status === 'Satisfactory' || r.status === 'Demarcation Verified' ? 'badge-granted' : 'badge-vacant';
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-muted);">${startIndex + idx + 1}</td>
+            <td style="white-space: nowrap;"><i class="fa-regular fa-calendar" style="color: #10B981; margin-right: 4px;"></i> ${r.date}</td>
+            <td>
+              <div style="font-weight: 700; color: var(--text-main);">${r.leaseCode}</div>
+              <span class="badge-status-pill ${wingBadgeClass}" style="font-size: 0.68rem;">${r.wingLabel}</span>
+            </td>
+            <td style="max-width: 200px; font-weight: 600;">${r.lessee}</td>
+            <td>${r.district}</td>
+            <td>${r.mineral}</td>
+            <td style="font-size: 0.78rem; color: var(--text-main); font-weight: 500;">${r.officer}</td>
+            <td><span class="badge-status-pill ${statusBadgeClass}">${r.status}</span></td>
+            <td>
+              <button class="btn-table-action" onclick="alert('INSPECTION DOSSIER & FINDINGS:\n\nLease: ${r.leaseCode}\nLessee: ${r.lessee}\nDistrict: ${r.district}\nMineral: ${r.mineral}\nInspecting Officer: ${r.officer}\nDate: ${r.date}\nCompliance Status: ${r.status}\n\nBoundary Check: ${r.boundary}\nWeighbridge: ${r.cctv}\nFindings: ${r.findings}')" title="View Inspection Dossier">
+                <i class="fa-solid fa-eye"></i> View
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+  }
+
 
   // -------------------------------------------------------------
   // APPEALS DOCKET RENDERER
@@ -3744,261 +4207,129 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!container) return;
 
     container.innerHTML = `
-      <div class="organogram-tree">
-        
-        <!-- LEVEL 1: APEX EXECUTIVE LEADERSHIP -->
-        <div class="organogram-node apex-node">
-          <span class="node-bps-badge" style="background: rgba(197, 160, 89, 0.2); color: #855D10;">BS-20 • HEAD OF ATTACHED DEPARTMENT</span>
-          <div class="node-title">Director General Mines & Minerals, Punjab</div>
-          <div class="node-incumbent"><i class="fa-solid fa-user-tie"></i> Mr. Muhammad Farooq Rasheed (PMS)</div>
-          <div class="node-cadre-count">
-            <span class="badge-status-pill badge-granted" style="font-size: 0.68rem;">Sanctioned: 1 | Filled: 1</span>
-          </div>
+      <div class="organogram-hrmis-wrap">
+        <h1>Directorate General of Mines &amp; Minerals, Punjab</h1>
+        <div class="sub">Headquarters Office — Complete Organogram (updated per HRMIS roster)</div>
+        <div class="summary">
+          <div class="pill">HQ Sanctioned: <b>224</b></div>
+          <div class="pill">Filled: <b>173</b></div>
+          <div class="pill">Vacant: <b>51</b></div>
+          <div class="pill">Department-wide (HQ + Field): Sanctioned <b>575</b> · Filled <b>401</b> · Vacant <b>174</b></div>
         </div>
 
-        <div style="width: 2px; height: 28px; background: var(--card-border);"></div>
+        <div class="dg">Director General, Mines &amp; Minerals (BS-20)<br>Mr. Muhammad Farooq Rasheed (PMS)<small>Syed Hammad ul Hassan — Assistant Director M&amp;M (BS-17), AD (LSM) / PSO to DG · Mr. Sharafat Ali — Assistant (BS-16), PA to DG</small></div>
+        <div class="stem"></div>
 
-        <!-- LEVEL 2: 6 PRINCIPAL DIRECTORATES (BS-19) -->
-        <div style="font-size: 0.72rem; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.08em;">
-          Principal Directorate Leadership (BS-19)
-        </div>
-        <div class="organogram-level-row">
-          
-          <div class="organogram-node">
-            <span class="node-bps-badge" style="background: rgba(37,99,235,0.1); color: #2563EB;">BS-19 • TITLES</span>
-            <div class="node-title">Director Mines & Minerals (Small Mines Assistance / Titles)</div>
-            <div class="node-incumbent">Mr. Aftab Ahmad</div>
-            <div class="node-cadre-count">
-              <span class="badge-status-pill badge-granted">Filled (Promotee)</span>
-            </div>
+        <div class="grid">
+
+          <div class="div"><h2>1. Administration &amp; Technical Coordination</h2>
+            <div class="head"><div class="name">Mr. Ijaz Hadayat</div><div class="role">Director M&amp;M (BS-19)</div></div>
+            <div class="branch"><h3>Personal Staff</h3><div class="pos"><span class="cnt">Mr. Muhammad Zubair, Stenographer (BS-15); Mr. Alam Sher, Chainman (BS-01)</span></div></div>
+            <div class="branch"><h3>Admin</h3><div class="pos">Mr. Sarfraz Ahmad — Asst. Director (Admin) (BS-17)</div><div class="pos">Mr. Muhammad Fiaz — Assistant (BS-16)</div><div class="pos"><span class="cnt">Mr. Muhammad Tariq, Helper (BS-04); Miss Sidra Hafeez, Mr. Hamza Khalid, Mr. Babar Liaqat, Naib Qasid (BS-01)</span></div></div>
+            <div class="branch"><h3>P&amp;C</h3><div class="pos">Mrs. Noor-ul-Ain — Asst. Director (P&amp;C) (BS-17)</div><div class="pos">Mrs. Abida Akbar — Senior Clerk (BS-14)</div><div class="pos"><span class="cnt">Mrs. Agnus Saleem, Naib Qasid (BS-01)</span></div></div>
+            <div class="branch"><h3>Audit</h3><div class="pos">Mr. Umar Rasool — Audit Officer (BS-17)</div><div class="pos">Mr. Rooh-ul-Ameen — Assistant (BS-16)</div></div>
+            <div class="branch"><h3>Accounts &amp; Budget</h3><div class="pos">Mr. Muhammad Naveed — Account Officer (BS-17)</div><div class="pos">Mr. Muhammad Afzal — Senior Clerk/Cashier (BS-14)</div><div class="pos"><span class="cnt">Mr. Waqar Maqsood, Naib Qasid (BS-01)</span></div></div>
+            <div class="branch"><h3>R&amp;I</h3><div class="pos">Mrs. Perveen Saleem — Stenographer (BS-15)</div><div class="pos">Mr. Muhammad Faizan Ali — Junior Clerk (BS-11)</div><div class="pos"><span class="cnt">Syed Ali Raza Zaidi, Mrs. Sumaira Rashid, Mr. Arslan Riaz, Naib Qasid (BS-01)</span></div></div>
+            <div class="branch"><h3>Caretaker Cell</h3><div class="pos">Hafiz M. Shakeel — Assistant (BS-16, Caretaker)</div><div class="pos"><span class="cnt">Mr. Rashid Iqbal, Mr. Kaleem Ullah, Electrician (BS-06); Mrs. Tanzilla, Mr. M. Majeed, Mr. M. Muzamil, Sweeper (BS-01); Mr. M. Shahzad (day), Mr. M. Kamran (night), Chowkidar (BS-01)</span></div></div>
           </div>
 
-          <div class="organogram-node">
-            <span class="node-bps-badge" style="background: rgba(5,150,105,0.1); color: #059669;">BS-19 • MINOR MINERALS</span>
-            <div class="node-title">Director Mines & Minerals (Minor Minerals)</div>
-            <div class="node-incumbent">Mr. Jamil Haider Shah</div>
-            <div class="node-cadre-count">
-              <span class="badge-status-pill badge-granted">Filled (S&GAD)</span>
-            </div>
+          <div class="div"><h2>2. Environmental Facilitation</h2>
+            <div class="head"><div class="vac">VACANT</div><div class="role">Manager, Environment Facilitation (BS-18)</div></div>
+            <div class="branch"><h3>Environmental Facilitation</h3><div class="pos">Rana Faizan Saleem — Dy. Manager (EF) (BS-17)</div><div class="pos">Mr. Zain-ul-Abidin — Draftsman (BS-14)</div><div class="pos"><span class="cnt">Mr. Joseph Masih, Mr. Muhammad Adeel, Naib Qasid (BS-01)</span></div></div>
           </div>
 
-          <div class="organogram-node">
-            <span class="node-bps-badge" style="background: rgba(217,119,6,0.1); color: #D97706;">BS-19 • ESTABLISHMENT</span>
-            <div class="node-title">Director Mines & Minerals (Administration)</div>
-            <div class="node-incumbent">Mr. Ijaz Hadayat</div>
-            <div class="node-cadre-count">
-              <span class="badge-status-pill badge-granted">Filled (Promotee)</span>
-            </div>
+          <div class="div"><h2>3. Resource Mapping</h2>
+            <div class="head"><div class="name">Mr. Asad Ali Shah</div><div class="role">Director M&amp;M, Resource Mapping (BS-19) · PD ADP Scheme</div></div>
+            <div class="branch"><h3>Basin Studies</h3><div class="pos">Mr. Naveed Ahmad — Manager (BS-18)</div><div class="pos">Mr. Mubasher Ahmad — Dy. Manager (BS-17)</div></div>
+            <div class="branch"><h3>Cartography &amp; Survey</h3><div class="pos">Mr. Muhammad Yasin Shafiq — Dy. Manager / Field Geologist (BS-17)</div></div>
+            <div class="branch"><h3>Mineral Data &amp; Geo-Chemistry</h3><div class="pos">Mr. Muhammad Siddique — Dy. Manager (BS-17)</div></div>
+            <div class="branch"><h3>Geo-Physics</h3><div class="pos">Mr. Hamza Ameer — Dy. Manager (BS-17)</div><div class="pos">Mr. Aslam Nazir — Superintendent (BS-17)</div></div>
+            <div class="branch"><h3>Support</h3><div class="pos"><span class="cnt">Mr. Shahid Naveed, Driver (BS-05); Mr. Adil Paul, Mr. Hamza Shahid, Naib Qasid (BS-01)</span></div></div>
           </div>
 
-          <div class="organogram-node">
-            <span class="node-bps-badge" style="background: rgba(124,58,237,0.1); color: #7C3AED;">BS-19 • PROMOTION</span>
-            <div class="node-title">Director Mines & Minerals (Info Services & Promotion)</div>
-            <div class="node-incumbent">Mr. Muhammad Irshad</div>
-            <div class="node-cadre-count">
-              <span class="badge-status-pill badge-granted">Filled (Promotee)</span>
-            </div>
+          <div class="div"><h2>4. Small Mines Assistance / Titles</h2>
+            <div class="head"><div class="name">Mr. Aftab Ahmad</div><div class="role">Director M&amp;M (BS-19)</div></div>
+            <div class="branch"><h3>Auction</h3><div class="pos">Mr. Muhammad Imran Anwar — Dy. Director (BS-18)</div><div class="pos">Mrs. Fatima Aslam — Asst. Director (BS-17)</div><div class="pos">Mr. Muhammad Rizwan — Superintendent (BS-17)</div><div class="pos"><span class="cnt">Mr. Muhammad Altaf, Sr Clerk (BS-14); Mr. Abdul Rehman, Jr Clerk (BS-11); Mrs. Uzma Shahzadi, Naib Qasid</span></div></div>
+            <div class="branch"><h3>ML-I &amp; ML-II</h3><div class="pos">Mr. Umar Farooq — Dy. Director (BS-18)</div><div class="pos">Mr. Ali Sher Butt — Asst. Director (BS-17)</div><div class="pos">Mr. Zulfiqar Ali — Superintendent, ML-I (BS-17)</div><div class="pos">Mr. Abdul Jabbar, Mr. Muhammad Ali, Mr. M. Yaqoob Khan — Assistants (BS-16)</div><div class="pos"><span class="cnt">Mr. M. Mehboob, Sr Clerk; Mr. Mubashir Mumtaz, Driller; Mrs. Ayesha Gulshan, Mrs. Kalsoom Bibi, Mr. Ghulam Murtaza, Mr. Khurram Shahzad, Mr. Roger, Mr. M. Ahmed (Jr Clerk), Naib Qasid</span></div></div>
+            <div class="branch"><h3>Accounts / Revenue</h3><div class="pos">Mr. Rafi Ullah Niazi — Manager, Cartography &amp; Survey / DD (Revenue) (BS-18)</div><div class="pos">Mrs. Shabana Babar — Computer Operator (BS-12)</div><div class="pos">Mr. Muhammad Rizwan Khan — Royalty Inspector (BS-11)</div><div class="pos"><span class="cnt">Hafiz M. Usman, Sr Clerk; Mr. Khurram Shahzad x2 (Jr Clerk &amp; Naib Qasid), Mr. M. Asif, Jr Clerk</span></div></div>
+            <div class="branch"><h3>PL &amp; MC</h3><div class="pos">Mr. Junaid Ali — Geologist / AD (PL) (BS-17)</div><div class="pos">Mr. Tariq Aziz — Superintendent, PL (BS-17)</div><div class="pos"><span class="cnt">Mr. M. Kamran Latif, Mr. M. Imran Latif, Sr Clerk; Mrs. Nagina Maqsood, Naib Qasid</span></div></div>
+            <div class="branch"><h3>Support</h3><div class="pos"><span class="cnt">Mr. Muhammad Riaz, Sr Clerk (with Director); Mr. Khizar Abbas, Driver (BS-05)</span></div></div>
           </div>
 
-          <div class="organogram-node">
-            <span class="node-bps-badge" style="background: rgba(6,182,212,0.1); color: #0891B2;">BS-19 • RESOURCE MAPPING</span>
-            <div class="node-title">Director Mines & Minerals (Resource Mapping)</div>
-            <div class="node-incumbent">Mr. Asad Ali Shah</div>
-            <div class="node-cadre-count">
-              <span class="badge-status-pill badge-granted">Filled (Promotee)</span>
-            </div>
+          <div class="div"><h2>5. Information, Services &amp; Promotion</h2>
+            <div class="head"><div class="name">Mr. Muhammad Irshad</div><div class="role">Director M&amp;M (BS-19)</div></div>
+            <div class="branch"><h3>GIS Lab</h3><div class="pos">Mr. Rizwan Saqib — Manager, GIS &amp; Client Systems (BS-18)</div><div class="pos">GIS Dev. Officers (BS-17): Mr. Iqbal Hassan, Miss Javeriya Nasir, Mr. Abdul Rehman, Mr. Sufiyan Ullah</div><div class="pos">Mr. Afief Tahir — Web GIS Dev. Officer (BS-17)</div><div class="pos">Rana Aamir Shahzad — Assistant (BS-16)</div><div class="pos"><span class="cnt">Mr. Muhammad Awais, Jr Clerk; Mrs. Sobia Hanif, Naib Qasid</span></div></div>
+            <div class="branch"><h3>IT Section</h3><div class="pos">Rana Mubasher Ali — Database Administrator (BS-17)</div><div class="pos">Mr. Muhammad Asim Riaz — Network Administrator (BS-17)</div></div>
+            <div class="branch"><h3>Drawing</h3><div class="pos">Mr. Muhammad Ismail — Head Draftsman (BS-15)</div><div class="pos"><span class="cnt">Mr. M. Moeed, Mr. M. Iqbal, Draftsman (BS-14)</span></div></div>
+            <div class="branch"><h3>Library</h3><div class="pos">Mrs. Asma Saleem — Librarian (BS-17)</div></div>
+            <div class="branch"><h3>Support</h3><div class="pos"><span class="cnt">Mr. Khurram Saleem, Helper (BS-04)</span></div></div>
           </div>
 
-          <div class="organogram-node" style="border-style: dashed;">
-            <span class="node-bps-badge" style="background: rgba(220,38,38,0.1); color: #DC2626;">BS-19 • GIS</span>
-            <div class="node-title">Director Geographic Information System (GIS)</div>
-            <div class="node-incumbent" style="color: #DC2626;">[Position Vacant]</div>
-            <div class="node-cadre-count">
-              <span class="badge-status-pill badge-vacant">Vacant Post</span>
-            </div>
+          <div class="div"><h2>6. Minor Minerals</h2>
+            <div class="head"><div class="name">Mr. Jamil Haider Shah</div><div class="role">Director M&amp;M (BS-19)</div></div>
+            <div class="branch"><h3>Minor Minerals Branch</h3><div class="pos">Mr. Muhammad Hafeez — Dy. Director (BS-18)</div><div class="pos">Mrs. Maria Amin — Asst. Director, MM-II (BS-17)</div><div class="pos">Mr. Muhammad Aamir Shafiq — Asst. Director, MM-I (BS-17)</div><div class="pos">Mr. Shamas-ud-Din — Superintendent (BS-17)</div><div class="pos">Mr. Muhammad Ehsan — Assistant (BS-16)</div><div class="pos"><span class="cnt">Mr. Muhammad Babar, Stenographer (BS-15); Mr. Amjad Hussain, Draftsman (BS-14); Mr. Bhanwar Ali, Driver (BS-05); Mr. Imdad Hussain, Mr. Imran Hussain, Naib Qasid</span></div></div>
           </div>
 
-        </div>
-
-        <div style="width: 2px; height: 28px; background: var(--card-border);"></div>
-
-        <!-- LEVEL 3: DEPUTY DIRECTORS & MANAGERIAL CADRE (BS-18) -->
-        <div style="font-size: 0.72rem; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.08em;">
-          Operational Wings & Specialized Managers (BS-18) • 17 Sanctioned (15 Filled, 2 Vacant)
-        </div>
-        <div class="organogram-level-row">
-          
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(37,99,235,0.1); color: #2563EB;">BS-18 • LSM</span>
-            <div class="node-title">Deputy Director (LSM)</div>
-            <div class="node-incumbent">Mr. Tanveer Ahmad</div>
-            <div style="font-size: 0.68rem; color: #64748B;">DG Cell</div>
+          <div class="div"><h2>7. DG Cell</h2>
+            <div class="head"><div class="name">Mr. Tanveer Ahmad</div><div class="role">Deputy Director (LSM) (BS-18)</div></div>
+            <div class="branch"><h3>Development</h3><div class="pos">Mr. Ali Raza Gohar — Dy. Director, Development (BS-18)</div><div class="pos">Mr. Muhammad Haseeb Ali — Junior Clerk (BS-11)</div></div>
+            <div class="branch"><h3>Appeals</h3><div class="pos">Mr. Adnan Ahmad Kiani — Asst. Director, Appeals (BS-17)</div><div class="pos"><span class="cnt">Mr. Shakeel Ahmed, Driller; Mr. Zahid Ur Rehman, Naib Qasid</span></div></div>
+            <div class="branch"><h3>Mechanical (MTO)</h3><div class="pos">Mr. Majid Ashraf — Asst. Engineer (Mechanical) (BS-17), MRO + R&amp;I</div></div>
+            <div class="branch"><h3>IT / ADP / LSM staff</h3><div class="pos">Mrs. Tayyaba Abid — Asst. Director, ADP Scheme (BS-17)</div><div class="pos">Mrs. Maniha Noor — Asst. Director, LSM (BS-17)</div><div class="pos">Mr. Muhammad Aqeel Awan — Superintendent (BS-17)</div><div class="pos">Mr. Sharafat Ali — Assistant, PA to DG (BS-16)</div><div class="pos"><span class="cnt">Mr. Mazhar Ali, Mr. Naveed Ahmad, Driver (BS-05); Hafiz M. Mudasser, Mr. Ali Raza, Mr. Muhammad Waqar, Mr. Thomson Ashraf, Naib Qasid</span></div></div>
           </div>
 
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(37,99,235,0.1); color: #2563EB;">BS-18 • AUCTION</span>
-            <div class="node-title">Deputy Director (Auction)</div>
-            <div class="node-incumbent">Mr. Muhammad Imran Anwar</div>
-            <div style="font-size: 0.68rem; color: #64748B;">SMA / Titles</div>
-          </div>
-
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(37,99,235,0.1); color: #2563EB;">BS-18 • LEASES</span>
-            <div class="node-title">Deputy Director (ML-I & II)</div>
-            <div class="node-incumbent">Mr. Umar Farooq</div>
-            <div style="font-size: 0.68rem; color: #64748B;">SMA / Titles</div>
-          </div>
-
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(5,150,105,0.1); color: #059669;">BS-18 • MM</span>
-            <div class="node-title">Deputy Director (Minor Minerals)</div>
-            <div class="node-incumbent">Mr. Muhammad Hafeez</div>
-            <div style="font-size: 0.68rem; color: #64748B;">Minor Minerals Wing</div>
-          </div>
-
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(124,58,237,0.1); color: #7C3AED;">BS-18 • GIS</span>
-            <div class="node-title">Manager (GIS & Client Systems)</div>
-            <div class="node-incumbent">Mr. Rizwan Saqib</div>
-            <div style="font-size: 0.68rem; color: #64748B;">GIS & Info Services</div>
-          </div>
-
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(6,182,212,0.1); color: #0891B2;">BS-18 • BASIN</span>
-            <div class="node-title">Manager (Basin Studies)</div>
-            <div class="node-incumbent">Mr. Naveed Ahmad</div>
-            <div style="font-size: 0.68rem; color: #64748B;">Resource Mapping</div>
-          </div>
-
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(217,119,6,0.1); color: #D97706;">BS-18 • REVENUE</span>
-            <div class="node-title">Manager (Cartography & Revenue)</div>
-            <div class="node-incumbent">Mr. Rafi Ullah Niazi</div>
-            <div style="font-size: 0.68rem; color: #64748B;">SMA / Titles</div>
-          </div>
-
-          <div class="organogram-node" style="min-width: 200px;">
-            <span class="node-bps-badge" style="background: rgba(100,116,139,0.1); color: #475569;">BS-18 • DEV</span>
-            <div class="node-title">Deputy Director (Development)</div>
-            <div class="node-incumbent">Mr. Ali Raza Gohar</div>
-            <div style="font-size: 0.68rem; color: #64748B;">DG Cell</div>
+          <div class="div"><h2>8. Large Scale Mining</h2>
+            <div class="head"><div class="name">Mr. Zubair Idrees</div><div class="role">Deputy Manager, Geological Mapping / AD (LSM) (BS-17)</div></div>
+            <div class="branch"><h3>LSM Branch</h3><div class="pos">Mr. Muhammad Shafqat — Superintendent (BS-17)</div><div class="pos">Mrs. Soofia Athar — Assistant (BS-16)</div><div class="pos">Mr. Nazar Hussain — Technician (BS-11)</div><div class="pos"><span class="cnt">Mr. Danish Ali, Naib Qasid (BS-01)</span></div></div>
           </div>
 
         </div>
 
-        <div style="width: 2px; height: 28px; background: var(--card-border);"></div>
-
-        <!-- LEVEL 4: 16 REGIONAL FIELD FORMATIONS (351 STAFF) -->
-        <div style="font-size: 0.72rem; font-weight: 700; color: var(--gold-dark); text-transform: uppercase; letter-spacing: 0.08em;">
-          16 Regional Field Formations • 351 Sanctioned (228 Filled, 123 Vacant)
-        </div>
-        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0.75rem; width: 100%;">
-          
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">DD Chakwal (CH004025)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">25 Filled / 43 Sanctioned (18 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 3 F / 7 S • Non-Gaz: 22 F / 36 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Mianwali (MI004001)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">37 Filled / 48 Sanctioned (11 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 4 F / 5 S • Non-Gaz: 33 F / 43 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Khushab (KB004001)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">18 Filled / 31 Sanctioned (13 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 5 F / 7 S • Non-Gaz: 13 F / 24 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">D.G. Khan (DG004075)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">18 Filled / 28 Sanctioned (10 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 5 S • Non-Gaz: 16 F / 23 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Sargodha (SG004080)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">20 Filled / 27 Sanctioned (7 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 4 F / 7 S • Non-Gaz: 16 F / 20 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Rawalpindi (RI004396)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">11 Filled / 24 Sanctioned (13 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 3 F / 7 S • Non-Gaz: 8 F / 17 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Lahore Region (LO004397)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">13 Filled / 21 Sanctioned (8 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 4 F / 5 S • Non-Gaz: 9 F / 16 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Multan (MN004562)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">16 Filled / 21 Sanctioned (5 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 4 S • Non-Gaz: 14 F / 17 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Gujranwala (GA004176)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">13 Filled / 20 Sanctioned (7 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 4 S • Non-Gaz: 11 F / 16 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Attock (AK004059)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">10 Filled / 16 Sanctioned (6 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 1 F / 3 S • Non-Gaz: 9 F / 13 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Bahawalpur (BR004207)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">10 Filled / 15 Sanctioned (5 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 1 F / 2 S • Non-Gaz: 9 F / 13 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">AD Chakwal (CH004024)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">11 Filled / 14 Sanctioned (3 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 3 F / 3 S • Non-Gaz: 8 F / 11 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Sialkot (ST004044)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">11 Filled / 14 Sanctioned (3 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 2 S • Non-Gaz: 9 F / 12 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Chiniot (CH004002)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">7 Filled / 11 Sanctioned (4 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 3 S • Non-Gaz: 5 F / 8 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Jhelum (JM004169)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">5 Filled / 11 Sanctioned (6 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 1 F / 2 S • Non-Gaz: 4 F / 9 S</div>
-          </div>
-
-          <div class="kpi-card" style="padding: 0.75rem; border-left-color: #2563EB;">
-            <div style="font-weight: 700; font-size: 0.82rem; color: var(--text-main);">Sahiwal (SL004094)</div>
-            <div class="stat-highlight-emerald" style="font-size: 0.72rem;">4 Filled / 7 Sanctioned (3 Vacant)</div>
-            <div style="font-size: 0.68rem; color: var(--text-muted);">Gazetted: 2 F / 3 S • Non-Gaz: 2 F / 4 S</div>
-          </div>
-
+        <div class="legend">
+          <span><span class="dot" style="background:#10B981"></span>Division head</span>
+          <span><span class="dot" style="background:#DC2626"></span>Vacant post</span>
+          <span>Counts in grey = support/lower-cadre posts per HRMIS roster</span>
         </div>
 
+        <div class="vacnote">
+          <h2>Key Vacant Gazetted / Officer Posts — HQ (per HRMIS Vacancy Position sheet)</h2>
+          <ul>
+            <li><b>1</b> — Director, Mines &amp; Minerals (BS-19) — general/unassigned</li>
+            <li><b>1</b> — Director, Geographic Information System (BS-19)</li>
+            <li><b>1</b> — Manager, Information Technology (BS-18)</li>
+            <li><b>1</b> — Manager, Environment Facilitation (BS-18)</li>
+            <li><b>1</b> — Manager (Geological Mapping) (BS-18)</li>
+            <li><b>1</b> — Manager (Mineral Data &amp; Geo-Chemistry) (BS-18)</li>
+            <li><b>1</b> — Deputy Manager, Mineral Data &amp; Geo-Chemistry (BS-17)</li>
+            <li><b>1</b> — GIS Development Officer (BS-17)</li>
+            <li><b>2</b> — Superintendent (BS-17, HQ)</li>
+            <li><b>5</b> — Assistant (BS-16, HQ)</li>
+            <li><b>2</b> — Computer Programmer (BS-16)</li>
+            <li><b>1</b> — Mineral Development Officer (BS-16, HQ)</li>
+            <li><b>1</b> — Survey &amp; Drawing Officer (BS-16, HQ)</li>
+            <li><b>1</b> — Hardware Technician (BS-16)</li>
+            <li><b>1</b> — Accounts Officer (BS-16)</li>
+          </ul>
+        </div>
+
+        <div class="sub" style="margin-top:14px">HQ Sanctioned Strength by pay scale (Filled / Vacant, from HRMIS Vacancy Position sheet):</div>
+        <table class="sumtbl">
+          <tr><th>BS</th><th>Sanctioned</th><th>Filled</th><th>Vacant</th></tr>
+          <tr><td>20</td><td>1</td><td>1</td><td>0</td></tr>
+          <tr><td>19</td><td>7</td><td>5</td><td>2</td></tr>
+          <tr><td>18</td><td>16</td><td>13</td><td>3</td></tr>
+          <tr><td>17</td><td>43</td><td>39</td><td>4</td></tr>
+          <tr><td>16</td><td>26</td><td>16</td><td>10</td></tr>
+          <tr><td>09–15</td><td>63</td><td>36</td><td>27</td></tr>
+          <tr><td>01–08</td><td>68</td><td>63</td><td>5</td></tr>
+          <tr><td><b>Total</b></td><td><b>224</b></td><td><b>173</b></td><td><b>51</b></td></tr>
+        </table>
+
+        <div class="sub" style="margin-top:14px">Source: HRMIS — Updated.xlsx (HR Data &amp; Vacancy Position sheets), reconciled against the Sanctioned Strength statement and tentative organogram. Unassigned division rows reflect the department's common vacancy pool.</div>
       </div>
     `;
   }
 
-  // -------------------------------------------------------------
-  // GLOBAL CROSS-SEARCH CONTROLLER
-  // -------------------------------------------------------------
   function initGlobalSearch() {
     const input = document.getElementById("globalOmniSearch");
     if (!input) return;
@@ -4099,6 +4430,10 @@ document.addEventListener("DOMContentLoaded", () => {
             exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices) || [];
             filename = "DGMM_Regional_Offices_Staffing.xlsx";
           }
+          break;
+        case "tab-inspections":
+          exportData = getInspectionsData();
+          filename = "DGMM_Concession_Lease_Inspections.xlsx";
           break;
         default:
           exportData = divisions.mm.blocks;

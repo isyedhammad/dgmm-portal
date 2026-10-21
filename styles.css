@@ -4482,3 +4482,495 @@ body.dark-mode .matrix-table td {
 body.dark-mode .matrix-table tr:hover td {
   background: rgba(245, 158, 11, 0.08);
 }
+
+/* =============================================================
+   CLOSABLE STATUTORY RULE PARTS & ACCORDION
+   ============================================================= */
+.rules-accordion-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1rem;
+  background: var(--canvas-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+}
+
+.rules-statute-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.rules-toolbar-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-rules-tool {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+}
+
+.btn-rules-tool:hover {
+  background: var(--canvas-bg);
+  border-color: #10B981;
+  color: #10B981;
+}
+
+.rule-part-card {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rule-part-header {
+  user-select: none;
+  transition: background 0.15s ease;
+}
+
+.rule-part-header:hover {
+  background: rgba(16, 185, 129, 0.04);
+}
+
+.rule-part-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.rule-part-count-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  color: var(--text-muted);
+}
+
+.rule-part-chevron {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color 0.15s ease;
+}
+
+.rule-part-card.collapsed .rule-part-chevron {
+  transform: rotate(-90deg);
+}
+
+.rule-part-card.collapsed .rule-part-header {
+  border-bottom-color: transparent;
+}
+
+.rule-part-card.collapsed .rule-part-body {
+  display: none !important;
+}
+
+/* Chapter Chips Grid inside Rules Parts */
+.rule-chapters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px dashed var(--card-border);
+}
+
+.rule-chapter-chip {
+  background: var(--canvas-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 0.45rem 0.65rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.rule-chapter-chip .chapter-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.rule-chapter-chip .chapter-rules {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: #10B981;
+}
+
+/* =============================================================
+   INDIVIDUAL FIELD OFFICE SUMMARY DOSSIER CARD
+   ============================================================= */
+.office-summary-card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+  transition: all 0.2s ease;
+}
+
+.office-summary-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--card-border);
+  padding-bottom: 1rem;
+}
+
+.office-summary-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+}
+
+.office-summary-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.12);
+  color: #10B981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+}
+
+.office-summary-name {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.office-summary-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.office-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .office-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.office-metric-box {
+  background: var(--canvas-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.office-metric-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.office-metric-val {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.office-minerals-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--card-border);
+}
+
+.office-minerals-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+/* =============================================================
+   HRMIS HEADQUARTERS ORGANOGRAM (OFFICIAL ROSTER TREE)
+   ============================================================= */
+.organogram-hrmis-wrap {
+  padding: 1.25rem;
+  background: var(--canvas-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+}
+
+.organogram-hrmis-wrap h1 {
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0 0 4px;
+  color: var(--text-main);
+}
+
+.organogram-hrmis-wrap .sub {
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  margin-bottom: 14px;
+}
+
+.organogram-hrmis-wrap .summary {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.organogram-hrmis-wrap .pill {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  padding: 7px 14px;
+  font-size: 0.8rem;
+  color: var(--text-main);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+}
+
+.organogram-hrmis-wrap .pill b {
+  color: #10B981;
+}
+
+.organogram-hrmis-wrap .dg {
+  background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+  color: #FFFFFF;
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 0.95rem;
+  max-width: 600px;
+  margin: 0 auto 10px;
+  box-shadow: 0 4px 14px rgba(30, 58, 138, 0.28);
+}
+
+.organogram-hrmis-wrap .dg small {
+  display: block;
+  font-weight: 400;
+  opacity: 0.92;
+  font-size: 0.75rem;
+  margin-top: 4px;
+  color: #BFDBFE;
+}
+
+.organogram-hrmis-wrap .stem {
+  width: 2px;
+  height: 16px;
+  background: var(--card-border);
+  margin: 0 auto 12px;
+}
+
+.organogram-hrmis-wrap .grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding-bottom: 12px;
+}
+
+@media (max-width: 1280px) {
+  .organogram-hrmis-wrap .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .organogram-hrmis-wrap .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.organogram-hrmis-wrap .div {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-top: 4px solid #10B981;
+  border-radius: 10px;
+  padding: 10px;
+  font-size: 0.75rem;
+  box-sizing: border-box;
+}
+
+.organogram-hrmis-wrap .div h2 {
+  font-size: 0.84rem;
+  margin: 0 0 6px;
+  color: #10B981;
+  font-weight: 700;
+}
+
+.organogram-hrmis-wrap .head {
+  background: var(--canvas-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  padding: 6px 8px;
+  margin-bottom: 6px;
+}
+
+.organogram-hrmis-wrap .name {
+  font-weight: 700;
+  color: var(--text-main);
+  font-size: 0.78rem;
+}
+
+.organogram-hrmis-wrap .role {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+}
+
+.organogram-hrmis-wrap .branch {
+  border-left: 2px solid var(--card-border);
+  margin: 6px 0 0 4px;
+  padding-left: 8px;
+}
+
+.organogram-hrmis-wrap .branch h3 {
+  font-size: 0.7rem;
+  margin: 6px 0 3px;
+  color: var(--gold-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-weight: 700;
+}
+
+.organogram-hrmis-wrap .pos {
+  margin: 3px 0;
+  color: var(--text-main);
+  font-size: 0.73rem;
+  line-height: 1.4;
+}
+
+.organogram-hrmis-wrap .cnt {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.organogram-hrmis-wrap .vac {
+  background: rgba(220, 38, 38, 0.12);
+  color: #DC2626;
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-weight: 700;
+  font-size: 0.68rem;
+  display: inline-block;
+  margin: 1px 0;
+}
+
+.organogram-hrmis-wrap .legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: 14px 0 10px;
+}
+
+.organogram-hrmis-wrap .legend span.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+.organogram-hrmis-wrap .vacnote {
+  background: var(--card-bg);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 14px;
+}
+
+.organogram-hrmis-wrap .vacnote h2 {
+  color: #DC2626;
+  font-size: 0.95rem;
+  margin: 0 0 8px;
+}
+
+.organogram-hrmis-wrap .vacnote ul {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.78rem;
+  line-height: 1.6;
+  columns: 2;
+  column-gap: 24px;
+  color: var(--text-main);
+}
+
+.organogram-hrmis-wrap .vacnote li b {
+  color: #DC2626;
+}
+
+.organogram-hrmis-wrap table.sumtbl {
+  border-collapse: collapse;
+  font-size: 0.78rem;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 540px;
+  background: var(--card-bg);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.organogram-hrmis-wrap table.sumtbl th,
+.organogram-hrmis-wrap table.sumtbl td {
+  border: 1px solid var(--card-border);
+  padding: 5px 10px;
+  text-align: center;
+  color: var(--text-main);
+}
+
+.organogram-hrmis-wrap table.sumtbl th {
+  background: var(--canvas-bg);
+  font-weight: 700;
+}
+
+body.dark-mode .organogram-hrmis-wrap .dg {
+  background: linear-gradient(135deg, #1E3A8A 0%, #172554 100%);
+  color: #FFFFFF;
+}
+
+body.dark-mode .organogram-hrmis-wrap .div {
+  background: #131D31;
+  border-color: #1E293B;
+  border-top-color: #10B981;
+}
+
+body.dark-mode .organogram-hrmis-wrap .head {
+  background: #0B1120;
+  border-color: #1E293B;
+}
+
+body.dark-mode .organogram-hrmis-wrap .vacnote {
+  background: #131D31;
+  border-color: rgba(239, 68, 68, 0.4);
+}

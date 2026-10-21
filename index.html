@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Directorate General of Mines & Minerals (DGM&M) — Executive Monitoring Portal</title>
+  <title>DGM&M</title>
   
   <!-- Favicon & Web Font -->
   <link rel="icon" type="image/jpeg" href="assets/dgmm_logo.jpg">
@@ -275,6 +275,17 @@
         </div>
       </button>
 
+      <!-- Inspection & Monitoring -->
+      <button class="nav-link" data-tab="tab-inspections" id="navBtnInspections">
+        <div class="nav-link-content">
+          <span class="nav-icon-box"><i class="fa-solid fa-clipboard-check"></i></span>
+          <span>Inspections</span>
+        </div>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">Field</span>
+        </div>
+      </button>
+
     </nav>
 
     <!-- Sidebar Footer with Live PKT Time and Copyright -->
@@ -310,7 +321,7 @@
         </div>
         <div class="breadcrumb-area">
           <span class="breadcrumb-path" id="activeBreadcrumbSection">Executive Overview</span>
-          <h1 class="breadcrumb-title" id="activeBreadcrumbTitle">Senior Management Summary Dashboard</h1>
+          <h1 class="breadcrumb-title" id="activeBreadcrumbTitle">Overview</h1>
         </div>
       </div>
 
@@ -1117,19 +1128,41 @@
           </div>
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">Attock Office Collection</div>
-              <div class="kpi-value">PKR 1.691B</div>
-              <div class="kpi-subtext"><span>5.58M Tons output</span></div>
+              <div class="kpi-label">Annual Realization Benchmark</div>
+              <div class="kpi-value">PKR 948.3M</div>
+              <div class="kpi-subtext"><span>5-Year average annual collection</span></div>
             </div>
             <div class="kpi-icon-wrap icon-blue"><i class="fa-solid fa-chart-line"></i></div>
           </div>
           <div class="kpi-card">
             <div>
-              <div class="kpi-label">Chakwal Office Collection</div>
-              <div class="kpi-value">PKR 1.223B</div>
-              <div class="kpi-subtext"><span>7.45M Tons output</span></div>
+              <div class="kpi-label">Securities & Dead Rent Held</div>
+              <div class="kpi-value">PKR 190.77M</div>
+              <div class="kpi-subtext"><span>Statutory security reserves</span></div>
             </div>
-            <div class="kpi-icon-wrap icon-amber"><i class="fa-solid fa-landmark"></i></div>
+            <div class="kpi-icon-wrap icon-amber"><i class="fa-solid fa-vault"></i></div>
+          </div>
+        </div>
+
+        <!-- Individual Field Office Financial Summary Console -->
+        <div class="card-section" style="margin-bottom: 1.5rem;">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title"><i class="fa-solid fa-building-user" style="color: #10B981; margin-right: 0.4rem;"></i> Individual Field Office Financial Summary</h3>
+              <span class="card-subtitle">Select any individual regional field formation to inspect 5-year royalty yield, production tonnage, active leases, and revenue share</span>
+            </div>
+            <div class="sub-tabs-bar" id="officeSummarySelectorBar">
+              <button class="sub-tab-btn active" data-office-sel="ALL">All Formations (1,004)</button>
+              <button class="sub-tab-btn" data-office-sel="Attock">Attock (17)</button>
+              <button class="sub-tab-btn" data-office-sel="Chakwal">Chakwal (363)</button>
+              <button class="sub-tab-btn" data-office-sel="D.G. Khan">D.G. Khan (37)</button>
+              <button class="sub-tab-btn" data-office-sel="Jhelum">Jhelum (58)</button>
+              <button class="sub-tab-btn" data-office-sel="Khushab">Khushab (229)</button>
+              <button class="sub-tab-btn" data-office-sel="Mianwali">Mianwali (300)</button>
+            </div>
+          </div>
+          <div id="officeSummaryCardContainer" style="padding: 1.25rem 1.5rem;">
+            <!-- Rendered by renderOfficeSummaryCard() in app.js -->
           </div>
         </div>
 
@@ -1197,12 +1230,12 @@
               <thead>
                 <tr>
                   <th>Field Office</th>
-                  <th>Total Production (Tons)</th>
-                  <th>Royalty Received (PKR)</th>
-                  <th>Dead Rent (PKR)</th>
+                  <th>Active Leases</th>
+                  <th>5-Year Production (Tons)</th>
+                  <th>5-Year Royalty (PKR)</th>
                   <th>Securities Held (PKR)</th>
-                  <th>Grand Total Paid (PKR)</th>
-                  <th>Share of Output</th>
+                  <th>Grand Total Realized (PKR)</th>
+                  <th>Revenue Share</th>
                 </tr>
               </thead>
               <tbody id="fieldOfficesTableBody"></tbody>
@@ -1396,6 +1429,163 @@
             <div class="pagination-btns">
               <button class="btn-page" id="btnPrevAppeals"><i class="fa-solid fa-chevron-left"></i> Previous</button>
               <button class="btn-page" id="btnNextAppeals">Next <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- =====================================================
+           TAB: INSPECTION & MONITORING (MM, LSM, SMA LEASES)
+           ===================================================== -->
+      <div class="tab-pane" id="tab-inspections">
+
+        <!-- Executive Inspection Header Banner -->
+        <div class="rules-hero-banner" style="background: linear-gradient(135deg, #064E3B 0%, #065F46 50%, #047857 100%);">
+          <div class="rules-hero-content">
+            <div class="rules-hero-tags">
+              <span class="rules-badge-law" style="background: rgba(16, 185, 129, 0.25); color: #A7F3D0;"><i class="fa-solid fa-clipboard-check"></i> Field Monitoring Console</span>
+              <span class="rules-badge-gov"><i class="fa-solid fa-shield-halved"></i> Statutory Lease Compliance</span>
+              <span class="rules-badge-version"><i class="fa-solid fa-satellite-dish"></i> Live PITB Sync Ready</span>
+            </div>
+            <h2 class="rules-hero-title">Mining Concession Inspection & Field Compliance Tracker</h2>
+            <p class="rules-hero-desc">
+              Centralized monitoring repository of physical field inspections conducted across <strong>Minor Minerals (MM)</strong>, <strong>Large Scale Mining (LSM)</strong>, and <strong>Small Scale Mining (SMA)</strong> concessions in Punjab. Tracks boundary verification, production audit, royalty compliance, and demarcation reports.
+            </p>
+          </div>
+          <div class="rules-hero-actions">
+            <button class="rules-hero-btn primary" id="btnSyncInspections" title="Fetch / Refresh Inspections">
+              <i class="fa-solid fa-rotate"></i> Sync Portal
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Card Inspection KPI Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card" style="border-left-color: #10B981;">
+            <div class="kpi-header">
+              <span class="kpi-title">Total Field Inspections</span>
+              <div class="kpi-icon-wrap" style="color: #10B981; background: rgba(16,185,129,0.1);"><i class="fa-solid fa-clipboard-check"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiTotalInspections">342</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted">All Concession Leases</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #2563EB;">
+            <div class="kpi-header">
+              <span class="kpi-title">Minor Minerals (MM)</span>
+              <div class="kpi-icon-wrap" style="color: #2563EB; background: rgba(37,99,235,0.1);"><i class="fa-solid fa-truck-ramp-box"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiMmInspections">184</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-process">Quarry & Riverbed Leases</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #D97706;">
+            <div class="kpi-header">
+              <span class="kpi-title">Small Scale Mining (SMA)</span>
+              <div class="kpi-icon-wrap" style="color: #D97706; background: rgba(217,119,6,0.1);"><i class="fa-solid fa-trowel-bricks"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiSmaInspections">116</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted">ML & PL Titles</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #7C3AED;">
+            <div class="kpi-header">
+              <span class="kpi-title">Large Scale Mining (LSM)</span>
+              <div class="kpi-icon-wrap" style="color: #7C3AED; background: rgba(124,58,237,0.1);"><i class="fa-solid fa-industry"></i></div>
+            </div>
+            <div class="kpi-value" id="kpiLsmInspections">42</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-vacant">Industrial Leases</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Card Section with Category Tabs and Filter -->
+        <div class="card-section">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title" id="inspectionsHeading">Field Inspection Dossiers & Verification Reports</h3>
+              <span class="card-subtitle" id="inspectionsSubtitle">Inspection logs, dates, inspecting officers, lease boundaries, and factual observations</span>
+            </div>
+            <div class="card-controls">
+              <div class="sub-tabs-bar" id="inspectionsWingTabs">
+                <button class="sub-tab-btn active" data-insp-wing="ALL"><i class="fa-solid fa-layer-group"></i> All Leases</button>
+                <button class="sub-tab-btn" data-insp-wing="MM"><i class="fa-solid fa-truck-ramp-box"></i> Minor Minerals (MM)</button>
+                <button class="sub-tab-btn" data-insp-wing="SMA"><i class="fa-solid fa-trowel-bricks"></i> Small Scale (SMA)</button>
+                <button class="sub-tab-btn" data-insp-wing="LSM"><i class="fa-solid fa-industry"></i> Large Scale (LSM)</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Smart Filter Panel for Inspections -->
+          <div class="smart-filter-panel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap" style="flex: 2;">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Search Inspections</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="inspectionsSearchInput" placeholder="Search lease code, titleholder, district, inspecting officer, mineral...">
+                </div>
+              </div>
+              <div class="filter-control-wrap" style="flex: 1;">
+                <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                <select class="smart-select" id="inspectionsDistrictSelect">
+                  <option value="ALL">All Districts</option>
+                </select>
+              </div>
+              <div class="filter-control-wrap" style="flex: 1;">
+                <label class="filter-label"><i class="fa-solid fa-circle-check"></i> Finding / Status</label>
+                <select class="smart-select" id="inspectionsStatusSelect">
+                  <option value="ALL">All Statuses</option>
+                  <option value="Satisfactory">Compliant / Satisfactory</option>
+                  <option value="Notice Issued">Notice Issued</option>
+                  <option value="Pending Rectification">Pending Rectification</option>
+                  <option value="Demarcation Verified">Demarcation Verified</option>
+                </select>
+              </div>
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetInspectionsFilters" title="Reset Filters">
+                  <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="inspectionsCounterBadge"><i class="fa-solid fa-clipboard-check"></i> Showing all records</span>
+            </div>
+          </div>
+
+          <!-- Inspections Table Container -->
+          <div class="table-scroll-container">
+            <table class="table-clean" id="tableInspections">
+              <thead>
+                <tr>
+                  <th>Sr #</th>
+                  <th>Inspection Date</th>
+                  <th>Concession ID & Type</th>
+                  <th>Titleholder / Lessee</th>
+                  <th>District / Location</th>
+                  <th>Mineral</th>
+                  <th>Inspecting Officer</th>
+                  <th>Compliance Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inspectionsTableBody"></tbody>
+            </table>
+          </div>
+          <div class="table-pagination">
+            <span id="inspectionsPageInfo">Showing 1 to 15 of 342 records</span>
+            <div class="pagination-btns">
+              <button class="btn-page" id="btnPrevInspections"><i class="fa-solid fa-chevron-left"></i> Previous</button>
+              <button class="btn-page" id="btnNextInspections">Next <i class="fa-solid fa-chevron-right"></i></button>
             </div>
           </div>
         </div>
