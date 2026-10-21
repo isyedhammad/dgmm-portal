@@ -36,11 +36,12 @@
         </div>
         <div class="sidebar-branding-text">
           <span class="sidebar-gov-tag">Govt of the Punjab</span>
-          <h2 class="sidebar-title">Directorate General of Mines & Minerals Punjab</h2>
+          <h2 class="sidebar-title">DG Mines &amp; Minerals</h2>
+          <span class="sidebar-portal-sub">Executive Monitoring Portal</span>
         </div>
       </div>
       <button class="sidebar-collapse-btn" id="sidebarCollapseToggle" title="Collapse / Expand Sidebar">
-        <i class="fa-solid fa-angles-left" id="collapseIcon"></i>
+        <i class="fa-solid fa-chevron-left" id="collapseIcon"></i>
       </button>
     </div>
 
@@ -50,24 +51,22 @@
       <!-- Summary Dashboard -->
       <button class="nav-link active" data-tab="tab-overview" id="navBtnOverview">
         <div class="nav-link-content">
-          <i class="fa-solid fa-chart-pie"></i>
+          <span class="nav-icon-box"><i class="fa-solid fa-chart-pie"></i></span>
           <span>Summary Dashboard</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">Executive</span>
-          <span class="nav-arrow-placeholder"></span>
+          <span class="nav-pill pill-neutral">Overview</span>
         </div>
       </button>
 
-      <!-- Administration Division (At Top as requested) -->
+      <!-- Administration Division -->
       <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
         <div class="nav-link-content">
-          <i class="fa-solid fa-users-gear"></i>
+          <span class="nav-icon-box"><i class="fa-solid fa-users-gear"></i></span>
           <span>Administration Division</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">575 Staff</span>
-          <span class="nav-arrow-placeholder"></span>
+          <span class="nav-pill pill-neutral">575</span>
         </div>
       </button>
 
@@ -75,11 +74,11 @@
       <div class="nav-dropdown-wrap" id="dropdownLsmWrap">
         <div class="nav-link nav-dropdown-toggle" data-tab="tab-lsm" id="navBtnLsm">
           <div class="nav-link-content">
-            <i class="fa-solid fa-industry"></i>
+            <span class="nav-icon-box"><i class="fa-solid fa-industry"></i></span>
             <span>Large Scale Mining</span>
           </div>
           <div class="nav-meta-wrap">
-            <span class="nav-pill pill-lsm">126 Titles</span>
+            <span class="nav-pill pill-lsm">126</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
@@ -91,7 +90,6 @@
             </div>
             <div class="submenu-meta-wrap">
               <span class="submenu-pill">75</span>
-              <span class="submenu-arrow-placeholder"></span>
             </div>
           </button>
           <button class="submenu-item" data-lsm-sub="exploration" id="menuItemLsmExploration">
@@ -101,7 +99,6 @@
             </div>
             <div class="submenu-meta-wrap">
               <span class="submenu-pill">51</span>
-              <span class="submenu-arrow-placeholder"></span>
             </div>
           </button>
         </div>
@@ -111,11 +108,11 @@
       <div class="nav-dropdown-wrap" id="dropdownSmaWrap">
         <div class="nav-link nav-dropdown-toggle" data-tab="tab-sma" id="navBtnSma">
           <div class="nav-link-content">
-            <i class="fa-solid fa-trowel-bricks"></i>
+            <span class="nav-icon-box"><i class="fa-solid fa-trowel-bricks"></i></span>
             <span>Small Scale Mining</span>
           </div>
           <div class="nav-meta-wrap">
-            <span class="nav-pill pill-sma">1,172 Titles</span>
+            <span class="nav-pill pill-sma">1,172</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
@@ -180,27 +177,26 @@
         </div>
       </div>
 
-      <!-- 3. Minor Minerals as it is -->
+      <!-- 3. Minor Minerals -->
       <button class="nav-link" data-tab="tab-mm" id="navBtnMm">
         <div class="nav-link-content">
-          <i class="fa-solid fa-cubes-stacked"></i>
+          <span class="nav-icon-box"><i class="fa-solid fa-cubes-stacked"></i></span>
           <span>Minor Minerals</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-mm">510 Blocks</span>
-          <span class="nav-arrow-placeholder"></span>
+          <span class="nav-pill pill-mm">510</span>
         </div>
       </button>
 
-      <!-- 4. Relevant Rules & Acts (PMCR 2002 & M&M Act 2025) -->
+      <!-- 4. Relevant Rules & Acts -->
       <div class="nav-dropdown-wrap" id="dropdownRulesWrap">
         <div class="nav-link nav-dropdown-toggle" data-tab="tab-rules" id="navBtnRules">
           <div class="nav-link-content">
-            <i class="fa-solid fa-scale-balanced"></i>
-            <span>Relevant Rules & Acts</span>
+            <span class="nav-icon-box"><i class="fa-solid fa-scale-balanced"></i></span>
+            <span>Relevant Rules &amp; Acts</span>
           </div>
           <div class="nav-meta-wrap">
-            <span class="nav-pill pill-rules">2 Statutes</span>
+            <span class="nav-pill pill-rules">2 Acts</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
@@ -212,17 +208,15 @@
             </div>
             <div class="submenu-meta-wrap">
               <span class="submenu-pill">238 Rules</span>
-              <span class="submenu-arrow-placeholder"></span>
             </div>
           </button>
           <button class="submenu-item" data-rules-tab="act2025" id="menuItemRulesAct">
             <div class="submenu-item-content">
               <i class="fa-solid fa-landmark-dome"></i>
-              <span>M&M Act 2025</span>
+              <span>M&amp;M Act 2025</span>
             </div>
             <div class="submenu-meta-wrap">
               <span class="submenu-pill">134 Secs</span>
-              <span class="submenu-arrow-placeholder"></span>
             </div>
           </button>
           <button class="submenu-item" data-rules-tab="matrix" id="menuItemRulesMatrix">
@@ -232,7 +226,6 @@
             </div>
             <div class="submenu-meta-wrap">
               <span class="submenu-pill">Overview</span>
-              <span class="submenu-arrow-placeholder"></span>
             </div>
           </button>
         </div>
@@ -241,48 +234,44 @@
       <!-- Spatial Intelligence: GIS Mineral Map -->
       <button class="nav-link" data-tab="tab-map" id="navBtnMap">
         <div class="nav-link-content">
-          <i class="fa-solid fa-map-location-dot"></i>
+          <span class="nav-icon-box"><i class="fa-solid fa-map-location-dot"></i></span>
           <span>GIS Mineral Map</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">1,260 Polygons</span>
-          <span class="nav-arrow-placeholder"></span>
+          <span class="nav-pill pill-neutral">1,260</span>
         </div>
       </button>
 
       <!-- Financials & Royalty Rollup -->
       <button class="nav-link" data-tab="tab-financials" id="navBtnFinancials">
         <div class="nav-link-content">
-          <i class="fa-solid fa-coins"></i>
-          <span>Revenue & Royalties</span>
+          <span class="nav-icon-box"><i class="fa-solid fa-coins"></i></span>
+          <span>Revenue &amp; Royalties</span>
         </div>
         <div class="nav-meta-wrap">
           <span class="nav-pill pill-neutral">Rs 4.74B</span>
-          <span class="nav-arrow-placeholder"></span>
         </div>
       </button>
 
       <!-- EPA Clearances -->
       <button class="nav-link" data-tab="tab-epa" id="navBtnEpa">
         <div class="nav-link-content">
-          <i class="fa-solid fa-seedling"></i>
+          <span class="nav-icon-box"><i class="fa-solid fa-seedling"></i></span>
           <span>EPA Clearances</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">151 Cases</span>
-          <span class="nav-arrow-placeholder"></span>
+          <span class="nav-pill pill-neutral">151</span>
         </div>
       </button>
 
       <!-- Appellate Authority -->
       <button class="nav-link" data-tab="tab-appeals" id="navBtnAppeals">
         <div class="nav-link-content">
-          <i class="fa-solid fa-gavel"></i>
+          <span class="nav-icon-box"><i class="fa-solid fa-gavel"></i></span>
           <span>Appellate Authority</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">187 Appeals</span>
-          <span class="nav-arrow-placeholder"></span>
+          <span class="nav-pill pill-neutral">187</span>
         </div>
       </button>
 
@@ -291,7 +280,7 @@
     <!-- Sidebar Footer with Live PKT Time and Copyright -->
     <div class="sidebar-footer">
       <div class="sidebar-time-badge" id="sidebarLiveTime" title="Live Pakistan Standard Time">
-        <i class="fa-regular fa-clock"></i>
+        <span class="live-pulse-dot"></span>
         <span id="livePktTime">--:--:-- PKT</span>
       </div>
       <div class="sidebar-copyright-text" title="Government of the Punjab">
@@ -768,24 +757,37 @@
             
             <div class="card-controls">
               <!-- Primary Sub-tabs: Mining Leases & Prospecting Licenses -->
-              <div class="sub-tabs-bar">
-                <button class="sub-tab-btn active" data-sma-category="leases" id="subBtnSmaLeases">Mining Leases (1,040)</button>
-                <button class="sub-tab-btn" data-sma-category="prospecting" id="subBtnSmaProspecting">Prospecting Licenses (132)</button>
-                <button class="sub-tab-btn" data-sma-category="matrix" id="subBtnSmaMatrix">District Matrix</button>
+              <div class="sub-tabs-bar primary-segment-bar">
+                <button class="sub-tab-btn active" data-sma-category="leases" id="subBtnSmaLeases">
+                  <i class="fa-solid fa-file-contract"></i>
+                  <span>Mining Leases</span>
+                  <span class="tab-chip">1,040</span>
+                </button>
+                <button class="sub-tab-btn" data-sma-category="prospecting" id="subBtnSmaProspecting">
+                  <i class="fa-solid fa-compass-drafting"></i>
+                  <span>Prospecting Licenses</span>
+                  <span class="tab-chip">132</span>
+                </button>
+                <button class="sub-tab-btn" data-sma-category="matrix" id="subBtnSmaMatrix">
+                  <i class="fa-solid fa-table-cells"></i>
+                  <span>District Matrix</span>
+                </button>
               </div>
 
               <!-- Mode Toggles for Mining Leases: All vs Application vs Auction -->
-              <div class="sub-tabs-bar" id="smaModeToggles">
-                <button class="sub-tab-btn active" data-sma-mode="ALL" id="btnSmaModeAllLeases">All Leases (1,040)</button>
-                <button class="sub-tab-btn" data-sma-mode="application" id="btnSmaModeApplication">Application Mode (789)</button>
-                <button class="sub-tab-btn" data-sma-mode="auction" id="btnSmaModeAuction">Auction Mode (251)</button>
+              <div class="sub-tabs-bar mode-filter-bar" id="smaModeToggles">
+                <span class="mode-bar-label"><i class="fa-solid fa-filter"></i> Mode:</span>
+                <button class="sub-tab-btn mode-pill active" data-sma-mode="ALL" id="btnSmaModeAllLeases">All (1,040)</button>
+                <button class="sub-tab-btn mode-pill" data-sma-mode="application" id="btnSmaModeApplication">Application (789)</button>
+                <button class="sub-tab-btn mode-pill" data-sma-mode="auction" id="btnSmaModeAuction">Auction (251)</button>
               </div>
 
               <!-- Mode Toggles for Prospecting Licenses: All vs Application vs Auction -->
-              <div class="sub-tabs-bar" id="smaProspectModeToggles" style="display: none;">
-                <button class="sub-tab-btn active" data-sma-prospect-mode="ALL" id="btnSmaProsAll">All Prospecting (132)</button>
-                <button class="sub-tab-btn" data-sma-prospect-mode="application" id="btnSmaProsApp">Application Mode (103)</button>
-                <button class="sub-tab-btn" data-sma-prospect-mode="auction" id="btnSmaProsAuc">Auction Mode (29)</button>
+              <div class="sub-tabs-bar mode-filter-bar" id="smaProspectModeToggles" style="display: none;">
+                <span class="mode-bar-label"><i class="fa-solid fa-filter"></i> Mode:</span>
+                <button class="sub-tab-btn mode-pill active" data-sma-prospect-mode="ALL" id="btnSmaProsAll">All (132)</button>
+                <button class="sub-tab-btn mode-pill" data-sma-prospect-mode="application" id="btnSmaProsApp">Application (103)</button>
+                <button class="sub-tab-btn mode-pill" data-sma-prospect-mode="auction" id="btnSmaProsAuc">Auction (29)</button>
               </div>
             </div>
           </div>

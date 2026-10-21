@@ -1954,7 +1954,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
                 <td><code>${r.code}</code></td>
                 <td style="font-weight: 600; color: var(--text-main);">${r.title}</td>
-                <td><span class="nav-pill ${r.mode.includes('Auction') ? 'pill-sma' : 'pill-neutral'}">${r.mode}</span></td>
+                <td><span class="mode-tag ${r.mode.includes('Auction') ? 'mode-auction' : 'mode-application'}">${r.mode}</span></td>
                 <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
                 <td>${r._normDistrict || r.district}</td>
                 <td><small>${r._fieldOffice || '-'}</small></td>
@@ -1971,7 +1971,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
               <td><code>${r.code}</code></td>
               <td style="font-weight: 600; color: var(--text-main);">${r.title}</td>
-              <td><span class="nav-pill ${r.mode.includes('Auction') ? 'pill-sma' : 'pill-neutral'}">${r.mode}</span></td>
+              <td><span class="mode-tag ${r.mode.includes('Auction') ? 'mode-auction' : 'mode-application'}">${r.mode}</span></td>
               <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
               <td>${r._normDistrict || r.district}</td>
               <td><small>${r._fieldOffice || '-'}</small></td>
