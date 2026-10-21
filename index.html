@@ -31,8 +31,8 @@
     <div class="sidebar-header" id="sidebarHeader">
       <div class="sidebar-branding" id="sidebarBranding">
         <div class="sidebar-crests-row" id="sidebarCrestsRow" title="Directorate General of Mines & Minerals (Click to Toggle Sidebar)">
-          <img src="assets/punjab_logo.png" alt="Government of the Punjab" class="sidebar-crest-punjab" width="40" height="40" title="Government of the Punjab">
-          <img src="assets/dgmm_logo.png" alt="Directorate General of Mines & Minerals" class="sidebar-crest-dgmm" width="30" height="30" title="Directorate General of Mines & Minerals">
+          <img src="assets/punjab_logo.png" alt="Government of the Punjab" class="sidebar-crest-punjab" width="32" height="32" title="Government of the Punjab">
+          <img src="assets/dgmm_logo.png" alt="Directorate General of Mines & Minerals" class="sidebar-crest-dgmm" width="32" height="32" title="Directorate General of Mines & Minerals">
         </div>
         <div class="sidebar-branding-text">
           <span class="sidebar-gov-tag">Govt of the Punjab</span>
@@ -53,6 +53,10 @@
           <i class="fa-solid fa-chart-pie"></i>
           <span>Summary Dashboard</span>
         </div>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">Executive</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
 
       <!-- Administration Division (At Top as requested) -->
@@ -61,7 +65,10 @@
           <i class="fa-solid fa-users-gear"></i>
           <span>Administration Division</span>
         </div>
-        <span class="nav-pill pill-neutral">575 Staff</span>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">575 Staff</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
 
       <!-- 1. Large Scale Mining with Dropdown -->
@@ -71,44 +78,105 @@
             <i class="fa-solid fa-industry"></i>
             <span>Large Scale Mining</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.35rem;">
+          <div class="nav-meta-wrap">
             <span class="nav-pill pill-lsm">126 Titles</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
         <div class="sidebar-submenu" id="submenuLsm">
           <button class="submenu-item active" data-lsm-sub="leases" id="menuItemLsmLeases">
-            <span>Mining Leases</span>
-            <span class="submenu-pill">75</span>
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-file-contract"></i>
+              <span>Mining Leases</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">75</span>
+              <span class="submenu-arrow-placeholder"></span>
+            </div>
           </button>
           <button class="submenu-item" data-lsm-sub="exploration" id="menuItemLsmExploration">
-            <span>Exploration Licenses</span>
-            <span class="submenu-pill">51</span>
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-compass-drafting"></i>
+              <span>Exploration Licenses</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">51</span>
+              <span class="submenu-arrow-placeholder"></span>
+            </div>
           </button>
         </div>
       </div>
 
-      <!-- 2. Small Scale Mining with Dropdown -->
+      <!-- 2. Small Scale Mining with Multi-Tier Dropdowns -->
       <div class="nav-dropdown-wrap" id="dropdownSmaWrap">
         <div class="nav-link nav-dropdown-toggle" data-tab="tab-sma" id="navBtnSma">
           <div class="nav-link-content">
             <i class="fa-solid fa-trowel-bricks"></i>
             <span>Small Scale Mining</span>
           </div>
-          <div style="display: flex; align-items: center; gap: 0.35rem;">
+          <div class="nav-meta-wrap">
             <span class="nav-pill pill-sma">1,172 Titles</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
         <div class="sidebar-submenu" id="submenuSma">
-          <button class="submenu-item active" data-sma-category="leases" id="menuItemSmaLeases">
-            <span>Mining Leases</span>
-            <span class="submenu-pill">1,040</span>
-          </button>
-          <button class="submenu-item" data-sma-category="prospecting" id="menuItemSmaProspecting">
-            <span>Prospecting Licenses</span>
-            <span class="submenu-pill">132</span>
-          </button>
+          
+          <!-- Nested: Mining Leases (1,040) -->
+          <div class="nested-dropdown-wrap open" id="nestedSmaLeasesWrap">
+            <div class="submenu-item submenu-dropdown-toggle active" data-sma-category="leases" id="menuItemSmaLeases">
+              <div class="submenu-item-content">
+                <i class="fa-solid fa-folder-open nested-folder-icon"></i>
+                <span>Mining Leases</span>
+              </div>
+              <div class="submenu-meta-wrap">
+                <span class="submenu-pill">1,040</span>
+                <i class="fa-solid fa-chevron-down nested-dropdown-arrow"></i>
+              </div>
+            </div>
+            <div class="nested-submenu" id="nestedSubmenuLeases">
+              <button class="nested-item active" data-sma-category="leases" data-sma-mode="ALL" id="menuItemSmaLeasesAll">
+                <span class="nested-item-label"><i class="fa-solid fa-layer-group"></i> All Mining Leases</span>
+                <span class="nested-pill">1,040</span>
+              </button>
+              <button class="nested-item" data-sma-category="leases" data-sma-mode="application" id="menuItemSmaLeasesApp">
+                <span class="nested-item-label"><i class="fa-regular fa-file-lines"></i> Application Mode</span>
+                <span class="nested-pill pill-app">789</span>
+              </button>
+              <button class="nested-item" data-sma-category="leases" data-sma-mode="auction" id="menuItemSmaLeasesAuc">
+                <span class="nested-item-label"><i class="fa-solid fa-gavel"></i> Auction Mode</span>
+                <span class="nested-pill pill-auc">251</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Nested: Prospecting Licenses (132) -->
+          <div class="nested-dropdown-wrap" id="nestedSmaProspectingWrap">
+            <div class="submenu-item submenu-dropdown-toggle" data-sma-category="prospecting" id="menuItemSmaProspecting">
+              <div class="submenu-item-content">
+                <i class="fa-solid fa-folder nested-folder-icon"></i>
+                <span>Prospecting Licenses</span>
+              </div>
+              <div class="submenu-meta-wrap">
+                <span class="submenu-pill">132</span>
+                <i class="fa-solid fa-chevron-down nested-dropdown-arrow"></i>
+              </div>
+            </div>
+            <div class="nested-submenu" id="nestedSubmenuProspecting">
+              <button class="nested-item" data-sma-category="prospecting" data-sma-mode="ALL" id="menuItemSmaProsAll">
+                <span class="nested-item-label"><i class="fa-solid fa-layer-group"></i> All Prospecting</span>
+                <span class="nested-pill">132</span>
+              </button>
+              <button class="nested-item" data-sma-category="prospecting" data-sma-mode="application" id="menuItemSmaProsApp">
+                <span class="nested-item-label"><i class="fa-regular fa-file-lines"></i> Application Mode</span>
+                <span class="nested-pill pill-app">103</span>
+              </button>
+              <button class="nested-item" data-sma-category="prospecting" data-sma-mode="auction" id="menuItemSmaProsAuc">
+                <span class="nested-item-label"><i class="fa-solid fa-gavel"></i> Auction Mode</span>
+                <span class="nested-pill pill-auc">29</span>
+              </button>
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -118,8 +186,57 @@
           <i class="fa-solid fa-cubes-stacked"></i>
           <span>Minor Minerals</span>
         </div>
-        <span class="nav-pill pill-mm">510 Blocks</span>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-mm">510 Blocks</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
+
+      <!-- 4. Relevant Rules & Acts (PMCR 2002 & M&M Act 2025) -->
+      <div class="nav-dropdown-wrap" id="dropdownRulesWrap">
+        <div class="nav-link nav-dropdown-toggle" data-tab="tab-rules" id="navBtnRules">
+          <div class="nav-link-content">
+            <i class="fa-solid fa-scale-balanced"></i>
+            <span>Relevant Rules & Acts</span>
+          </div>
+          <div class="nav-meta-wrap">
+            <span class="nav-pill pill-rules">2 Statutes</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
+        </div>
+        <div class="sidebar-submenu" id="submenuRules">
+          <button class="submenu-item active" data-rules-tab="pmcr2002" id="menuItemRulesPmcr">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-book-bookmark"></i>
+              <span>PMCR 2002</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">238 Rules</span>
+              <span class="submenu-arrow-placeholder"></span>
+            </div>
+          </button>
+          <button class="submenu-item" data-rules-tab="act2025" id="menuItemRulesAct">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-landmark-dome"></i>
+              <span>M&M Act 2025</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">134 Secs</span>
+              <span class="submenu-arrow-placeholder"></span>
+            </div>
+          </button>
+          <button class="submenu-item" data-rules-tab="matrix" id="menuItemRulesMatrix">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-code-compare"></i>
+              <span>Comparative Matrix</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">Overview</span>
+              <span class="submenu-arrow-placeholder"></span>
+            </div>
+          </button>
+        </div>
+      </div>
 
       <!-- Spatial Intelligence: GIS Mineral Map -->
       <button class="nav-link" data-tab="tab-map" id="navBtnMap">
@@ -127,7 +244,10 @@
           <i class="fa-solid fa-map-location-dot"></i>
           <span>GIS Mineral Map</span>
         </div>
-        <span class="nav-pill pill-neutral">1,260 Polygons</span>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">1,260 Polygons</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
 
       <!-- Financials & Royalty Rollup -->
@@ -136,7 +256,10 @@
           <i class="fa-solid fa-coins"></i>
           <span>Revenue & Royalties</span>
         </div>
-        <span class="nav-pill pill-neutral">Rs 4.74B</span>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">Rs 4.74B</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
 
       <!-- EPA Clearances -->
@@ -145,29 +268,34 @@
           <i class="fa-solid fa-seedling"></i>
           <span>EPA Clearances</span>
         </div>
-        <span class="nav-pill pill-neutral">151 Cases</span>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">151 Cases</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
 
       <!-- Appellate Authority -->
       <button class="nav-link" data-tab="tab-appeals" id="navBtnAppeals">
         <div class="nav-link-content">
-          <i class="fa-solid fa-scale-balanced"></i>
+          <i class="fa-solid fa-gavel"></i>
           <span>Appellate Authority</span>
         </div>
-        <span class="nav-pill pill-neutral">187 Appeals</span>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">187 Appeals</span>
+          <span class="nav-arrow-placeholder"></span>
+        </div>
       </button>
 
     </nav>
 
-    <!-- Sidebar Footer with Live PKT Time and Cloud Status -->
+    <!-- Sidebar Footer with Live PKT Time and Copyright -->
     <div class="sidebar-footer">
       <div class="sidebar-time-badge" id="sidebarLiveTime" title="Live Pakistan Standard Time">
         <i class="fa-regular fa-clock"></i>
         <span id="livePktTime">--:--:-- PKT</span>
       </div>
-      <div class="cloud-sync-pill" title="Hosted permanently in the cloud on GitHub Pages">
-        <span class="pulse-dot"></span>
-        <span>Cloud Hosted • Live Portal</span>
+      <div class="sidebar-copyright-text" title="Government of the Punjab">
+        <span>&copy; DGMM Punjab</span>
       </div>
     </div>
 
@@ -289,22 +417,20 @@
 
         </div>
 
-        <!-- 3 Symmetrical Pillars: Large Scale Mining, Small Scale Mining, Minor Minerals -->
-        <div class="pillars-grid">
+        <!-- 3 Pillars: Large Scale Mining, Small Scale Mining, Minor Minerals -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
           
           <!-- Pillar 1: Large Scale Mining -->
           <div class="pillar-card pillar-lsm">
             <div class="pillar-header">
-              <div class="pillar-title-group">
-                <span class="badge-status-pill pill-lsm">126 Active Titles</span>
-                <h3 class="pillar-title">Large Scale Mining</h3>
-              </div>
-              <div class="pillar-icon-wrap icon-blue">
-                <i class="fa-solid fa-industry"></i>
-              </div>
+              <span class="pillar-tag tag-lsm">Major Industry</span>
+              <button class="pillar-link-btn" onclick="document.getElementById('navBtnLsm').click()">
+                Explore Division <i class="fa-solid fa-arrow-right"></i>
+              </button>
             </div>
+            <h3 class="pillar-title">Large Scale Mining</h3>
             <p class="pillar-desc">
-              Major industrial leases serving strategic cement manufacturers and chemical producers across limestone, gypsum, and coal formations under PMCR Rule 46(3).
+              Major industrial leases serving strategic cement manufacturers (Fauji, Bestway, DG Khan, Maple Leaf, Gharibwal) and chemical producers under PMCR Rule 46(3).
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
@@ -313,85 +439,69 @@
               </div>
               <div class="pillar-stat-row">
                 <span>Exploration Licenses (EL)</span>
-                <strong>51 Titles (Survey Grid)</strong>
+                <strong>51 Titles (126 Total LSM)</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Total Concession Portfolio</span>
-                <strong>126 Active Titles</strong>
+                <span>Pending Scrutiny</span>
+                <strong>156 Cases Processed</strong>
               </div>
             </div>
-            <button class="pillar-action-btn btn-pillar-lsm" onclick="document.getElementById('navBtnLsm').click()">
-              <span>Explore Division</span>
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
           </div>
 
           <!-- Pillar 2: Small Scale Mining -->
           <div class="pillar-card pillar-sma">
             <div class="pillar-header">
-              <div class="pillar-title-group">
-                <span class="badge-status-pill pill-sma">1,172 Active Titles</span>
-                <h3 class="pillar-title">Small Scale Mining</h3>
-              </div>
-              <div class="pillar-icon-wrap icon-gold">
-                <i class="fa-solid fa-trowel-bricks"></i>
-              </div>
+              <span class="pillar-tag tag-sma">Titles & Concessions</span>
+              <button class="pillar-link-btn" onclick="document.getElementById('navBtnSma').click()">
+                Explore Division <i class="fa-solid fa-arrow-right"></i>
+              </button>
             </div>
+            <h3 class="pillar-title">Small Scale Mining</h3>
             <p class="pillar-desc">
               Extensive mining titles and prospecting rights for Coal, Rock Salt, Limestone, Fireclay, Gypsum, Iron Ore, and Bauxite awarded via transparent e-auctions & applications.
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
-                <span>Mining Leases (ML)</span>
-                <strong>1,040 Active Leases</strong>
+                <span>Mining Leases (Auction)</span>
+                <strong>251 Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Prospecting Licenses (PL)</span>
+                <span>Mining Leases (Application)</span>
+                <strong>789 Leases</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Prospecting Licenses</span>
                 <strong>132 Licenses</strong>
               </div>
-              <div class="pillar-stat-row">
-                <span>Total Concession Portfolio</span>
-                <strong>1,172 Active Titles</strong>
-              </div>
             </div>
-            <button class="pillar-action-btn btn-pillar-sma" onclick="document.getElementById('navBtnSma').click()">
-              <span>Explore Division</span>
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
           </div>
 
           <!-- Pillar 3: Minor Minerals -->
           <div class="pillar-card pillar-mm">
             <div class="pillar-header">
-              <div class="pillar-title-group">
-                <span class="badge-status-pill pill-mm">510 Quarry Blocks</span>
-                <h3 class="pillar-title">Minor Minerals</h3>
-              </div>
-              <div class="pillar-icon-wrap icon-emerald">
-                <i class="fa-solid fa-cubes-stacked"></i>
-              </div>
+              <span class="pillar-tag tag-mm">Quarries & Riverbeds</span>
+              <button class="pillar-link-btn" onclick="document.getElementById('navBtnMm').click()">
+                Explore Division <i class="fa-solid fa-arrow-right"></i>
+              </button>
             </div>
+            <h3 class="pillar-title">Minor Minerals</h3>
             <p class="pillar-desc">
               Riverbed sand blocks, sandstone quarries, gravel, and slate stone zones across all 36 districts auctioned competitively on multi-round provincial public bidding.
             </p>
             <div class="pillar-stats">
               <div class="pillar-stat-row">
+                <span>Total Minor Mineral Blocks</span>
+                <strong>510 Blocks</strong>
+              </div>
+              <div class="pillar-stat-row">
                 <span>Granted Concessions</span>
                 <strong>460 Operational Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Vacant for Public Auction</span>
+                <span>Vacant for Auction</span>
                 <strong>50 Ready for Bidding</strong>
               </div>
-              <div class="pillar-stat-row">
-                <span>Total Concession Portfolio</span>
-                <strong>510 Quarry Blocks</strong>
-              </div>
             </div>
-            <button class="pillar-action-btn btn-pillar-mm" onclick="document.getElementById('navBtnMm').click()">
-              <span>Explore Division</span>
-              <i class="fa-solid fa-arrow-right"></i>
-            </button>
           </div>
 
         </div>
@@ -659,15 +769,23 @@
             <div class="card-controls">
               <!-- Primary Sub-tabs: Mining Leases & Prospecting Licenses -->
               <div class="sub-tabs-bar">
-                <button class="sub-tab-btn active" data-sma-category="leases" id="subBtnSmaLeases">Mining Leases</button>
+                <button class="sub-tab-btn active" data-sma-category="leases" id="subBtnSmaLeases">Mining Leases (1,040)</button>
                 <button class="sub-tab-btn" data-sma-category="prospecting" id="subBtnSmaProspecting">Prospecting Licenses (132)</button>
                 <button class="sub-tab-btn" data-sma-category="matrix" id="subBtnSmaMatrix">District Matrix</button>
               </div>
 
-              <!-- Mode Toggles for Mining Leases: Auction Mode vs Application Mode -->
+              <!-- Mode Toggles for Mining Leases: All vs Application vs Auction -->
               <div class="sub-tabs-bar" id="smaModeToggles">
-                <button class="sub-tab-btn active" data-sma-mode="auction" id="btnSmaModeAuction">Auction Mode (251)</button>
+                <button class="sub-tab-btn active" data-sma-mode="ALL" id="btnSmaModeAllLeases">All Leases (1,040)</button>
                 <button class="sub-tab-btn" data-sma-mode="application" id="btnSmaModeApplication">Application Mode (789)</button>
+                <button class="sub-tab-btn" data-sma-mode="auction" id="btnSmaModeAuction">Auction Mode (251)</button>
+              </div>
+
+              <!-- Mode Toggles for Prospecting Licenses: All vs Application vs Auction -->
+              <div class="sub-tabs-bar" id="smaProspectModeToggles" style="display: none;">
+                <button class="sub-tab-btn active" data-sma-prospect-mode="ALL" id="btnSmaProsAll">All Prospecting (132)</button>
+                <button class="sub-tab-btn" data-sma-prospect-mode="application" id="btnSmaProsApp">Application Mode (103)</button>
+                <button class="sub-tab-btn" data-sma-prospect-mode="auction" id="btnSmaProsAuc">Auction Mode (29)</button>
               </div>
             </div>
           </div>
@@ -1482,7 +1600,194 @@
 
       </div>
 
+      <!-- =========================================================
+           RELEVANT RULES & ACTS (PMCR 2002 & PUNJAB MINES AND MINERALS ACT 2025)
+           ========================================================= -->
+      <div class="tab-pane" id="tab-rules">
+
+        <!-- Executive Regulatory Header Banner -->
+        <div class="rules-hero-banner">
+          <div class="rules-hero-content">
+            <div class="rules-hero-tags">
+              <span class="rules-badge-law"><i class="fa-solid fa-scale-balanced"></i> Statutory Mining Law</span>
+              <span class="rules-badge-gov"><i class="fa-solid fa-landmark"></i> Government of the Punjab</span>
+              <span class="rules-badge-version"><i class="fa-solid fa-certificate"></i> Gazette Authorized Repository</span>
+            </div>
+            <h2 class="rules-hero-title">Provincial Mining Regulatory & Statutory Intelligence Console</h2>
+            <p class="rules-hero-desc">
+              Official legal repository of <strong>The Punjab Mining Concession Rules 2002</strong> (amended up to Jan 2023) and the landmark <strong>Punjab Mines and Minerals Act 2025</strong> (Act XCVIII of 2025, enacted 18 Dec 2025). Interactive legal search, chapter provisions, statutory fee and royalty schedules, and comparative legislative matrix.
+            </p>
+          </div>
+          <div class="rules-hero-actions">
+            <a href="https://punjablaws.gov.pk" target="_blank" class="rules-hero-btn secondary" title="Punjab Code Laws Portal">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> Punjab Laws
+            </a>
+            <button class="rules-hero-btn primary" id="btnExportRulesSummary" title="Print / Export Statute Summary">
+              <i class="fa-solid fa-file-pdf"></i> Export Legal Summary
+            </button>
+          </div>
+        </div>
+
+        <!-- 4-Card Statutory KPI Ribbon -->
+        <div class="kpi-grid">
+          
+          <div class="kpi-card" style="border-left-color: #2563EB;">
+            <div class="kpi-header">
+              <span class="kpi-title">PMCR 2002 (Amended 2023)</span>
+              <div class="kpi-icon-wrap" style="color: #2563EB; background: rgba(37,99,235,0.1);"><i class="fa-solid fa-book-bookmark"></i></div>
+            </div>
+            <div class="kpi-value">238 Rules</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">5 Parts</span>
+              <span class="badge-status-pill badge-process" style="font-size: 0.72rem; margin-left: 4px;">3 Schedules</span>
+              <span style="font-size: 0.73rem; color: var(--text-muted); margin-left: 6px;">Saved u/s 134(3)</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #D97706;">
+            <div class="kpi-header">
+              <span class="kpi-title">Punjab Mines & Minerals Act 2025</span>
+              <div class="kpi-icon-wrap" style="color: #D97706; background: rgba(217,119,6,0.1);"><i class="fa-solid fa-landmark-dome"></i></div>
+            </div>
+            <div class="kpi-value">134 Sections</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">13 Parts</span>
+              <span class="badge-status-pill badge-process" style="font-size: 0.72rem; margin-left: 4px;">10 Schedules</span>
+              <span style="font-size: 0.73rem; color: #D97706; font-weight: 600; margin-left: 6px;">Act XCVIII of 2025</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #059669;">
+            <div class="kpi-header">
+              <span class="kpi-title">Statutory Authorities & Cadastre</span>
+              <div class="kpi-icon-wrap" style="color: #059669; background: rgba(5,150,105,0.1);"><i class="fa-solid fa-sitemap"></i></div>
+            </div>
+            <div class="kpi-value">4 Tiers</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">Licensing Authority</span>
+              <span class="badge-status-pill badge-granted" style="font-size: 0.72rem; margin-left: 4px;">Cadastre System</span>
+              <span class="badge-status-pill badge-vacant" style="font-size: 0.72rem; margin-left: 4px;">MIFA</span>
+            </div>
+          </div>
+
+          <div class="kpi-card" style="border-left-color: #7C3AED;">
+            <div class="kpi-header">
+              <span class="kpi-title">Enforcement & Judicial Relief</span>
+              <div class="kpi-icon-wrap" style="color: #7C3AED; background: rgba(124,58,237,0.1);"><i class="fa-solid fa-shield-halved"></i></div>
+            </div>
+            <div class="kpi-value">2 Wings</div>
+            <div class="kpi-desc">
+              <span class="badge-status-pill badge-process" style="font-size: 0.72rem;">Appellate Tribunal</span>
+              <span class="badge-status-pill badge-vacant" style="font-size: 0.72rem; margin-left: 4px;">Mines Force</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Main Card Section with Navigation, Filter, and Provisions -->
+        <div class="card-section">
+          
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title" id="rulesTabHeading">The Punjab Mining Concession Rules, 2002</h3>
+              <span class="card-subtitle" id="rulesTabSubheading">Comprehensive rules governing concession procedures, eligibility, priority, development schemes, royalties, and dead rents</span>
+            </div>
+            
+            <div class="card-controls">
+              <!-- Primary Statute Switcher Tabs -->
+              <div class="sub-tabs-bar" id="rulesStatuteTabs">
+                <button class="sub-tab-btn active" data-statute-tab="pmcr2002" id="tabBtnRulesPmcr">
+                  <i class="fa-solid fa-book-bookmark"></i> PMCR 2002 (238 Rules)
+                </button>
+                <button class="sub-tab-btn" data-statute-tab="act2025" id="tabBtnRulesAct">
+                  <i class="fa-solid fa-landmark-dome"></i> M&M Act 2025 (134 Secs)
+                </button>
+                <button class="sub-tab-btn" data-statute-tab="matrix" id="tabBtnRulesMatrix">
+                  <i class="fa-solid fa-code-compare"></i> Comparative Statutory Matrix
+                </button>
+              </div>
+
+              <!-- Secondary View Toggle: Rules/Sections Text vs Official Schedules -->
+              <div class="sub-tabs-bar" id="rulesViewModeBar">
+                <button class="sub-tab-btn active" data-rules-view="text" id="btnRulesViewText">
+                  <i class="fa-solid fa-list-check"></i> Statutory Provisions
+                </button>
+                <button class="sub-tab-btn" data-rules-view="schedules" id="btnRulesViewSchedules">
+                  <i class="fa-solid fa-table-list"></i> Schedules & Rates
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Smart Search & Part Filter Panel -->
+          <div class="smart-filter-panel" id="rulesFilterPanel">
+            <div class="filter-inputs-row">
+              <div class="filter-control-wrap search-wrap">
+                <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Statutory Keyword Search</label>
+                <div class="input-with-icon">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                  <input type="text" class="smart-input" id="rulesSearchInput" placeholder="Search rules, sections, royalty, penalty, auction, dead rent, tribunal...">
+                </div>
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 1 1 240px;">
+                <label class="filter-label"><i class="fa-solid fa-folder-tree"></i> Part / Legislative Division</label>
+                <select class="smart-select" id="rulesPartSelect">
+                  <option value="ALL">All Statutory Parts</option>
+                </select>
+              </div>
+
+              <div class="filter-control-wrap" style="flex: 0 0 auto;">
+                <label class="filter-label">&nbsp;</label>
+                <button class="btn-reset-filters" id="btnResetRulesFilters" title="Reset Search & Filters">
+                  <i class="fa-solid fa-rotate-left"></i> Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Active Chips & Counter Bar -->
+            <div class="active-chips-row">
+              <span class="active-counter-badge" id="rulesCounterBadge"><i class="fa-solid fa-scale-balanced"></i> Showing all provisions</span>
+              <div class="chips-container" id="rulesChipsContainer"></div>
+            </div>
+          </div>
+
+          <!-- VIEW CONTAINER FOR STATUTORY TEXT & PROVISIONS -->
+          <div id="rulesProvisionsContainer" class="rules-content-body">
+            <!-- Dynamic Content rendered by app.js: Parts, Chapters, Rule Accordions -->
+          </div>
+
+          <!-- VIEW CONTAINER FOR SCHEDULES (Fees, Rentals, Royalties) -->
+          <div id="rulesSchedulesContainer" class="rules-content-body" style="display: none;">
+            <!-- Dynamic Schedules rendered by app.js -->
+          </div>
+
+          <!-- VIEW CONTAINER FOR COMPARATIVE STATUTORY MATRIX -->
+          <div id="rulesMatrixContainer" class="rules-content-body" style="display: none;">
+            <!-- Comparative Matrix rendered by app.js -->
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
+
+    <!-- Executive Portal Bottom Footer -->
+    <footer class="portal-main-footer">
+      <div class="footer-left">
+        <span class="pulse-dot"></span>
+        <span class="footer-cloud-tag">Cloud Hosted • Live Portal</span>
+        <span class="footer-divider">•</span>
+        <span class="footer-copyright">&copy; Directorate General of Mines & Minerals Punjab</span>
+      </div>
+      <div class="footer-right">
+        <span class="footer-version">Executive Sovereign Suite</span>
+        <span class="footer-divider">•</span>
+        <span id="footerPktClock">Pakistan Standard Time (PKT)</span>
+      </div>
+    </footer>
+
   </div>
 
 </div>
@@ -1707,6 +2012,7 @@
 <script src="data.js"></script>
 <script src="admin_data.js"></script>
 <script src="map_polygons.js"></script>
+<script src="rules_data.js"></script>
 
 <!-- Portal Application Controller -->
 <script src="app.js"></script>

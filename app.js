@@ -355,7 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Small Scale Mining
     sma: {
       category: "leases",      // "leases" | "prospecting" | "matrix"
-      mode: "auction",         // "auction" | "application"
+      mode: "ALL",             // "ALL" | "application" | "auction"
       search: "",
       district: "ALL",
       mineral: "ALL",
@@ -365,6 +365,14 @@ document.addEventListener("DOMContentLoaded", () => {
       dateTo: "",
       page: 1,
       pageSize: 15
+    },
+
+    // Relevant Rules & Acts
+    rules: {
+      statute: "pmcr2002",     // "pmcr2002" | "act2025" | "matrix"
+      viewMode: "text",        // "text" | "schedules"
+      search: "",
+      part: "ALL"
     },
 
     // Minor Minerals
@@ -432,6 +440,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initTheme();
   applySavedConcessionEdits();
   initSidebar();
+  initRulesTab();
   initModal();
   populateDropdowns();
   bindFilterListeners();
@@ -487,6 +496,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------------------------------
   function initClock() {
     const clockEl = document.getElementById("livePktTime");
+    const footerClockEl = document.getElementById("footerPktClock");
     function updateClock() {
       const now = new Date();
       const options = {
@@ -496,8 +506,12 @@ document.addEventListener("DOMContentLoaded", () => {
         second: "2-digit",
         hour12: true
       };
+      const timeStr = now.toLocaleTimeString("en-US", options) + " PKT";
       if (clockEl) {
-        clockEl.textContent = now.toLocaleTimeString("en-US", options) + " PKT";
+        clockEl.textContent = timeStr;
+      }
+      if (footerClockEl) {
+        footerClockEl.textContent = timeStr;
       }
     }
     updateClock();
@@ -522,6 +536,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "tab-lsm": { section: "Mineral Operations", title: "Large Scale Mining" },
       "tab-sma": { section: "Mineral Operations", title: "Small Scale Mining" },
       "tab-mm": { section: "Mineral Operations", title: "Minor Minerals" },
+      "tab-rules": { section: "Statutory & Regulatory Governance", title: "Relevant Rules & Acts (PMCR 2002 & Punjab Mines and Minerals Act 2025)" },
       "tab-map": { section: "Spatial Intelligence", title: "GIS Mineral Map of Punjab Province" },
       "tab-financials": { section: "Financial Intelligence", title: "5-Year Revenue, Royalty & Output Analytics" },
       "tab-epa": { section: "Regulatory Clearances", title: "EPA Environmental Clearances (151 Concession Cases)" },
@@ -618,7 +633,7 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Small Scale Mining Dropdown Submenu
+    // Small Scale Mining Multi-Tier Dropdown Submenu
     const smaWrap = document.getElementById("dropdownSmaWrap");
     const btnSma = document.getElementById("navBtnSma");
     if (btnSma && smaWrap) {
@@ -626,30 +641,141 @@ document.addEventListener("DOMContentLoaded", () => {
         smaWrap.classList.toggle("open");
       });
     }
+
+    // SSM Tier 2: Mining Leases
+    const nestedSmaLeasesWrap = document.getElementById("nestedSmaLeasesWrap");
     const itemSmaLeases = document.getElementById("menuItemSmaLeases");
-    const itemSmaProspecting = document.getElementById("menuItemSmaProspecting");
-    if (itemSmaLeases) {
+    if (itemSmaLeases && nestedSmaLeasesWrap) {
       itemSmaLeases.addEventListener("click", (e) => {
         e.stopPropagation();
+        nestedSmaLeasesWrap.classList.toggle("open");
         activateTab("tab-sma");
         state.sma.category = "leases";
-        document.querySelectorAll("[data-sma-category]").forEach(b => b.classList.remove("active"));
-        document.getElementById("subBtnSmaLeases")?.classList.add("active");
-        itemSmaProspecting?.classList.remove("active");
-        itemSmaLeases.classList.add("active");
+        state.sma.mode = "ALL";
+        syncSmaSubNavUI();
         renderSma();
       });
     }
-    if (itemSmaProspecting) {
+
+    // SSM Tier 3 for Mining Leases
+    const itemSmaLeasesAll = document.getElementById("menuItemSmaLeasesAll");
+    const itemSmaLeasesApp = document.getElementById("menuItemSmaLeasesApp");
+    const itemSmaLeasesAuc = document.getElementById("menuItemSmaLeasesAuc");
+
+    if (itemSmaLeasesAll) {
+      itemSmaLeasesAll.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-sma");
+        state.sma.category = "leases";
+        state.sma.mode = "ALL";
+        syncSmaSubNavUI();
+        renderSma();
+      });
+    }
+    if (itemSmaLeasesApp) {
+      itemSmaLeasesApp.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-sma");
+        state.sma.category = "leases";
+        state.sma.mode = "application";
+        syncSmaSubNavUI();
+        renderSma();
+      });
+    }
+    if (itemSmaLeasesAuc) {
+      itemSmaLeasesAuc.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-sma");
+        state.sma.category = "leases";
+        state.sma.mode = "auction";
+        syncSmaSubNavUI();
+        renderSma();
+      });
+    }
+
+    // SSM Tier 2: Prospecting Licenses
+    const nestedSmaProsWrap = document.getElementById("nestedSmaProspectingWrap");
+    const itemSmaProspecting = document.getElementById("menuItemSmaProspecting");
+    if (itemSmaProspecting && nestedSmaProsWrap) {
       itemSmaProspecting.addEventListener("click", (e) => {
+        e.stopPropagation();
+        nestedSmaProsWrap.classList.toggle("open");
+        activateTab("tab-sma");
+        state.sma.category = "prospecting";
+        state.sma.mode = "ALL";
+        syncSmaSubNavUI();
+        renderSma();
+      });
+    }
+
+    // SSM Tier 3 for Prospecting Licenses
+    const itemSmaProsAll = document.getElementById("menuItemSmaProsAll");
+    const itemSmaProsApp = document.getElementById("menuItemSmaProsApp");
+    const itemSmaProsAuc = document.getElementById("menuItemSmaProsAuc");
+
+    if (itemSmaProsAll) {
+      itemSmaProsAll.addEventListener("click", (e) => {
         e.stopPropagation();
         activateTab("tab-sma");
         state.sma.category = "prospecting";
-        document.querySelectorAll("[data-sma-category]").forEach(b => b.classList.remove("active"));
-        document.getElementById("subBtnSmaProspecting")?.classList.add("active");
-        itemSmaLeases?.classList.remove("active");
-        itemSmaProspecting.classList.add("active");
+        state.sma.mode = "ALL";
+        syncSmaSubNavUI();
         renderSma();
+      });
+    }
+    if (itemSmaProsApp) {
+      itemSmaProsApp.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-sma");
+        state.sma.category = "prospecting";
+        state.sma.mode = "application";
+        syncSmaSubNavUI();
+        renderSma();
+      });
+    }
+    if (itemSmaProsAuc) {
+      itemSmaProsAuc.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-sma");
+        state.sma.category = "prospecting";
+        state.sma.mode = "auction";
+        syncSmaSubNavUI();
+        renderSma();
+      });
+    }
+
+    // Relevant Rules & Acts Dropdown Submenu
+    const rulesWrap = document.getElementById("dropdownRulesWrap");
+    const btnRules = document.getElementById("navBtnRules");
+    if (btnRules && rulesWrap) {
+      btnRules.addEventListener("click", () => {
+        rulesWrap.classList.toggle("open");
+      });
+    }
+
+    const itemRulesPmcr = document.getElementById("menuItemRulesPmcr");
+    const itemRulesAct = document.getElementById("menuItemRulesAct");
+    const itemRulesMatrix = document.getElementById("menuItemRulesMatrix");
+
+    if (itemRulesPmcr) {
+      itemRulesPmcr.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-rules");
+        switchRulesStatute("pmcr2002");
+      });
+    }
+    if (itemRulesAct) {
+      itemRulesAct.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-rules");
+        switchRulesStatute("act2025");
+      });
+    }
+    if (itemRulesMatrix) {
+      itemRulesMatrix.addEventListener("click", (e) => {
+        e.stopPropagation();
+        activateTab("tab-rules");
+        switchRulesStatute("matrix");
       });
     }
 
@@ -1338,6 +1464,9 @@ document.addEventListener("DOMContentLoaded", () => {
       case "tab-mm":
         renderMm();
         break;
+      case "tab-rules":
+        renderRulesTab();
+        break;
       case "tab-map":
         renderMap();
         break;
@@ -1474,11 +1603,12 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       tbody.innerHTML = pageRecords.map((r, idx) => {
         const globalIdx = start + idx;
+        const seqNo = start + idx + 1;
         const actionBtn = `<td><button class="btn-concession-view" onclick="event.stopPropagation(); window.openConcessionDetails('lsm', ${globalIdx});" title="View Concession Financial & Production Intelligence"><i class="fa-solid fa-chart-line"></i> Details</button></td>`;
         if (state.lsm.category === "leases") {
           return `
             <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-              <td><strong>${r.srNo || '-'}</strong></td>
+              <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
               <td style="font-weight: 600; color: var(--text-main);">${r.company || '-'}</td>
               <td><code>${r.licenseNo || '-'}</code></td>
               <td>${formatNumber(r.area)} ac</td>
@@ -1495,7 +1625,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (state.lsm.explFilter === "valid") {
             return `
               <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-                <td><strong>${r.srNo || '-'}</strong></td>
+                <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
                 <td style="font-weight: 600; color: var(--text-main);">${r.licensee || '-'}</td>
                 <td><code>${r.licenseNo || '-'}</code></td>
                 <td>${formatNumber(r.area)} ac</td>
@@ -1511,7 +1641,7 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             return `
               <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-                <td><strong>${r.srNo || '-'}</strong></td>
+                <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
                 <td style="font-weight: 600; color: var(--text-main);">${r.licensee || '-'}</td>
                 <td><code>${r.licenseNo || '-'}</code></td>
                 <td>${r.areaRaw || formatNumber(r.area)}</td>
@@ -1528,7 +1658,7 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
           return `
             <tr class="concession-clickable-row" data-concession-type="lsm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-              <td><strong>${r.srNo || '-'}</strong></td>
+              <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
               <td style="font-weight: 600; color: var(--text-main);">${r.applicant || '-'}</td>
               <td><code>${r.appNo || '-'}</code></td>
               <td>${formatDateDisplay(r.appDate)}</td>
@@ -1591,10 +1721,25 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageInfo = document.getElementById("smaPageInfo");
     const counterBadge = document.getElementById("smaCounterBadge");
     const modeToggles = document.getElementById("smaModeToggles");
+    const prosModeToggles = document.getElementById("smaProspectModeToggles");
     const smaData = divisions.sma || {};
 
-    if (modeToggles) {
-      modeToggles.style.display = state.sma.category === "leases" ? "flex" : "none";
+    // Synchronize mode bar visibility
+    if (state.sma.category === "leases") {
+      if (modeToggles) modeToggles.style.display = "flex";
+      if (prosModeToggles) prosModeToggles.style.display = "none";
+      document.querySelectorAll("[data-sma-mode]").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("data-sma-mode") === state.sma.mode);
+      });
+    } else if (state.sma.category === "prospecting") {
+      if (modeToggles) modeToggles.style.display = "none";
+      if (prosModeToggles) prosModeToggles.style.display = "flex";
+      document.querySelectorAll("[data-sma-prospect-mode]").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("data-sma-prospect-mode") === state.sma.mode);
+      });
+    } else {
+      if (modeToggles) modeToggles.style.display = "none";
+      if (prosModeToggles) prosModeToggles.style.display = "none";
     }
 
     let records = [];
@@ -1602,17 +1747,55 @@ document.addEventListener("DOMContentLoaded", () => {
     let totalUnfiltered = 0;
 
     if (state.sma.category === "leases") {
+      const aucLeases = (smaData.auctionConcessions || []).filter(c => c.type === "Mining Lease").map(c => ({
+        srNo: c.srNo,
+        code: c.block || c.code,
+        title: c.lessee || c.blockName,
+        blockName: c.blockName,
+        mode: "Auction Mode",
+        mineral: c.mineral,
+        district: c.district,
+        _normDistrict: c._normDistrict,
+        _fieldOffice: c._fieldOffice,
+        grantDate: c.grantDate,
+        expiryDate: c.expiryDate,
+        operativeBid: c.operativeBid,
+        status: c.status,
+        type: "Mining Lease",
+        _raw: c
+      }));
+      const appLeases = (smaData.applicationConcessions || []).filter(c => c.type === "Mining Lease").map(c => ({
+        srNo: c.concessionNo,
+        code: c.concessionNo || c.code,
+        title: c.client || c.name,
+        blockName: c.location || c.client,
+        mode: "Application Mode",
+        mineral: c.mineral,
+        district: c.district,
+        _normDistrict: c._normDistrict,
+        _fieldOffice: c._fieldOffice,
+        acreage: c.acreage,
+        grantDate: c.grantDate,
+        expiryDate: c.expiryDate,
+        status: c.status,
+        type: "Mining Lease",
+        _raw: c
+      }));
+
       if (state.sma.mode === "auction") {
-        headers = ["Sr", "Block Code", "Block Name", "Mineral", "District", "Field Office", "Status", "Lessee Name", "Grant Date", "Expiry Date", "Operative Bid (PKR)", "Action"];
-        records = (smaData.auctionConcessions || []).filter(c => c.type === "Mining Lease");
+        headers = ["Sr #", "Block Code", "Block Name", "Mineral", "District", "Field Office", "Status", "Lessee Name", "Grant Date", "Expiry Date", "Operative Bid (PKR)", "Action"];
+        records = aucLeases;
+      } else if (state.sma.mode === "application") {
+        headers = ["Sr #", "Concession #", "Client / Lessee", "Mineral", "Type", "District", "Field Office", "Acreage", "Grant Date", "Expiry Date", "Status", "Action"];
+        records = appLeases;
       } else {
-        headers = ["Concession #", "Client / Lessee", "Mineral", "Type", "District", "Field Office", "Acreage", "Grant Date", "Expiry Date", "Status", "Action"];
-        records = (smaData.applicationConcessions || []).filter(c => c.type === "Mining Lease");
+        // ALL Mining Leases (1,040)
+        headers = ["Sr #", "Concession / Block #", "Lessee / Applicant", "Mode", "Mineral", "District", "Field Office", "Grant Date", "Expiry Date", "Status", "Action"];
+        records = [...appLeases, ...aucLeases];
       }
     } else if (state.sma.category === "prospecting") {
-      headers = ["Concession #", "Title / Client", "Mode", "Mineral", "District", "Field Office", "Grant Date", "Expiry Date", "Status", "Action"];
       const auctionPL = (smaData.auctionConcessions || []).filter(c => c.type === "Prospecting License").map(c => ({
-        code: c.block,
+        code: c.block || c.code,
         title: c.lessee || c.blockName,
         mode: "Auction Mode",
         mineral: c.mineral,
@@ -1621,10 +1804,11 @@ document.addEventListener("DOMContentLoaded", () => {
         _fieldOffice: c._fieldOffice,
         grantDate: c.grantDate,
         expiryDate: c.expiryDate,
-        status: c.status
+        status: c.status,
+        _raw: c
       }));
       const appPL = (smaData.applicationConcessions || []).filter(c => c.type === "Prospecting License").map(c => ({
-        code: c.concessionNo,
+        code: c.concessionNo || c.code,
         title: c.client,
         mode: "Application Mode",
         mineral: c.mineral,
@@ -1633,9 +1817,18 @@ document.addEventListener("DOMContentLoaded", () => {
         _fieldOffice: c._fieldOffice,
         grantDate: c.grantDate,
         expiryDate: c.expiryDate,
-        status: c.status
+        status: c.status,
+        _raw: c
       }));
-      records = [...auctionPL, ...appPL];
+
+      if (state.sma.mode === "auction") {
+        records = auctionPL;
+      } else if (state.sma.mode === "application") {
+        records = appPL;
+      } else {
+        records = [...appPL, ...auctionPL];
+      }
+      headers = ["Sr #", "Concession #", "Title / Client", "Mode", "Mineral", "District", "Field Office", "Grant Date", "Expiry Date", "Status", "Action"];
     } else if (state.sma.category === "matrix") {
       headers = ["District", "Limestone", "Gypsum", "Silica Sand", "Coal", "Fireclay", "Bentonite", "Iron Ore", "Bauxite", "Latrite", "Celestite", "Fuller Earth", "Total Titles"];
       records = smaData.districtMatrix || [];
@@ -1705,7 +1898,7 @@ document.addEventListener("DOMContentLoaded", () => {
       counterBadge.innerHTML = `<i class="fa-solid fa-layer-group"></i> Showing ${records.length} of ${totalUnfiltered} records`;
     }
 
-    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+    thead.innerHTML = `<tr>${headers.map((h, i) => `<th${i === 0 ? ' style="width: 50px; text-align: center;"' : ''}>${h}</th>`).join("")}</tr>`;
 
     const isMatrix = state.sma.category === "matrix";
     const total = records.length;
@@ -1713,38 +1906,40 @@ document.addEventListener("DOMContentLoaded", () => {
     const pageRecords = isMatrix ? records : records.slice(start, start + state.sma.pageSize);
 
     if (pageRecords.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="${headers.length}" style="text-align:center; padding: 2.5rem; color: #94A3B8;">No records found matching filter criteria.</td></tr>`;
     } else {
       tbody.innerHTML = pageRecords.map((r, idx) => {
         const globalIdx = start + idx;
+        const seqNo = start + idx + 1;
         const actionBtn = `<td><button class="btn-concession-view" onclick="event.stopPropagation(); window.openConcessionDetails('sma', ${globalIdx});" title="View Concession Financial & Production Intelligence"><i class="fa-solid fa-chart-line"></i> Details</button></td>`;
         if (state.sma.category === "leases") {
           if (state.sma.mode === "auction") {
             return `
               <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-                <td><strong>${r.srNo || '-'}</strong></td>
-                <td><code>${r.block}</code></td>
-                <td style="font-weight: 600; color: var(--text-main);">${r.blockName}</td>
+                <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
+                <td><code>${r.code}</code></td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.title || r.blockName}</td>
                 <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
                 <td>${r._normDistrict || r.district}</td>
-                <td><small>${r._fieldOffice}</small></td>
+                <td><small>${r._fieldOffice || '-'}</small></td>
                 <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
-                <td>${r.lessee || '-'}</td>
+                <td>${r.lessee || r.title || '-'}</td>
                 <td>${formatDateDisplay(r.grantDate)}</td>
                 <td>${formatDateDisplay(r.expiryDate)}</td>
                 <td class="currency-bid-val">${formatPKR(r.operativeBid)}</td>
                 ${actionBtn}
               </tr>
             `;
-          } else {
+          } else if (state.sma.mode === "application") {
             return `
               <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
-                <td><code>${r.concessionNo}</code></td>
-                <td style="font-weight: 600; color: var(--text-main);">${r.client}</td>
+                <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
+                <td><code>${r.code}</code></td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.title}</td>
                 <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
                 <td>${r.type}</td>
                 <td>${r._normDistrict || r.district}</td>
-                <td><small>${r._fieldOffice}</small></td>
+                <td><small>${r._fieldOffice || '-'}</small></td>
                 <td>${formatNumber(r.acreage)} ac</td>
                 <td>${formatDateDisplay(r.grantDate)}</td>
                 <td>${formatDateDisplay(r.expiryDate)}</td>
@@ -1752,16 +1947,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${actionBtn}
               </tr>
             `;
+          } else {
+            // ALL Mining Leases (1,040)
+            return `
+              <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
+                <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
+                <td><code>${r.code}</code></td>
+                <td style="font-weight: 600; color: var(--text-main);">${r.title}</td>
+                <td><span class="nav-pill ${r.mode.includes('Auction') ? 'pill-sma' : 'pill-neutral'}">${r.mode}</span></td>
+                <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
+                <td>${r._normDistrict || r.district}</td>
+                <td><small>${r._fieldOffice || '-'}</small></td>
+                <td>${formatDateDisplay(r.grantDate)}</td>
+                <td>${formatDateDisplay(r.expiryDate)}</td>
+                <td><span class="badge-status-pill ${r.status === 'Granted' ? 'badge-granted' : 'badge-vacant'}">${r.status}</span></td>
+                ${actionBtn}
+              </tr>
+            `;
           }
         } else if (state.sma.category === "prospecting") {
           return `
             <tr class="concession-clickable-row" data-concession-type="sma" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
+              <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
               <td><code>${r.code}</code></td>
               <td style="font-weight: 600; color: var(--text-main);">${r.title}</td>
               <td><span class="nav-pill ${r.mode.includes('Auction') ? 'pill-sma' : 'pill-neutral'}">${r.mode}</span></td>
               <td><span class="badge-status-pill badge-process">${r.mineral}</span></td>
               <td>${r._normDistrict || r.district}</td>
-              <td><small>${r._fieldOffice}</small></td>
+              <td><small>${r._fieldOffice || '-'}</small></td>
               <td>${formatDateDisplay(r.grantDate)}</td>
               <td>${formatDateDisplay(r.expiryDate)}</td>
               <td><span class="badge-status-pill badge-granted">${r.status}</span></td>
@@ -1804,18 +2017,33 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelectorAll("[data-sma-category]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.sma.category = btn.getAttribute("data-sma-category");
+      state.sma.mode = "ALL";
       state.sma.page = 1;
+      syncSmaSubNavUI();
       renderSma();
     });
   });
 
-  // SMA Mode Toggles
+  // SMA Mode Toggles (Leases)
   document.querySelectorAll("[data-sma-mode]").forEach(btn => {
     btn.addEventListener("click", () => {
       document.querySelectorAll("[data-sma-mode]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       state.sma.mode = btn.getAttribute("data-sma-mode");
       state.sma.page = 1;
+      syncSmaSubNavUI();
+      renderSma();
+    });
+  });
+
+  // SMA Mode Toggles (Prospecting)
+  document.querySelectorAll("[data-sma-prospect-mode]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll("[data-sma-prospect-mode]").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      state.sma.mode = btn.getAttribute("data-sma-prospect-mode");
+      state.sma.page = 1;
+      syncSmaSubNavUI();
       renderSma();
     });
   });
@@ -1826,6 +2054,45 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("btnNextSma")?.addEventListener("click", () => {
     state.sma.page++; renderSma();
   });
+
+  function syncSmaSubNavUI() {
+    // 1. Category buttons
+    document.querySelectorAll("[data-sma-category]").forEach(b => {
+      b.classList.toggle("active", b.getAttribute("data-sma-category") === state.sma.category);
+    });
+
+    const modeToggles = document.getElementById("smaModeToggles");
+    const prosModeToggles = document.getElementById("smaProspectModeToggles");
+
+    if (state.sma.category === "leases") {
+      if (modeToggles) modeToggles.style.display = "flex";
+      if (prosModeToggles) prosModeToggles.style.display = "none";
+      document.querySelectorAll("[data-sma-mode]").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("data-sma-mode") === state.sma.mode);
+      });
+    } else if (state.sma.category === "prospecting") {
+      if (modeToggles) modeToggles.style.display = "none";
+      if (prosModeToggles) prosModeToggles.style.display = "flex";
+      document.querySelectorAll("[data-sma-prospect-mode]").forEach(b => {
+        b.classList.toggle("active", b.getAttribute("data-sma-prospect-mode") === state.sma.mode);
+      });
+    } else {
+      if (modeToggles) modeToggles.style.display = "none";
+      if (prosModeToggles) prosModeToggles.style.display = "none";
+    }
+
+    // 2. Sidebar nested active states
+    document.querySelectorAll(".nested-item").forEach(b => b.classList.remove("active"));
+    if (state.sma.category === "leases") {
+      if (state.sma.mode === "ALL") document.getElementById("menuItemSmaLeasesAll")?.classList.add("active");
+      if (state.sma.mode === "application") document.getElementById("menuItemSmaLeasesApp")?.classList.add("active");
+      if (state.sma.mode === "auction") document.getElementById("menuItemSmaLeasesAuc")?.classList.add("active");
+    } else if (state.sma.category === "prospecting") {
+      if (state.sma.mode === "ALL") document.getElementById("menuItemSmaProsAll")?.classList.add("active");
+      if (state.sma.mode === "application") document.getElementById("menuItemSmaProsApp")?.classList.add("active");
+      if (state.sma.mode === "auction") document.getElementById("menuItemSmaProsAuc")?.classList.add("active");
+    }
+  }
 
   // -------------------------------------------------------------
   // MINOR MINERALS (MM) RENDERER
@@ -1896,8 +2163,9 @@ document.addEventListener("DOMContentLoaded", () => {
       counterBadge.innerHTML = `<i class="fa-solid fa-layer-group"></i> Showing ${records.length} of ${totalUnfiltered} records`;
     }
 
-    const headers = ["Lease / Block Name", "Lessee / Concessionaire", "District", "Field Office", "Mineral", "Area (Acres)", "Status", "Operative Bid / Reserve (PKR)", "Tenure / Auction Dates", "Action"];
-    thead.innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join("")}</tr>`;
+    // Column 1 is strictly Sr # as requested
+    const headers = ["Sr #", "Lease / Block Name", "Lessee / Concessionaire", "District", "Field Office", "Mineral", "Area (Acres)", "Status", "Operative Bid / Reserve (PKR)", "Tenure / Auction Dates", "Action"];
+    thead.innerHTML = `<tr>${headers.map((h, i) => `<th${i === 0 ? ' style="width: 50px; text-align: center;"' : ''}>${h}</th>`).join("")}</tr>`;
 
     const total = records.length;
     const start = (state.mm.page - 1) * state.mm.pageSize;
@@ -1908,10 +2176,12 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       tbody.innerHTML = pageRecords.map((r, idx) => {
         const globalIdx = start + idx;
+        const seqNo = start + idx + 1; // Dynamically sequential starting from 1
         const actionBtn = `<td><button class="btn-concession-view" onclick="event.stopPropagation(); window.openConcessionDetails('mm', ${globalIdx});" title="View Concession Financial & Production Intelligence"><i class="fa-solid fa-chart-line"></i> Details</button></td>`;
         const isGranted = (r.status || "").toLowerCase() === "granted";
         return `
           <tr class="concession-clickable-row" data-concession-type="mm" data-idx="${globalIdx}" title="Click to view Concession Financial, Production & Boundary Details">
+            <td style="font-weight: 700; color: var(--text-muted); text-align: center;">${seqNo}</td>
             <td>
               <strong style="color: var(--text-main); font-size: 0.88rem;">${r.blockName || r.name || r.code}</strong>
               <br><code style="font-size: 0.72rem; color: var(--text-muted);">${r.code || r.block}</code>
@@ -1942,6 +2212,361 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnNext = document.getElementById("btnNextMm");
     if (btnPrev) btnPrev.disabled = state.mm.page <= 1;
     if (btnNext) btnNext.disabled = end >= total;
+  }
+
+  // -------------------------------------------------------------
+  // RELEVANT RULES & ACTS (PMCR 2002 & M&M ACT 2025) CONTROLLER
+  // -------------------------------------------------------------
+  function initRulesTab() {
+    // Primary statute tabs
+    document.querySelectorAll("[data-statute-tab]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const statuteId = btn.getAttribute("data-statute-tab");
+        switchRulesStatute(statuteId);
+      });
+    });
+
+    // View mode bar (Text vs Schedules)
+    document.querySelectorAll("[data-rules-view]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("[data-rules-view]").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.rules.viewMode = btn.getAttribute("data-rules-view");
+        renderRulesTab();
+      });
+    });
+
+    // Search input
+    const searchInput = document.getElementById("rulesSearchInput");
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        state.rules.search = e.target.value.trim();
+        renderRulesTab();
+      });
+    }
+
+    // Part filter select
+    const partSelect = document.getElementById("rulesPartSelect");
+    if (partSelect) {
+      partSelect.addEventListener("change", (e) => {
+        state.rules.part = e.target.value;
+        renderRulesTab();
+      });
+    }
+
+    // Reset button
+    const btnReset = document.getElementById("btnResetRulesFilters");
+    if (btnReset) {
+      btnReset.addEventListener("click", () => {
+        state.rules.search = "";
+        state.rules.part = "ALL";
+        if (searchInput) searchInput.value = "";
+        if (partSelect) partSelect.value = "ALL";
+        renderRulesTab();
+      });
+    }
+
+    // Export PDF/Summary button
+    const btnExport = document.getElementById("btnExportRulesSummary");
+    if (btnExport) {
+      btnExport.addEventListener("click", () => {
+        window.print();
+      });
+    }
+
+    populateRulesPartSelect();
+  }
+
+  function switchRulesStatute(statuteId) {
+    state.rules.statute = statuteId;
+    state.rules.part = "ALL";
+    state.rules.search = "";
+    const searchInput = document.getElementById("rulesSearchInput");
+    if (searchInput) searchInput.value = "";
+    
+    // Update sidebar submenu items
+    document.getElementById("menuItemRulesPmcr")?.classList.toggle("active", statuteId === "pmcr2002");
+    document.getElementById("menuItemRulesAct")?.classList.toggle("active", statuteId === "act2025");
+    document.getElementById("menuItemRulesMatrix")?.classList.toggle("active", statuteId === "matrix");
+
+    // Update in-page tab buttons
+    document.querySelectorAll("[data-statute-tab]").forEach(btn => {
+      btn.classList.toggle("active", btn.getAttribute("data-statute-tab") === statuteId);
+    });
+
+    populateRulesPartSelect();
+    renderRulesTab();
+  }
+
+  function populateRulesPartSelect() {
+    const partSelect = document.getElementById("rulesPartSelect");
+    if (!partSelect) return;
+    partSelect.innerHTML = `<option value="ALL">All Statutory Parts</option>`;
+    
+    const rulesData = window.DGM_RULES_DATA;
+    if (!rulesData || !rulesData.statutes) return;
+
+    const currentStatute = rulesData.statutes[state.rules.statute];
+    if (!currentStatute || !currentStatute.parts) return;
+
+    currentStatute.parts.forEach(p => {
+      const opt = document.createElement("option");
+      opt.value = String(p.part);
+      opt.textContent = p.title;
+      partSelect.appendChild(opt);
+    });
+  }
+
+  function renderRulesTab() {
+    const rulesData = window.DGM_RULES_DATA;
+    if (!rulesData || !rulesData.statutes) return;
+
+    const heading = document.getElementById("rulesTabHeading");
+    const subheading = document.getElementById("rulesTabSubheading");
+    const provContainer = document.getElementById("rulesProvisionsContainer");
+    const schedContainer = document.getElementById("rulesSchedulesContainer");
+    const matrixContainer = document.getElementById("rulesMatrixContainer");
+    const viewModeBar = document.getElementById("rulesViewModeBar");
+    const filterPanel = document.getElementById("rulesFilterPanel");
+    const counterBadge = document.getElementById("rulesCounterBadge");
+
+    if (state.rules.statute === "matrix") {
+      if (heading) heading.textContent = "Comparative Statutory Matrix (PMCR 2002 vs Punjab Mines & Minerals Act 2025)";
+      if (subheading) subheading.textContent = "Side-by-side legal alignment of licensing, governance, tribunals, cadastre, auctions, and penalties";
+      if (viewModeBar) viewModeBar.style.display = "none";
+      if (filterPanel) filterPanel.style.display = "none";
+      if (provContainer) provContainer.style.display = "none";
+      if (schedContainer) schedContainer.style.display = "none";
+      if (matrixContainer) {
+        matrixContainer.style.display = "block";
+        matrixContainer.innerHTML = renderComparativeMatrixHTML();
+      }
+      return;
+    }
+
+    if (viewModeBar) viewModeBar.style.display = "flex";
+    if (filterPanel) filterPanel.style.display = "block";
+
+    const currentStatute = rulesData.statutes[state.rules.statute] || rulesData.statutes.pmcr2002;
+    if (heading) heading.textContent = currentStatute.title;
+    if (subheading) subheading.textContent = currentStatute.overview;
+
+    if (state.rules.viewMode === "schedules") {
+      if (provContainer) provContainer.style.display = "none";
+      if (matrixContainer) matrixContainer.style.display = "none";
+      if (schedContainer) {
+        schedContainer.style.display = "block";
+        schedContainer.innerHTML = renderSchedulesHTML(currentStatute);
+      }
+      if (counterBadge) {
+        counterBadge.innerHTML = `<i class="fa-solid fa-table-list"></i> Showing ${currentStatute.schedules?.length || currentStatute.schedulesCount || 0} Official Schedules`;
+      }
+      return;
+    }
+
+    // View Mode: Statutory Provisions Text
+    if (schedContainer) schedContainer.style.display = "none";
+    if (matrixContainer) matrixContainer.style.display = "none";
+    if (provContainer) {
+      provContainer.style.display = "block";
+      provContainer.innerHTML = renderProvisionsHTML(currentStatute);
+    }
+  }
+
+  function renderProvisionsHTML(statute) {
+    let parts = statute.parts || [];
+    if (state.rules.part !== "ALL") {
+      parts = parts.filter(p => String(p.part) === String(state.rules.part));
+    }
+
+    const searchTerm = (state.rules.search || "").toLowerCase();
+    let totalItemsMatched = 0;
+
+    const partsHTML = parts.map(p => {
+      let items = p.rules || p.sections || [];
+      if (searchTerm) {
+        items = items.filter(it => {
+          const combined = `${it.no} ${it.title} ${it.text || it.summary || ''}`.toLowerCase();
+          return combined.includes(searchTerm);
+        });
+      }
+
+      totalItemsMatched += items.length;
+
+      if (searchTerm && items.length === 0 && !p.title.toLowerCase().includes(searchTerm)) {
+        return "";
+      }
+
+      const itemsListHTML = items.map(it => `
+        <div class="rule-item-box">
+          <div class="rule-item-top">
+            <span class="rule-item-no">${statute.id === 'pmcr2002' ? 'Rule' : 'Section'} ${it.no}</span>
+            <span class="rule-item-title">${it.title}</span>
+          </div>
+          <p class="rule-item-text">${it.text || it.summary || ''}</p>
+        </div>
+      `).join("");
+
+      const highlightsHTML = (p.keyHighlights || []).map(h => `
+        <div class="rule-item-box" style="border-left: 3.5px solid var(--gold-primary);">
+          <div class="rule-item-top">
+            <span class="rule-item-no">${h.rule}</span>
+            <span class="rule-item-title">${h.title}</span>
+          </div>
+          <p class="rule-item-text">${h.summary}</p>
+        </div>
+      `).join("");
+
+      return `
+        <div class="rule-part-card">
+          <div class="rule-part-header" onclick="this.nextElementSibling.classList.toggle('hidden-part');">
+            <div class="rule-part-title-wrap">
+              <span class="rule-part-badge">Part ${p.part}</span>
+              <div>
+                <h4 class="rule-part-title">${p.title}</h4>
+                <div class="rule-part-desc">${p.rulesRange || p.sectionsRange || ''} • ${p.desc || ''}</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-chevron-down" style="color: var(--text-muted); font-size: 0.85rem;"></i>
+          </div>
+          <div class="rule-part-body">
+            ${itemsListHTML}
+            ${highlightsHTML}
+            ${items.length === 0 && (!p.keyHighlights || p.keyHighlights.length === 0) ? `<p style="font-size: 0.82rem; color: var(--text-muted); font-style: italic;">Detailed text covered under statutory range (${p.rulesRange || p.sectionsRange}). Full gazetted copy preserved in department archives.</p>` : ''}
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    const counterBadge = document.getElementById("rulesCounterBadge");
+    if (counterBadge) {
+      counterBadge.innerHTML = `<i class="fa-solid fa-scale-balanced"></i> Showing ${parts.length} Parts • ${totalItemsMatched || parts.length} Provisions`;
+    }
+
+    return partsHTML || `<div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No statutory provisions match your search criteria.</div>`;
+  }
+
+  function renderSchedulesHTML(statute) {
+    const schedules = statute.schedules || [];
+    if (schedules.length === 0) {
+      return `<div style="text-align: center; padding: 2.5rem; color: var(--text-muted);">No official schedules available for this statute.</div>`;
+    }
+
+    return schedules.map(s => {
+      let rowsHTML = "";
+      if (s.rows && s.rows.length > 0) {
+        const firstRow = s.rows[0];
+        const keys = Object.keys(firstRow);
+        rowsHTML = `
+          <div class="table-scroll-container">
+            <table class="table-clean">
+              <thead>
+                <tr>${keys.map(k => `<th>${k.toUpperCase().replace(/([A-Z])/g, ' $1')}</th>`).join("")}</tr>
+              </thead>
+              <tbody>
+                ${s.rows.map(row => `
+                  <tr>
+                    ${keys.map((k, idx) => `<td${idx === 0 ? ' style="font-weight: 700; color: var(--text-main);"' : ''}>${row[k]}</td>`).join("")}
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>
+        `;
+      }
+
+      return `
+        <div class="schedule-table-card">
+          <div class="schedule-header">
+            <div>
+              <h4 class="schedule-title">${s.title}</h4>
+              <span class="schedule-meta">${statute.title}</span>
+            </div>
+            <span class="badge-status-pill badge-granted">Gazetted Rates</span>
+          </div>
+          ${rowsHTML}
+        </div>
+      `;
+    }).join("");
+  }
+
+  function renderComparativeMatrixHTML() {
+    const matrixPoints = [
+      {
+        feature: "Governing Statute & Authority",
+        pmcr: "Punjab Mining Concession Rules 2002 framed under Federal Act XXIV of 1948. Licensing exercised departmentally by Director General.",
+        act: "Punjab Mines and Minerals Act 2025 (Act XCVIII of 2025, enacted 18 Dec 2025). High-powered statutory Licensing Authority headed by Director General with multi-departmental composition."
+      },
+      {
+        feature: "Large Scale Mining Threshold",
+        pmcr: "Capital investment exceeding PKR 300 Million.",
+        act: "Proposed capital investment of at least PKR 500 Million with mandatory TEFVS and at least 3 qualified engineers/geologists."
+      },
+      {
+        feature: "Digital Cadastre & Public Register",
+        pmcr: "Manual paper registers and survey sheets kept in licensing branches. Priority determined by manual application receipt timestamp.",
+        act: "Online Mining Cadastre System (Section 8-9) with public web portal, transparent cadastral maps, and immutable application logs."
+      },
+      {
+        feature: "Enforcement & Anti-Theft Force",
+        pmcr: "Relied on district civil administration and local police stations for inspections and FIR registration.",
+        act: "Specialized, uniformed Mines and Minerals Force (Part VII, Sections 65-72) empowered to inspect, impound vehicles, search without warrant, and arrest illegal miners."
+      },
+      {
+        feature: "Independent Appellate Tribunal",
+        pmcr: "Appeals to DGMM / Secretary Mines. Final revision lay within departmental hierarchy.",
+        act: "Dedicated Appellate Tribunal in Lahore (Section 22) chaired by retired High Court Judge with technical mining & geology members. Direct appeal to Supreme Court."
+      },
+      {
+        feature: "Mandatory Processing Timelines",
+        pmcr: "Open-ended administrative review subject to inter-departmental NOCs.",
+        act: "Strict statutory 90-day time clock (Section 55). Applications must be approved, returned for rectification, or rejected within 90 days."
+      },
+      {
+        feature: "Local Community Development (CSR)",
+        pmcr: "Voluntary welfare contributions under general CSR provisions.",
+        act: "Mandatory 2.5% statutory allocation of operational profits (Part X) reserved for infrastructure, hospitals, schools, and drinking water within 10 km."
+      },
+      {
+        feature: "Penalties for Illegal Mining",
+        pmcr: "Fines ranging between PKR 25,000 to PKR 100,000; summary proceedings.",
+        act: "Imprisonment up to 5 years, fines up to PKR 50 Million, confiscation of heavy machinery, and criminal prosecution (Part XI, Sections 96-108)."
+      },
+      {
+        feature: "Minor Minerals Allocation",
+        pmcr: "Open public auctions conducted by District Auction Committees on 3-year quarry blocks.",
+        act: "Unified electronic bidding via Provincial Auction Committee with 25% immediate deposit and strict automated cancellation on instalment default."
+      }
+    ];
+
+    return `
+      <div class="matrix-table-wrap">
+        <table class="matrix-table">
+          <thead>
+            <tr>
+              <th style="width: 20%;">Core Dimension</th>
+              <th style="width: 40%; color: #2563EB;"><i class="fa-solid fa-book-bookmark"></i> PMCR 2002 (Amended 2023)</th>
+              <th style="width: 40%; color: #D97706;"><i class="fa-solid fa-landmark-dome"></i> Punjab Mines & Minerals Act 2025</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${matrixPoints.map(p => `
+              <tr>
+                <td>
+                  <span class="matrix-feature-tag">${p.feature}</span>
+                </td>
+                <td class="matrix-pmcr-cell">
+                  <span style="font-size: 0.81rem; color: var(--text-sub); line-height: 1.55;">${p.pmcr}</span>
+                </td>
+                <td class="matrix-act-cell">
+                  <strong style="color: var(--text-main); font-size: 0.81rem; line-height: 1.55;">${p.act}</strong>
+                </td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
   }
 
   // MM Controls
