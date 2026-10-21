@@ -561,6 +561,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (sidebar && sidebar.classList.contains("mobile-open")) {
         sidebar.classList.remove("mobile-open");
+        const backdrop = document.getElementById("sidebarBackdrop");
+        if (backdrop) backdrop.classList.remove("active");
       }
 
       renderActiveTab();
@@ -580,10 +582,11 @@ document.addEventListener("DOMContentLoaded", () => {
       sidebar.classList.toggle("sidebar-collapsed");
       const isCollapsed = sidebar.classList.contains("sidebar-collapsed");
       if (collapseIcon) {
-        collapseIcon.className = isCollapsed ? "fa-solid fa-angles-right" : "fa-solid fa-angles-left";
+        collapseIcon.className = isCollapsed ? "fa-solid fa-chevron-right" : "fa-solid fa-chevron-left";
       }
       setTimeout(() => {
         if (window.punjabMapInstance) window.punjabMapInstance.invalidateSize();
+        window.dispatchEvent(new Event('resize'));
       }, 300);
     };
 
@@ -779,9 +782,20 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    const sidebarBackdrop = document.getElementById("sidebarBackdrop");
     if (mobileToggle && sidebar) {
       mobileToggle.addEventListener("click", () => {
         sidebar.classList.toggle("mobile-open");
+        if (sidebarBackdrop) {
+          sidebarBackdrop.classList.toggle("active", sidebar.classList.contains("mobile-open"));
+        }
+      });
+    }
+
+    if (sidebarBackdrop && sidebar) {
+      sidebarBackdrop.addEventListener("click", () => {
+        sidebar.classList.remove("mobile-open");
+        sidebarBackdrop.classList.remove("active");
       });
     }
   }
