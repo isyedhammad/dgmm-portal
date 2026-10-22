@@ -264,6 +264,17 @@
         </div>
       </button>
 
+      <!-- Statutory Royalty Calculator (Dedicated Tab Below Revenue) -->
+      <button class="nav-link" data-tab="tab-royalty-calculator" id="navBtnRoyaltyCalculator">
+        <div class="nav-link-content">
+          <span class="nav-icon-box" style="color: #D97706;"><i class="fa-solid fa-calculator"></i></span>
+          <span>Royalty Calculator</span>
+        </div>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral" style="background: rgba(217, 119, 6, 0.15); color: #B45309; font-weight: 700;">PMCR 2002</span>
+        </div>
+      </button>
+
       <!-- EPA Clearances -->
       <button class="nav-link" data-tab="tab-epa" id="navBtnEpa">
         <div class="nav-link-content">
@@ -1394,10 +1405,10 @@
             <span>5-Year Historical Performance (FY 2021-22 to FY 2025-26)</span>
             <span class="badge-status-pill" style="background: rgba(37, 99, 235, 0.12); color: #2563EB;">5-Year Baseline • 1,004 Leases</span>
           </button>
-          <button class="fin-subview-btn" id="btnFinViewCalculator" data-target-subview="subview-royalty-calculator" type="button">
+          <button class="fin-subview-btn" id="btnGoToRoyaltyCalcTab" type="button" onclick="window.activateTab ? window.activateTab('tab-royalty-calculator') : document.getElementById('navBtnRoyaltyCalculator')?.click()">
             <i class="fa-solid fa-calculator" style="color: #D97706;"></i>
-            <span>Statutory Royalty &amp; Dead Rent Calculator</span>
-            <span class="badge-status-pill badge-vacant" style="background: rgba(217, 119, 6, 0.15); color: #D97706;">July 2024 Gazette Schedule</span>
+            <span>Statutory Royalty Calculator</span>
+            <span class="badge-status-pill badge-vacant" style="background: rgba(217, 119, 6, 0.15); color: #D97706;">Open Dedicated Tab &rarr;</span>
           </button>
         </div>
 
@@ -2200,150 +2211,152 @@
 </div>
 
 
-        <!-- =========================================================
-             SUBVIEW 3: STATUTORY ROYALTY & DEAD RENT CALCULATOR
-             Pursuant to Notification No. SOT(M&MD)5-3/2007(Vol-II) Dated 01-07-2024
-             ========================================================= -->
-        <div class="fin-subview-pane" id="subview-royalty-calculator">
+        
+      </div>
 
-          <!-- Calculator Header Banner -->
-          <div class="cadastre-fiscal-banner" style="background: linear-gradient(135deg, #78350f 0%, #b45309 60%, #d97706 100%); margin-bottom: 1.5rem;">
-            <div class="cadastre-banner-left">
-              <div class="cadastre-banner-emblem" style="background: rgba(255, 255, 255, 0.2);">
-                <i class="fa-solid fa-calculator"></i>
+      <!-- =====================================================
+           TAB: STATUTORY ROYALTY & DEAD RENT CALCULATOR
+           Pursuant to PMCR 2002 (Rule 135) & Gazette Notification 01-07-2024
+           ===================================================== -->
+      <div class="tab-pane" id="tab-royalty-calculator">
+
+        <!-- Calculator Header Banner with Direct Section Exports -->
+        <div class="cadastre-fiscal-banner" style="background: linear-gradient(135deg, #78350f 0%, #b45309 60%, #d97706 100%); margin-bottom: 1.5rem;">
+          <div class="cadastre-banner-left">
+            <div class="cadastre-banner-emblem" style="background: rgba(255, 255, 255, 0.2);">
+              <i class="fa-solid fa-calculator"></i>
+            </div>
+            <div>
+              <div class="cadastre-banner-badge-row">
+                <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals Department</span>
+                <span class="cadastre-badge-live" style="background: rgba(255, 255, 255, 0.25); color: #FFFFFF;"><i class="fa-solid fa-scale-balanced"></i> PMCR 2002 Rule 135 &amp; Gazette Notification 01-07-2024</span>
               </div>
-              <div>
-                <div class="cadastre-banner-badge-row">
-                  <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals Department</span>
-                  <span class="cadastre-badge-live" style="background: rgba(255, 255, 255, 0.25); color: #FFFFFF;"><i class="fa-solid fa-scale-balanced"></i> Notification No. SOT(M&amp;MD)5-3/2007(Vol-II) • 1st July 2024</span>
-                </div>
-                <h2 class="cadastre-banner-title">Statutory Royalty &amp; Dead Rent Assessment Console</h2>
-                <p class="cadastre-banner-desc">Official 6-month assessment engine with month-wise production entries, statutory comparison (<strong>Whichever is Higher: Royalty vs Dead Rent</strong>), auctioned contract exemption, and statutory penalty (<strong>1% per month until 2025; 10% per month since 01/01/2026</strong>).</p>
-              </div>
+              <h2 class="cadastre-banner-title">Statutory Royalty &amp; Dead Rent Calculator</h2>
+              <p class="cadastre-banner-desc">Official 6-month assessment engine. Mineral type and acreage are automatically fetched and locked from the registered lease title. Only user-reported monthly production and accounting cycle details are required.</p>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+            <button class="btn-page" id="btnExportCalcExcel" type="button" style="background: #FFFFFF; color: #065F46; font-weight: 700; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"><i class="fa-solid fa-file-excel" style="color: #10B981;"></i> Export Excel (.xlsx)</button>
+            <button class="btn-page" id="btnExportCalcCsv" type="button" style="background: #FFFFFF; color: #1E40AF; font-weight: 700; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.15);"><i class="fa-solid fa-file-csv" style="color: #2563EB;"></i> Export CSV</button>
+            <button class="btn-page" id="btnExportCalcPdf" type="button" style="background: #0F172A; color: #FFFFFF; font-weight: 700; border: none; box-shadow: 0 2px 6px rgba(0,0,0,0.25);"><i class="fa-solid fa-file-pdf" style="color: #F59E0B;"></i> Official Notice (PDF)</button>
+          </div>
+        </div>
+
+        <!-- STEP 1: CONCESSION SELECTION & AUTO-FETCHED LOCKED ATTRIBUTES -->
+        <div class="card-section" style="margin-bottom: 1.5rem;">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title"><i class="fa-solid fa-file-contract" style="color: #D97706; margin-right: 0.4rem;"></i> Step 1: Select Registered Lease (Mineral &amp; Acreage Auto-Fetched &amp; Locked)</h3>
+              <span class="card-subtitle">Choose any registered provincial lease. Mineral type, acreage, and statutory gazetted rates are automatically extracted and locked pursuant to official record.</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <button class="btn-page" id="btnCalcQuickSample" type="button" title="Load sample mining lease"><i class="fa-solid fa-wand-magic-sparkles" style="color: #D97706;"></i> Sample Lease</button>
+              <button class="btn-page" id="btnCalcReset" type="button" title="Reset all inputs"><i class="fa-solid fa-rotate-left"></i> Reset</button>
             </div>
           </div>
 
-          <!-- STEP 1: CONCESSION SELECTION & PARAMETERS CARD -->
-          <div class="card-section" style="margin-bottom: 1.5rem;">
-            <div class="card-header-clean">
-              <div class="card-title-group">
-                <h3 class="card-title"><i class="fa-solid fa-file-contract" style="color: #D97706; margin-right: 0.4rem;"></i> Step 1: Select Concession &amp; Statutory Parameters</h3>
-                <span class="card-subtitle">Choose an existing lease from the registry or input custom concession attributes</span>
-              </div>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <button class="btn-page" id="btnCalcQuickSample" type="button" title="Load realistic sample lease data"><i class="fa-solid fa-wand-magic-sparkles" style="color: #D97706;"></i> Load Sample Lease</button>
-                <button class="btn-page" id="btnCalcReset" type="button" title="Clear and reset form"><i class="fa-solid fa-rotate-left"></i> Reset</button>
-              </div>
+          <div style="padding: 1.25rem 1.5rem;">
+            <!-- Lease Picker Dropdown -->
+            <div style="margin-bottom: 1.25rem;">
+              <label class="filter-label" style="font-size: 0.82rem; margin-bottom: 6px; display: block;"><i class="fa-solid fa-search"></i> Select or Search Mining Lease / Concession:</label>
+              <select class="smart-select" id="calcLeasePicker" style="width: 100%; font-size: 0.92rem; font-weight: 700; padding: 0.65rem 1rem;">
+                <option value="">-- Choose from Registered Provincial Leases or Type Below --</option>
+              </select>
             </div>
 
-            <div style="padding: 1.25rem 1.5rem;">
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.25rem;">
-                
-                <!-- Quick Lease Picker -->
-                <div class="filter-control-wrap" style="grid-column: span 2;">
-                  <label class="filter-label"><i class="fa-solid fa-database"></i> Search &amp; Pick Registered Lease (Optional Auto-Fill)</label>
-                  <select class="smart-select" id="calcLeasePicker" style="width: 100%;">
-                    <option value="">-- Choose from Registered Provincial Leases or Type Below --</option>
-                  </select>
-                </div>
-
-                <!-- Lease Reference / License No -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-hashtag"></i> Lease / License Reference</label>
-                  <input type="text" class="smart-input" id="calcLeaseRef" placeholder="e.g. ML-CHK-Coal-000004" value="ML-CHK-Coal-000004">
-                </div>
-
-                <!-- Titleholder / Company -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-building"></i> Concessionaire / Titleholder</label>
-                  <input type="text" class="smart-input" id="calcTitleholder" placeholder="e.g. Fauji Cement / Mining Ltd" value="Punjab Minerals Mining Ltd.">
-                </div>
-
-                <!-- District -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District / Field Office</label>
-                  <select class="smart-select" id="calcDistrict">
-                    <option value="Chakwal">Chakwal</option>
-                    <option value="Attock">Attock</option>
-                    <option value="D.G. Khan">D.G. Khan</option>
-                    <option value="Jhelum">Jhelum</option>
-                    <option value="Khushab">Khushab</option>
-                    <option value="Mianwali">Mianwali</option>
-                    <option value="Sargodha">Sargodha</option>
-                    <option value="Rawalpindi">Rawalpindi</option>
-                  </select>
-                </div>
-
-                <!-- Mining Branch -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-diagram-project"></i> Mining Branch</label>
-                  <select class="smart-select" id="calcBranch">
-                    <option value="SSM">Small Scale Mining (SSM)</option>
-                    <option value="LSM">Large Scale Mining (LSM)</option>
-                    <option value="MM">Minor Minerals (MM)</option>
-                  </select>
-                </div>
-
-                <!-- Mineral (36 Minerals from 1st July 2024 Gazette Notification) -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-gem"></i> Mineral (July 2024 Gazette)</label>
-                  <select class="smart-select" id="calcMineral"></select>
-                </div>
-
-                <!-- Notified Royalty Rate (PKR / Metric Ton) -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-tag"></i> Notified Royalty Rate (PKR / Ton)</label>
-                  <input type="number" class="smart-input" id="calcRoyaltyRate" value="500" min="0">
-                </div>
-
-                <!-- Leased Acreage (Acres) -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-chart-area"></i> Leased Area (Acres)</label>
-                  <input type="number" class="smart-input" id="calcAcreage" value="100" min="0.1" step="0.1">
-                </div>
-
-                <!-- Notified Dead Rent Rate per Acre (Half-Yearly) -->
-                <div class="filter-control-wrap">
-                  <label class="filter-label"><i class="fa-solid fa-clock-rotate-left"></i> Notified Dead Rent Rate (Rs/Acre/6-Mo)</label>
-                  <input type="number" class="smart-input" id="calcDeadRentRate" value="1000" min="0">
-                </div>
-
-              </div>
-
-              <!-- Royalty Contract Auction Status Toggle Banner -->
-              <div style="padding: 0.9rem 1.25rem; background: var(--canvas-bg); border-radius: 8px; border: 1.5px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
-                <div style="display: flex; align-items: center; gap: 0.85rem;">
-                  <input type="checkbox" id="calcIsAuctioned" style="width: 20px; height: 20px; cursor: pointer; accent-color: #D97706;">
-                  <div>
-                    <label for="calcIsAuctioned" style="font-weight: 700; color: var(--text-main); cursor: pointer; font-size: 0.88rem;">
-                      Royalty Rights Auctioned for this Concession / Zone for this Period
-                    </label>
-                    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 2px;">
-                      If checked: Direct monthly production royalty is exempt/waived (governed under competitive auction bid contract). If unchecked: Direct statutory monthly production royalty applies.
-                    </div>
-                  </div>
-                </div>
-                <span class="badge-status-pill" id="calcAuctionStatusBadge" style="background: rgba(16, 185, 129, 0.12); color: #059669; font-size: 0.76rem;">
-                  <i class="fa-solid fa-file-invoice"></i> Non-Auctioned: Direct Royalty Applies
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <!-- STEP 2: ASSESSMENT CYCLE & ASSESSMENT DATE -->
-          <div class="card-section" style="margin-bottom: 1.5rem;">
-            <div class="card-header-clean">
-              <div class="card-title-group">
-                <h3 class="card-title"><i class="fa-solid fa-calendar-days" style="color: #D97706; margin-right: 0.4rem;"></i> Step 2: Assessment Cycle (6-Month Period) &amp; Calculation Date</h3>
-                <span class="card-subtitle">Select the 6-month assessment cycle: 1st Jan – 30th June or 1st July – 31st December</span>
-              </div>
-            </div>
-            <div style="padding: 1.25rem 1.5rem; display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;">
+            <!-- Auto-Fetched & Locked Information Grid (Read-Only) -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; background: var(--canvas-bg); padding: 1.25rem; border-radius: 10px; border: 1.5px solid var(--card-border);">
               
-              <!-- Year Selector -->
-              <div class="filter-control-wrap" style="min-width: 180px;">
+              <!-- Card A: Concession Details -->
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: #64748B; text-transform: uppercase;"><i class="fa-solid fa-id-card"></i> Concession Title &amp; Holder</span>
+                <div style="font-size: 0.95rem; font-weight: 800; color: var(--text-main); margin-top: 3px;" id="calcDisplayRef">ML-CHK-Coal-000004</div>
+                <div style="font-size: 0.76rem; color: #64748B; margin-top: 2px;" id="calcDisplayHolder">Punjab Minerals Mining Ltd.</div>
+                <div style="font-size: 0.74rem; color: #10B981; font-weight: 600; margin-top: 2px;" id="calcDisplayDistrict"><i class="fa-solid fa-location-dot"></i> Chakwal • Small Scale (SSM)</div>
+              </div>
+
+              <!-- Card B: Mineral Type (LOCKED) -->
+              <div style="border-left: 1.5px solid var(--card-border); padding-left: 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 0.72rem; font-weight: 700; color: #64748B; text-transform: uppercase;"><i class="fa-solid fa-gem"></i> Mineral Type</span>
+                  <span class="badge-status-pill badge-granted" style="font-size: 0.65rem; padding: 1px 6px;"><i class="fa-solid fa-lock"></i> Locked</span>
+                </div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: #0F172A; margin-top: 3px;" id="calcDisplayMineral">Coal</div>
+                <small style="color: #64748B; font-size: 0.72rem; display: block; margin-top: 2px;">Auto-fetched from lease title / record</small>
+              </div>
+
+              <!-- Card C: Leased Acreage (LOCKED) -->
+              <div style="border-left: 1.5px solid var(--card-border); padding-left: 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 0.72rem; font-weight: 700; color: #64748B; text-transform: uppercase;"><i class="fa-solid fa-chart-area"></i> Leased Acreage</span>
+                  <span class="badge-status-pill badge-granted" style="font-size: 0.65rem; padding: 1px 6px;"><i class="fa-solid fa-lock"></i> Locked</span>
+                </div>
+                <div style="font-size: 1.2rem; font-weight: 800; color: #0F172A; margin-top: 3px;" id="calcDisplayAcres">100.00 Acres</div>
+                <small style="color: #64748B; font-size: 0.72rem; display: block; margin-top: 2px;" id="calcAcresSourceLbl">Official cadastral survey area</small>
+              </div>
+
+              <!-- Card D: Statutory Gazetted Rates (LOCKED) -->
+              <div style="border-left: 1.5px solid var(--card-border); padding-left: 1rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between;">
+                  <span style="font-size: 0.72rem; font-weight: 700; color: #64748B; text-transform: uppercase;"><i class="fa-solid fa-scale-balanced"></i> Notified Gazette Rates</span>
+                  <span class="badge-status-pill badge-granted" style="font-size: 0.65rem; padding: 1px 6px;"><i class="fa-solid fa-lock"></i> July 2024</span>
+                </div>
+                <div style="font-size: 0.88rem; font-weight: 800; color: #0F172A; margin-top: 3px;">
+                  Royalty: <span id="calcDisplayRoyaltyRate" style="color: #D97706;">Rs. 500 / Ton</span>
+                </div>
+                <div style="font-size: 0.84rem; font-weight: 700; color: #64748B; margin-top: 2px;">
+                  Dead Rent: <span id="calcDisplayDeadRentRate" style="color: #059669;">Rs. 1,000 / Acre</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Fallback inline input if user enters custom title and acreage is missing -->
+            <div id="calcCustomAcreageWrap" style="display: none; margin-top: 0.85rem; padding: 0.75rem 1rem; background: #FFFBEB; border: 1px dashed #D97706; border-radius: 8px;">
+              <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 0.82rem; font-weight: 700; color: #B45309;"><i class="fa-solid fa-circle-question"></i> Acreage not found in title, please specify leased acres:</span>
+                <input type="number" id="calcCustomAcreageInput" class="smart-input" style="width: 140px; text-align: right;" min="0.1" step="0.1" value="100">
+                <span style="font-size: 0.76rem; color: #64748B;">Acres (used to calculate 6-month statutory dead rent)</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- STEP 2: INFORMATION REQUIRED FROM USER -->
+        <div class="card-section" style="margin-bottom: 1.5rem;">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title"><i class="fa-solid fa-pen-to-square" style="color: #D97706; margin-right: 0.4rem;"></i> Step 2: Information Required from User (Accounting Cycle &amp; Production)</h3>
+              <span class="card-subtitle">Select the 6-month cycle, toggle royalty auction contract status, and report monthly production in metric tons.</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-status-pill badge-process" id="calcCycleLabel" style="font-weight: 700;">Cycle: 1st Jan – 30th June 2026</span>
+            </div>
+          </div>
+
+          <div style="padding: 1.25rem 1.5rem;">
+            
+            <!-- Parameters Row: 6-Month Period, Year, Auction Toggle, Calculation Date -->
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1.25rem; padding-bottom: 1.25rem; border-bottom: 1.5px solid var(--card-border); margin-bottom: 1.25rem;">
+              
+              <!-- 6-Month Period Buttons -->
+              <div class="filter-control-wrap">
+                <label class="filter-label"><i class="fa-solid fa-clock"></i> 6-Month Accounting Cycle</label>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button type="button" class="btn-page active" id="btnPeriodJanJun" data-period="JAN_JUN" style="background: #D97706; color: #FFFFFF; border-color: #D97706; font-weight: 700;">
+                    <i class="fa-solid fa-sun" style="color: #FDE68A;"></i> 1st Jan – 30th June
+                  </button>
+                  <button type="button" class="btn-page" id="btnPeriodJulDec" data-period="JUL_DEC" style="font-weight: 700;">
+                    <i class="fa-solid fa-snowflake" style="color: #38BDF8;"></i> 1st July – 31st December
+                  </button>
+                </div>
+              </div>
+
+              <!-- Fiscal Year Selector -->
+              <div class="filter-control-wrap" style="min-width: 170px;">
                 <label class="filter-label"><i class="fa-solid fa-calendar"></i> Fiscal Assessment Year</label>
-                <select class="smart-select" id="calcYear">
+                <select class="smart-select" id="calcYear" style="font-weight: 700;">
                   <option value="2026">2026 (Penalty: 10%/mo)</option>
                   <option value="2025">2025 (Penalty: 1%/mo)</option>
                   <option value="2024">2024 (Penalty: 1%/mo)</option>
@@ -2353,56 +2366,38 @@
                 </select>
               </div>
 
-              <!-- 6-Month Period Selector -->
-              <div class="filter-control-wrap">
-                <label class="filter-label"><i class="fa-solid fa-clock"></i> 6-Month Half-Yearly Cycle</label>
-                <div style="display: flex; gap: 0.5rem;">
-                  <button type="button" class="btn-page active" id="btnPeriodJanJun" data-period="JAN_JUN" style="background: #D97706; color: #FFFFFF; border-color: #D97706; font-weight: 700;">
-                    <i class="fa-solid fa-calendar-check"></i> 1st Jan – 30th June
-                  </button>
-                  <button type="button" class="btn-page" id="btnPeriodJulDec" data-period="JUL_DEC" style="font-weight: 700;">
-                    <i class="fa-solid fa-calendar-check"></i> 1st July – 31st December
-                  </button>
+              <!-- Assessment / Payment Date -->
+              <div class="filter-control-wrap" style="min-width: 180px;">
+                <label class="filter-label"><i class="fa-solid fa-calendar-day"></i> Assessment / Payment Date</label>
+                <input type="date" class="smart-input" id="calcAssessmentDate" value="2026-10-22" style="font-weight: 600;">
+              </div>
+
+              <!-- Royalty Contract Auctioned Toggle -->
+              <div style="background: var(--canvas-bg); padding: 0.65rem 1rem; border-radius: 8px; border: 1.5px solid var(--card-border); display: flex; align-items: center; gap: 0.85rem;">
+                <input type="checkbox" id="calcIsAuctioned" style="width: 20px; height: 20px; cursor: pointer; accent-color: #D97706;">
+                <div>
+                  <label for="calcIsAuctioned" style="font-weight: 700; color: var(--text-main); cursor: pointer; font-size: 0.84rem; display: block;">
+                    Royalty Contract Auctioned for this Period?
+                  </label>
+                  <span class="badge-status-pill badge-granted" id="calcAuctionStatusBadge" style="font-size: 0.68rem; padding: 1px 6px; margin-top: 2px;">
+                    <i class="fa-solid fa-file-invoice"></i> Non-Auctioned: Direct Royalty Applies
+                  </span>
                 </div>
               </div>
 
-              <!-- Calculation Date for Default Penalties -->
-              <div class="filter-control-wrap" style="min-width: 200px;">
-                <label class="filter-label"><i class="fa-solid fa-calendar-day"></i> Assessment / Payment Date</label>
-                <input type="date" class="smart-input" id="calcAssessmentDate" value="2026-10-22">
-              </div>
-
-              <div style="margin-left: auto; background: var(--canvas-bg); padding: 0.65rem 1rem; border-radius: 8px; border: 1px solid var(--card-border); font-size: 0.76rem; color: var(--text-muted); line-height: 1.45;">
-                <span style="font-weight: 700; color: var(--text-main);"><i class="fa-solid fa-scale-balanced"></i> Statutory Penalty Rule:</span><br>
-                • Defaults prior to 01/01/2026: <strong>1% per month</strong><br>
-                • Defaults from 01/01/2026 onwards: <strong>10% per month</strong>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- STEP 3: MONTH-WISE PRODUCTION & PAYMENT LEDGER -->
-          <div class="card-section" style="margin-bottom: 1.5rem;">
-            <div class="card-header-clean">
-              <div class="card-title-group">
-                <h3 class="card-title"><i class="fa-solid fa-table" style="color: #D97706; margin-right: 0.4rem;"></i> Step 3: Month-Wise Production &amp; Monthly Dues Ledger (6 Months)</h3>
-                <span class="card-subtitle">Enter monthly production reported by user and deposits made. Monthly royalties &amp; default penalties are automatically computed.</span>
-              </div>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <span class="badge-status-pill badge-process" id="calcCycleLabel">Cycle: 1st Jan – 30th June</span>
-              </div>
             </div>
 
+            <!-- Month-Wise Production & Dues Table (6 Months) -->
             <div class="table-scroll-container">
               <table class="table-clean" id="tableMonthlyCalculation">
                 <thead>
                   <tr>
                     <th>Month</th>
                     <th>Due Date</th>
-                    <th style="min-width: 130px;">Production (Metric Tons)</th>
+                    <th style="min-width: 150px; background: rgba(217, 119, 6, 0.08); color: #B45309;"><i class="fa-solid fa-pen"></i> Production (Tons)</th>
                     <th>Rate (Rs/Ton)</th>
                     <th>Royalty Assessed (PKR)</th>
-                    <th style="min-width: 130px;">Amount Paid (PKR)</th>
+                    <th style="min-width: 150px;"><i class="fa-solid fa-pen"></i> Amount Paid (PKR)</th>
                     <th>Arrears (PKR)</th>
                     <th>Delay</th>
                     <th>Penalty Rate</th>
@@ -2416,7 +2411,7 @@
                 <tfoot>
                   <tr style="background: var(--canvas-bg); font-weight: 800; border-top: 2px solid var(--card-border);">
                     <td colspan="2" style="color: var(--text-main);">6-MONTH SUMMARY TOTAL</td>
-                    <td id="calcTotalProdCell" style="color: #0F172A; font-variant-numeric: tabular-nums;">0 Tons</td>
+                    <td id="calcTotalProdCell" style="color: #B45309; font-variant-numeric: tabular-nums;">0 Tons</td>
                     <td>-</td>
                     <td id="calcTotalRoyaltyCell" class="currency-bid-val">PKR 0</td>
                     <td id="calcTotalPaidCell" class="currency-paid-val">PKR 0</td>
@@ -2429,105 +2424,97 @@
                 </tfoot>
               </table>
             </div>
+
           </div>
-
-          <!-- STEP 4: STATUTORY DETERMINATION CARD — "WHICHEVER IS HIGHER" -->
-          <div class="card-section" style="margin-bottom: 1.5rem; border: 2px solid #D97706;">
-            <div class="card-header-clean" style="background: linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);">
-              <div class="card-title-group">
-                <h3 class="card-title" style="color: #B45309;"><i class="fa-solid fa-gavel" style="margin-right: 0.4rem;"></i> Step 4: Statutory Executive Determination — "WHICHEVER IS HIGHER"</h3>
-                <span class="card-subtitle">PMCR 2002 Rule 135: Concessionaire is legally bound to pay Royalty or Dead Rent, whichever is higher</span>
-              </div>
-              <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <span class="badge-status-pill badge-granted" id="calcStatusStamp"><i class="fa-solid fa-circle-check"></i> Statutory Audit Active</span>
-              </div>
-            </div>
-
-            <div style="padding: 1.5rem;">
-              
-              <!-- 3-Box Comparison Row -->
-              <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem;">
-                
-                <!-- Box A: Total Royalty -->
-                <div style="background: var(--canvas-bg); padding: 1.25rem; border-radius: 10px; border: 1.5px solid var(--card-border); text-align: center;">
-                  <span style="font-size: 0.74rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">Total 6-Month Production Royalty</span>
-                  <div style="font-size: 1.85rem; font-weight: 800; color: #0F172A; margin: 0.35rem 0;" id="calcBoxRoyalty">PKR 0</div>
-                  <div style="font-size: 0.74rem; color: #64748B;" id="calcBoxRoyaltySub">0 Tons @ Notified Rate</div>
-                </div>
-
-                <!-- VS Divider -->
-                <div style="font-size: 1.1rem; font-weight: 800; color: #D97706; padding: 0.5rem 1rem; border-radius: 999px; background: rgba(217, 119, 6, 0.12); border: 1px solid rgba(217, 119, 6, 0.25);">
-                  VS
-                </div>
-
-                <!-- Box B: Total Dead Rent -->
-                <div style="background: var(--canvas-bg); padding: 1.25rem; border-radius: 10px; border: 1.5px solid var(--card-border); text-align: center;">
-                  <span style="font-size: 0.74rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">Total 6-Month Statutory Dead Rent</span>
-                  <div style="font-size: 1.85rem; font-weight: 800; color: #0F172A; margin: 0.35rem 0;" id="calcBoxDeadRent">PKR 0</div>
-                  <div style="font-size: 0.74rem; color: #64748B;" id="calcBoxDeadRentSub">100 Acres × Rs 1,000 / Acre</div>
-                </div>
-
-              </div>
-
-              <!-- Main Statutory Decision Highlight Card -->
-              <div id="calcDecisionCard" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border: 2px solid #10B981; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                <div>
-                  <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
-                    <span class="badge-status-pill badge-granted" id="calcRulingBadge" style="font-size: 0.82rem; padding: 0.35rem 0.85rem;">
-                      <i class="fa-solid fa-crown"></i> WHICHEVER IS HIGHER: ROYALTY APPLIES
-                    </span>
-                    <span style="font-size: 0.76rem; color: #065F46; font-weight: 600;" id="calcRulingDiff">Exceeds Dead Rent by PKR 0</span>
-                  </div>
-                  <div style="font-size: 0.84rem; color: #065F46; line-height: 1.45; max-width: 700px;" id="calcRulingReason">
-                    Concessionaire is legally assessed on Production Royalty because total 6-month extraction yield exceeds statutory dead rent.
-                  </div>
-                </div>
-                <div style="text-align: right;">
-                  <span style="font-size: 0.72rem; font-weight: 700; color: #065F46; text-transform: uppercase;">Statutory Principal Demand</span>
-                  <div style="font-size: 2.1rem; font-weight: 800; color: #065F46; line-height: 1.1;" id="calcRulingAmount">PKR 0</div>
-                </div>
-              </div>
-
-              <!-- Financial Demand & Recovery Ledger -->
-              <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; background: var(--canvas-bg); padding: 1.25rem; border-radius: 10px; border: 1px solid var(--card-border);">
-                <div>
-                  <span style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Statutory Base Principal:</span>
-                  <div style="font-size: 1.2rem; font-weight: 800; color: var(--text-main); margin-top: 2px;" id="calcSumPrincipal">PKR 0</div>
-                  <small style="color: #64748B;" id="calcSumPrincipalLbl">Higher of Royalty or Dead Rent</small>
-                </div>
-                <div>
-                  <span style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Accrued Statutory Penalty:</span>
-                  <div style="font-size: 1.2rem; font-weight: 800; color: #DC2626; margin-top: 2px;" id="calcSumPenalty">PKR 0</div>
-                  <small style="color: #64748B;" id="calcSumPenaltyLbl">1% pre-2026 / 10% post-2026</small>
-                </div>
-                <div>
-                  <span style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Less Deposited Payments:</span>
-                  <div style="font-size: 1.2rem; font-weight: 800; color: #059669; margin-top: 2px;" id="calcSumPaid">- PKR 0</div>
-                  <small style="color: #64748B;">Total Verified Credits</small>
-                </div>
-                <div style="border-left: 2px solid var(--card-border); padding-left: 1rem;">
-                  <span style="font-size: 0.72rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Net Enforceable Demand:</span>
-                  <div style="font-size: 1.45rem; font-weight: 800; color: #B45309; margin-top: 2px;" id="calcSumNetBalance">PKR 0</div>
-                  <small style="font-weight: 700; color: #DC2626;" id="calcSumBalanceStatus">Action: Issue Statutory Notice</small>
-                </div>
-              </div>
-
-              <!-- Action Buttons -->
-              <div style="display: flex; gap: 0.75rem; align-items: center; justify-content: flex-end; margin-top: 1.25rem;">
-                <button class="btn-page" id="btnExportCalcExcel" type="button"><i class="fa-solid fa-file-excel" style="color: #10B981;"></i> Download Assessment (.xlsx)</button>
-                <button class="btn-page" id="btnExportCalcCsv" type="button"><i class="fa-solid fa-file-csv" style="color: #2563EB;"></i> Download CSV (.csv)</button>
-                <button class="btn-page" id="btnExportCalcPdf" type="button" style="background: #D97706; color: #FFFFFF; border-color: #D97706; font-weight: 700;"><i class="fa-solid fa-file-pdf"></i> Download Official Notice (PDF)</button>
-              </div>
-
-            </div>
-          </div>
-
         </div>
 
+        <!-- STEP 3: STATUTORY EXECUTIVE DETERMINATION — "WHICHEVER IS HIGHER" -->
+        <div class="card-section" style="margin-bottom: 1.5rem; border: 2px solid #D97706;">
+          <div class="card-header-clean" style="background: linear-gradient(135deg, rgba(217, 119, 6, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);">
+            <div class="card-title-group">
+              <h3 class="card-title" style="color: #B45309;"><i class="fa-solid fa-gavel" style="margin-right: 0.4rem;"></i> Step 3: Statutory Executive Determination — "WHICHEVER IS HIGHER"</h3>
+              <span class="card-subtitle">PMCR 2002 Rule 135: Concessionaire is legally bound to pay Royalty or Dead Rent, whichever is higher</span>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-status-pill badge-granted" id="calcStatusStamp"><i class="fa-solid fa-circle-check"></i> Statutory Audit Active</span>
+            </div>
+          </div>
+
+          <div style="padding: 1.5rem;">
+            
+            <!-- 3-Box Comparison Row -->
+            <div style="display: grid; grid-template-columns: 1fr auto 1fr; gap: 1.25rem; align-items: center; margin-bottom: 1.5rem;">
+              
+              <!-- Box A: Total Royalty -->
+              <div class="calc-comp-box" id="calcBoxRoyaltyCard">
+                <span style="font-size: 0.74rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">Total 6-Month Production Royalty</span>
+                <div style="font-size: 2rem; font-weight: 800; color: #0F172A; margin: 0.35rem 0;" id="calcBoxRoyalty">PKR 0</div>
+                <div style="font-size: 0.76rem; color: #64748B;" id="calcBoxRoyaltySub">0 Tons @ Notified Rate</div>
+              </div>
+
+              <!-- VS Divider -->
+              <div style="font-size: 1.1rem; font-weight: 800; color: #D97706; padding: 0.5rem 1rem; border-radius: 999px; background: rgba(217, 119, 6, 0.12); border: 1px solid rgba(217, 119, 6, 0.25);">
+                VS
+              </div>
+
+              <!-- Box B: Total Dead Rent -->
+              <div class="calc-comp-box" id="calcBoxDeadRentCard">
+                <span style="font-size: 0.74rem; font-weight: 700; color: #64748B; text-transform: uppercase; letter-spacing: 0.05em;">Total 6-Month Statutory Dead Rent</span>
+                <div style="font-size: 2rem; font-weight: 800; color: #0F172A; margin: 0.35rem 0;" id="calcBoxDeadRent">PKR 0</div>
+                <div style="font-size: 0.76rem; color: #64748B;" id="calcBoxDeadRentSub">100 Acres × Rs 1,000 / Acre</div>
+              </div>
+
+            </div>
+
+            <!-- Main Statutory Decision Highlight Card -->
+            <div id="calcDecisionCard" style="background: linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%); border: 2px solid #10B981; border-radius: 12px; padding: 1.25rem 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.35rem;">
+                  <span class="badge-status-pill badge-granted" id="calcRulingBadge" style="font-size: 0.84rem; padding: 0.4rem 0.9rem; font-weight: 800;">
+                    <i class="fa-solid fa-crown"></i> WHICHEVER IS HIGHER: ROYALTY APPLIES
+                  </span>
+                  <span style="font-size: 0.78rem; color: #065F46; font-weight: 700;" id="calcRulingDiff">Exceeds Dead Rent by PKR 0</span>
+                </div>
+                <div style="font-size: 0.84rem; color: #065F46; line-height: 1.45; max-width: 700px;" id="calcRulingReason">
+                  Concessionaire is legally assessed on Production Royalty because total 6-month extraction yield exceeds statutory dead rent.
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <span style="font-size: 0.72rem; font-weight: 700; color: #065F46; text-transform: uppercase;">Statutory Principal Demand</span>
+                <div style="font-size: 2.2rem; font-weight: 800; color: #065F46; line-height: 1.1;" id="calcRulingAmount">PKR 0</div>
+              </div>
+            </div>
+
+            <!-- Financial Demand & Recovery Ledger -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; background: var(--canvas-bg); padding: 1.25rem; border-radius: 10px; border: 1px solid var(--card-border);">
+              <div>
+                <span style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Statutory Base Principal:</span>
+                <div style="font-size: 1.25rem; font-weight: 800; color: var(--text-main); margin-top: 2px;" id="calcSumPrincipal">PKR 0</div>
+                <small style="color: #64748B;">Higher of Royalty or Dead Rent</small>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Accrued Statutory Penalty:</span>
+                <div style="font-size: 1.25rem; font-weight: 800; color: #DC2626; margin-top: 2px;" id="calcSumPenalty">PKR 0</div>
+                <small style="color: #64748B;">1% pre-2026 / 10% post-2026</small>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; color: #64748B; font-weight: 600;">Less Deposited Payments:</span>
+                <div style="font-size: 1.25rem; font-weight: 800; color: #059669; margin-top: 2px;" id="calcSumPaid">- PKR 0</div>
+                <small style="color: #64748B;">Total Verified Credits</small>
+              </div>
+              <div style="border-left: 2px solid var(--card-border); padding-left: 1rem;">
+                <span style="font-size: 0.72rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Net Enforceable Demand:</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #B45309; margin-top: 2px;" id="calcSumNetBalance">PKR 0</div>
+                <small style="font-weight: 700; color: #DC2626;" id="calcSumBalanceStatus">Action: Issue Statutory Notice</small>
+              </div>
+            </div>
+
+          </div>
+        </div>
 
       </div>
 
-      <!-- =====================================================
+<!-- =====================================================
            TAB 7: EPA ENVIRONMENTAL CLEARANCES
            ===================================================== -->
       <div class="tab-pane" id="tab-epa">

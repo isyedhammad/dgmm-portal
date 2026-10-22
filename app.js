@@ -607,6 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "tab-rules": { section: "Regulatory Framework", title: "Rules" },
       "tab-map": { section: "Spatial Intelligence", title: "Map" },
       "tab-financials": { section: "Fiscal Intelligence", title: "Revenue" },
+      "tab-royalty-calculator": { section: "Fiscal Intelligence", title: "Royalty Calculator" },
       "tab-epa": { section: "Environmental Approvals", title: "EPA" },
       "tab-appeals": { section: "Judicial Oversight", title: "Appeals" },
       "tab-inspections": { section: "Field Operations", title: "Inspections" }
@@ -1654,6 +1655,9 @@ document.addEventListener("DOMContentLoaded", () => {
         break;
       case "tab-financials":
         renderFinancials();
+        break;
+      case "tab-royalty-calculator":
+        renderRoyaltyCalculator();
         break;
       case "tab-epa":
         renderEpa();
@@ -6112,12 +6116,11 @@ function renderInspections() {
 
   // =========================================================================
   // STATUTORY ROYALTY & DEAD RENT CALCULATOR CONTROLLER
-  // Pursuant to Notification No. SOT(M&MD)5-3/2007(Vol-II) Dated 01-07-2024
-  // PMCR 2002 Rules 65, 66, 135, 141 & Official Statutory Penalty Rules
+  // Dedicated Tab • PMCR 2002 (Rule 135) & Gazette Notification 01-07-2024
+  // Mineral & Acreage Auto-Fetched & Locked; Asks Only User-Reported Production
   // =========================================================================
 
   function initRoyaltyCalculator() {
-    populateCalculatorMineralDropdown();
     populateCalculatorLeasePicker();
     bindCalculatorListeners();
     syncCalculatorInputsFromState();
@@ -6125,23 +6128,72 @@ function renderInspections() {
     recalculateRoyaltyAssessment(false);
   }
 
-  function populateCalculatorMineralDropdown() {
-    const select = document.getElementById("calcMineral");
-    if (!select) return;
+  function detectMineralAndRates(rawMineral, leaseRef, branch) {
+    const text = (String(rawMineral || "") + " " + String(leaseRef || "")).toLowerCase().replace(/[-_]/g, " ");
+    const list = window.ROYALTY_NOTIFICATION_2024 || [];
 
-    const minerals = window.ROYALTY_NOTIFICATION_2024 || [];
-    select.innerHTML = "";
-
-    minerals.forEach(m => {
-      const opt = document.createElement("option");
-      opt.value = m.mineral;
-      opt.textContent = `${m.mineral} — Rs. ${m.rate}/Ton (Dead Rent: Rs. ${m.defaultDeadRentHalfYearly}/Acre)`;
-      select.appendChild(opt);
-    });
-
-    if (state.calculator && state.calculator.mineral) {
-      select.value = state.calculator.mineral;
+    // Check specific minerals
+    if (text.includes("rock salt") || text.includes("lake salt") || text.includes("salt")) {
+      if (text.includes("lake")) return list.find(m => m.mineral === "Lake Salt") || list[29];
+      return list.find(m => m.mineral === "Rock Salt") || list[29];
     }
+    if (text.includes("lime stone") || text.includes("limestone")) {
+      if (branch === "LSM") return list.find(m => m.mineral.includes("Limestone") && m.mineral.includes("Large Scale")) || list[24];
+      return list.find(m => m.mineral.includes("Limestone") && m.mineral.includes("Small Scale")) || list[23];
+    }
+    if (text.includes("iron ore") || text.includes("iron")) {
+      if (branch === "LSM") return list.find(m => m.mineral.includes("Iron Ore") && m.mineral.includes("Large Scale")) || list[20];
+      return list.find(m => m.mineral.includes("Iron Ore") && m.mineral.includes("Small Scale")) || list[19];
+    }
+    if (text.includes("silica sand") || text.includes("silica")) {
+      return list.find(m => m.mineral === "Silica Sand") || list[32];
+    }
+    if (text.includes("ordinary sand") || (text.includes("sand") && !text.includes("sandstone") && !text.includes("tar sand"))) {
+      return list.find(m => m.mineral === "Ordinary Sand") || list[27];
+    }
+    if (text.includes("sand stone") || text.includes("sandstone")) {
+      return list.find(m => m.mineral === "Sandstone") || list[30];
+    }
+    if (text.includes("tar sand")) {
+      return list.find(m => m.mineral === "Tar Sand") || list[34];
+    }
+    if (text.includes("fire clay") || text.includes("fireclay")) {
+      return list.find(m => m.mineral === "Fireclay") || list[14];
+    }
+    if (text.includes("china clay")) {
+      return list.find(m => m.mineral === "China Clay") || list[10];
+    }
+    if (text.includes("ball clay")) {
+      return list.find(m => m.mineral === "Ball Clay") || list[1];
+    }
+    if (text.includes("argillaceous") || text.includes("clay")) {
+      return list.find(m => m.mineral === "Argillaceous Clay") || list[0];
+    }
+    if (text.includes("bauxite")) return list.find(m => m.mineral === "Bauxite") || list[4];
+    if (text.includes("bentonite")) return list.find(m => m.mineral === "Bentonite") || list[5];
+    if (text.includes("gypsum")) return list.find(m => m.mineral === "Gypsum") || list[18];
+    if (text.includes("marble")) return list.find(m => m.mineral === "Marble") || list[25];
+    if (text.includes("dolomite")) return list.find(m => m.mineral === "Dolomite") || list[13];
+    if (text.includes("fuller earth") || text.includes("fuller")) return list.find(m => m.mineral === "Fuller Earth") || list[15];
+    if (text.includes("granite")) return list.find(m => m.mineral === "Granite") || list[16];
+    if (text.includes("gravel")) return list.find(m => m.mineral === "Gravel") || list[17];
+    if (text.includes("laterite")) return list.find(m => m.mineral === "Laterite") || list[22];
+    if (text.includes("ocher") || text.includes("ochre")) return list.find(m => m.mineral === "Ocher") || list[26];
+    if (text.includes("quartzite")) return list.find(m => m.mineral === "Quartzite") || list[28];
+    if (text.includes("shale")) return list.find(m => m.mineral === "Shale") || list[31];
+    if (text.includes("slate stone") || text.includes("slatestone")) return list.find(m => m.mineral === "Slatestone") || list[33];
+    if (text.includes("tuff")) return list.find(m => m.mineral === "Tuff") || list[35];
+    if (text.includes("brine")) return list.find(m => m.mineral === "Brine") || list[6];
+    if (text.includes("calcite")) return list.find(m => m.mineral === "Calcite") || list[7];
+    if (text.includes("celestite")) return list.find(m => m.mineral === "Celestite") || list[8];
+    if (text.includes("chalk")) return list.find(m => m.mineral === "Chalk") || list[9];
+    if (text.includes("diorite")) return list.find(m => m.mineral === "Diorite") || list[12];
+    if (text.includes("barytes")) return list.find(m => m.mineral === "Barytes") || list[2];
+    if (text.includes("basalt")) return list.find(m => m.mineral === "Basalt") || list[3];
+    if (text.includes("coal")) return list.find(m => m.mineral === "Coal") || list[11];
+
+    const direct = list.find(m => text.includes(m.mineral.toLowerCase()) || m.mineral.toLowerCase().includes(text));
+    return direct || list[11]; // default Coal
   }
 
   function populateCalculatorLeasePicker() {
@@ -6202,7 +6254,7 @@ function renderInspections() {
       const clientTrunc = (l.client || "Concessionaire").length > 36
         ? (l.client || "Concessionaire").substring(0, 33) + "..."
         : (l.client || "Concessionaire");
-      opt.textContent = `${l.ref} • ${clientTrunc} (${l.mineral}, ${l.district})`;
+      opt.textContent = `${l.ref} • ${clientTrunc} (${l.mineral}, ${l.district}, ${l.acreage} ac)`;
       select.appendChild(opt);
     });
 
@@ -6220,65 +6272,25 @@ function renderInspections() {
       }
     });
 
-    // 2. Mineral Dropdown
-    document.getElementById("calcMineral")?.addEventListener("change", (e) => {
-      const mineralName = e.target.value;
-      state.calculator.mineral = mineralName;
-
-      const notified = (window.ROYALTY_NOTIFICATION_2024 || []).find(
-        m => m.mineral.toLowerCase() === mineralName.toLowerCase()
-      );
-      if (notified) {
-        state.calculator.royaltyRate = notified.rate;
-        state.calculator.deadRentRate = notified.defaultDeadRentHalfYearly;
-        const rateInp = document.getElementById("calcRoyaltyRate");
-        const drInp = document.getElementById("calcDeadRentRate");
-        if (rateInp) rateInp.value = notified.rate;
-        if (drInp) drInp.value = notified.defaultDeadRentHalfYearly;
+    // 2. Custom Acreage fallback input
+    document.getElementById("calcCustomAcreageInput")?.addEventListener("input", (e) => {
+      const val = parseFloat(e.target.value) || 0;
+      if (val > 0) {
+        state.calculator.acreage = val;
+        const dispAcres = document.getElementById("calcDisplayAcres");
+        if (dispAcres) dispAcres.textContent = `${formatNumber(val)} Acres`;
+        recalculateRoyaltyAssessment(false);
       }
-      recalculateRoyaltyAssessment(false);
     });
 
-    // 3. Concession Attribute Inputs
-    document.getElementById("calcLeaseRef")?.addEventListener("input", (e) => {
-      state.calculator.leaseRef = e.target.value;
-    });
-
-    document.getElementById("calcTitleholder")?.addEventListener("input", (e) => {
-      state.calculator.titleholder = e.target.value;
-    });
-
-    document.getElementById("calcDistrict")?.addEventListener("change", (e) => {
-      state.calculator.district = e.target.value;
-    });
-
-    document.getElementById("calcBranch")?.addEventListener("change", (e) => {
-      state.calculator.branch = e.target.value;
-    });
-
-    document.getElementById("calcRoyaltyRate")?.addEventListener("input", (e) => {
-      state.calculator.royaltyRate = parseFloat(e.target.value) || 0;
-      recalculateRoyaltyAssessment(false);
-    });
-
-    document.getElementById("calcAcreage")?.addEventListener("input", (e) => {
-      state.calculator.acreage = parseFloat(e.target.value) || 0;
-      recalculateRoyaltyAssessment(false);
-    });
-
-    document.getElementById("calcDeadRentRate")?.addEventListener("input", (e) => {
-      state.calculator.deadRentRate = parseFloat(e.target.value) || 0;
-      recalculateRoyaltyAssessment(false);
-    });
-
-    // 4. Royalty Contract Auctioned Toggle
+    // 3. Royalty Contract Auctioned Toggle
     document.getElementById("calcIsAuctioned")?.addEventListener("change", (e) => {
       state.calculator.isAuctioned = e.target.checked;
       syncCalculatorInputsFromState();
       recalculateRoyaltyAssessment(false);
     });
 
-    // 5. Year Selector
+    // 4. Year Selector
     document.getElementById("calcYear")?.addEventListener("change", (e) => {
       state.calculator.year = parseInt(e.target.value, 10) || 2026;
       syncCalculatorInputsFromState();
@@ -6286,7 +6298,7 @@ function renderInspections() {
       recalculateRoyaltyAssessment(false);
     });
 
-    // 6. Period Buttons (1st Jan – 30th June vs 1st July – 31st Dec)
+    // 5. Period Buttons (1st Jan – 30th June vs 1st July – 31st Dec)
     document.getElementById("btnPeriodJanJun")?.addEventListener("click", () => {
       state.calculator.period = "JAN_JUN";
       syncCalculatorInputsFromState();
@@ -6301,13 +6313,13 @@ function renderInspections() {
       recalculateRoyaltyAssessment(false);
     });
 
-    // 7. Assessment Date
+    // 6. Assessment Date
     document.getElementById("calcAssessmentDate")?.addEventListener("change", (e) => {
       state.calculator.assessmentDate = e.target.value;
       recalculateRoyaltyAssessment(false);
     });
 
-    // 8. Monthly Production & Payment Inputs (Delegated on Table Body)
+    // 7. Monthly Production & Payment Inputs (Delegated on Table Body)
     const monthlyTbody = document.getElementById("monthlyCalcTbody");
     if (monthlyTbody) {
       monthlyTbody.addEventListener("input", (e) => {
@@ -6325,7 +6337,7 @@ function renderInspections() {
       });
     }
 
-    // 9. Sample & Reset Action Buttons
+    // 8. Sample & Reset Action Buttons
     document.getElementById("btnCalcQuickSample")?.addEventListener("click", () => {
       loadSampleLeaseIntoCalculator();
     });
@@ -6334,7 +6346,7 @@ function renderInspections() {
       resetCalculator();
     });
 
-    // 10. Calculator Exports
+    // 9. Calculator Exports
     document.getElementById("btnExportCalcExcel")?.addEventListener("click", () => {
       exportCalculatorExcel();
     });
@@ -6350,21 +6362,22 @@ function renderInspections() {
 
   function syncCalculatorInputsFromState() {
     const c = state.calculator;
-    const setVal = (id, val) => {
-      const el = document.getElementById(id);
-      if (el) el.value = val !== undefined ? val : "";
-    };
 
-    setVal("calcLeaseRef", c.leaseRef);
-    setVal("calcTitleholder", c.titleholder);
-    setVal("calcDistrict", c.district);
-    setVal("calcBranch", c.branch);
-    setVal("calcMineral", c.mineral);
-    setVal("calcRoyaltyRate", c.royaltyRate);
-    setVal("calcAcreage", c.acreage);
-    setVal("calcDeadRentRate", c.deadRentRate);
-    setVal("calcYear", c.year);
-    setVal("calcAssessmentDate", c.assessmentDate);
+    const elRef = document.getElementById("calcDisplayRef");
+    const elHolder = document.getElementById("calcDisplayHolder");
+    const elDist = document.getElementById("calcDisplayDistrict");
+    const elMin = document.getElementById("calcDisplayMineral");
+    const elAcres = document.getElementById("calcDisplayAcres");
+    const elRoyRate = document.getElementById("calcDisplayRoyaltyRate");
+    const elDrRate = document.getElementById("calcDisplayDeadRentRate");
+
+    if (elRef) elRef.textContent = c.leaseRef || "ML-CHK-Coal-000004";
+    if (elHolder) elHolder.textContent = c.titleholder || "Punjab Minerals Mining Ltd.";
+    if (elDist) elDist.innerHTML = `<i class="fa-solid fa-location-dot"></i> ${c.district} • ${c.branch === "LSM" ? "Large Scale Mining (LSM)" : "Small Scale Mining (SSM)"}`;
+    if (elMin) elMin.textContent = c.mineral || "Coal";
+    if (elAcres) elAcres.textContent = `${formatNumber(c.acreage)} Acres`;
+    if (elRoyRate) elRoyRate.textContent = `Rs. ${formatNumber(c.royaltyRate)} / Ton`;
+    if (elDrRate) elDrRate.textContent = `Rs. ${formatNumber(c.deadRentRate)} / Acre`;
 
     const picker = document.getElementById("calcLeasePicker");
     if (picker) picker.value = c.leaseRef || "";
@@ -6378,7 +6391,7 @@ function renderInspections() {
         aucBadge.className = "badge-status-pill badge-vacant";
         aucBadge.style.background = "rgba(217, 119, 6, 0.15)";
         aucBadge.style.color = "#D97706";
-        aucBadge.innerHTML = '<i class="fa-solid fa-gavel"></i> Auctioned Contract: Direct Royalty Exempt';
+        aucBadge.innerHTML = '<i class="fa-solid fa-gavel"></i> Auctioned: Direct Production Royalty Waived';
       } else {
         aucBadge.className = "badge-status-pill badge-granted";
         aucBadge.style.background = "rgba(16, 185, 129, 0.12)";
@@ -6410,6 +6423,12 @@ function renderInspections() {
       btnJan?.style.removeProperty("color");
       btnJan?.style.removeProperty("border-color");
     }
+
+    const yearSel = document.getElementById("calcYear");
+    if (yearSel) yearSel.value = c.year;
+
+    const dateInp = document.getElementById("calcAssessmentDate");
+    if (dateInp) dateInp.value = c.assessmentDate;
 
     const cycleLabel = document.getElementById("calcCycleLabel");
     if (cycleLabel) {
@@ -6570,7 +6589,7 @@ function renderInspections() {
     if (elTotalPen) elTotalPen.textContent = formatPKR(res.totalPenalty);
     if (elTotalDem) elTotalDem.textContent = formatPKR(totalDemand);
 
-    // 3. Update Step 4 Comparison & Whichever is Higher
+    // 3. Update Step 3 Comparison & Whichever is Higher
     const boxRoy = document.getElementById("calcBoxRoyalty");
     const boxRoySub = document.getElementById("calcBoxRoyaltySub");
     const boxDead = document.getElementById("calcBoxDeadRent");
@@ -6584,35 +6603,34 @@ function renderInspections() {
     if (boxDead) boxDead.textContent = formatPKR(res.totalDeadRent);
     if (boxDeadSub) boxDeadSub.textContent = `${formatNumber(res.acres)} Acres × Rs. ${formatNumber(res.deadRentRateHalfYearly)} / Acre`;
 
-    const boxRoyContainer = boxRoy?.closest("div");
-    const boxDeadContainer = boxDead?.closest("div");
+    const boxRoyCard = document.getElementById("calcBoxRoyaltyCard");
+    const boxDeadCard = document.getElementById("calcBoxDeadRentCard");
 
-    if (boxRoyContainer && boxDeadContainer) {
-      boxRoyContainer.classList.remove("is-winner", "is-winner-amber");
-      boxDeadContainer.classList.remove("is-winner", "is-winner-amber");
+    if (boxRoyCard && boxDeadCard) {
+      boxRoyCard.classList.remove("is-winner", "is-winner-amber");
+      boxDeadCard.classList.remove("is-winner", "is-winner-amber");
 
-      // Remove any existing winner tag
-      boxRoyContainer.querySelector(".calc-winner-tag")?.remove();
-      boxDeadContainer.querySelector(".calc-winner-tag")?.remove();
+      boxRoyCard.querySelector(".calc-winner-tag")?.remove();
+      boxDeadCard.querySelector(".calc-winner-tag")?.remove();
 
       if (res.isAuctioned) {
-        boxDeadContainer.classList.add("is-winner-amber");
+        boxDeadCard.classList.add("is-winner-amber");
         const tag = document.createElement("span");
         tag.className = "calc-winner-tag tag-amber";
         tag.innerHTML = '<i class="fa-solid fa-crown"></i> AUCTION FLOOR';
-        boxDeadContainer.appendChild(tag);
+        boxDeadCard.appendChild(tag);
       } else if (res.totalRoyalty >= res.totalDeadRent) {
-        boxRoyContainer.classList.add("is-winner");
+        boxRoyCard.classList.add("is-winner");
         const tag = document.createElement("span");
         tag.className = "calc-winner-tag";
         tag.innerHTML = '<i class="fa-solid fa-crown"></i> HIGHER: ROYALTY';
-        boxRoyContainer.appendChild(tag);
+        boxRoyCard.appendChild(tag);
       } else {
-        boxDeadContainer.classList.add("is-winner-amber");
+        boxDeadCard.classList.add("is-winner-amber");
         const tag = document.createElement("span");
         tag.className = "calc-winner-tag tag-amber";
         tag.innerHTML = '<i class="fa-solid fa-crown"></i> HIGHER: DEAD RENT';
-        boxDeadContainer.appendChild(tag);
+        boxDeadCard.appendChild(tag);
       }
     }
 
@@ -6686,13 +6704,11 @@ function renderInspections() {
       }
     }
 
-    // Save latest assessment in memory
     window.LATEST_ROYALTY_ASSESSMENT = res;
     return res;
   }
 
   function renderRoyaltyCalculator() {
-    populateCalculatorMineralDropdown();
     populateCalculatorLeasePicker();
     syncCalculatorInputsFromState();
     renderMonthlyInputs();
@@ -6738,50 +6754,60 @@ function renderInspections() {
       }
     }
 
-    if (found) {
-      state.calculator.leaseRef = found.ref || leaseRef;
-      state.calculator.titleholder = found.company || found.client || "Concessionaire";
-      state.calculator.district = found.district || found.fieldOffice || "Chakwal";
-      state.calculator.branch = found.branch || "SSM";
-      state.calculator.acreage = Number(found.acreage) || 100;
-      state.calculator.isAuctioned = !!found.isAuctioned;
-
-      const minLower = (found.mineral || "").toLowerCase().trim();
-      const matched = (window.ROYALTY_NOTIFICATION_2024 || []).find(m =>
-        m.mineral.toLowerCase() === minLower ||
-        minLower.includes(m.mineral.toLowerCase()) ||
-        m.mineral.toLowerCase().includes(minLower)
-      );
-
-      if (matched) {
-        state.calculator.mineral = matched.mineral;
-        state.calculator.royaltyRate = matched.rate;
-        state.calculator.deadRentRate = matched.defaultDeadRentHalfYearly;
-      } else {
-        state.calculator.mineral = found.mineral || "Coal";
-        state.calculator.royaltyRate = 500;
-        state.calculator.deadRentRate = 1000;
-      }
-
-      if (found.production5YTons && found.production5YTons > 0) {
-        const avg = Math.round(found.production5YTons / 60) || 200;
-        state.calculator.monthlyProduction = [
-          avg,
-          Math.round(avg * 1.15),
-          Math.round(avg * 0.9),
-          Math.round(avg * 1.25),
-          Math.round(avg * 1.05),
-          avg
-        ];
-      } else {
-        state.calculator.monthlyProduction = [350, 420, 280, 500, 310, 450];
-      }
-      state.calculator.monthlyPayments = [0, 0, 0, 0, 0, 0];
-
-      syncCalculatorInputsFromState();
-      renderMonthlyInputs();
-      recalculateRoyaltyAssessment(false);
+    if (!found) {
+      found = {
+        ref: leaseRef,
+        company: "Concessionaire",
+        district: "Punjab Formation",
+        branch: "SSM",
+        acreage: 0,
+        isAuctioned: false
+      };
     }
+
+    state.calculator.leaseRef = found.ref || leaseRef;
+    state.calculator.titleholder = found.company || found.client || "Concessionaire";
+    state.calculator.district = found.district || found.fieldOffice || "Chakwal";
+    state.calculator.branch = found.branch || "SSM";
+
+    // Auto-fetch & lock mineral type from title / name / record
+    const notifiedMineral = detectMineralAndRates(found.mineral, found.ref, state.calculator.branch);
+    state.calculator.mineral = notifiedMineral.mineral;
+    state.calculator.royaltyRate = notifiedMineral.rate;
+    state.calculator.deadRentRate = notifiedMineral.defaultDeadRentHalfYearly;
+
+    // Auto-fetch & lock acreage
+    let detectedAcres = Number(found.acreage) || Number(found.area) || 0;
+    if (detectedAcres <= 0) {
+      const match = (found.ref + " " + found.company).match(/(d+(.d+)?)s*(acre|acres|ac)/i);
+      if (match) detectedAcres = parseFloat(match[1]);
+    }
+
+    const customAcreWrap = document.getElementById("calcCustomAcreageWrap");
+    if (detectedAcres > 0) {
+      state.calculator.acreage = detectedAcres;
+      if (customAcreWrap) customAcreWrap.style.display = "none";
+    } else {
+      state.calculator.acreage = 100;
+      if (customAcreWrap) {
+        customAcreWrap.style.display = "block";
+        const customInp = document.getElementById("calcCustomAcreageInput");
+        if (customInp) customInp.value = 100;
+      }
+    }
+
+    state.calculator.isAuctioned = !!found.isAuctioned;
+
+    // Load sample monthly production if empty
+    const hasProd = state.calculator.monthlyProduction.some(p => p > 0);
+    if (!hasProd) {
+      state.calculator.monthlyProduction = [350, 420, 280, 500, 310, 450];
+    }
+    state.calculator.monthlyPayments = [0, 0, 0, 0, 0, 0];
+
+    syncCalculatorInputsFromState();
+    renderMonthlyInputs();
+    recalculateRoyaltyAssessment(false);
   }
 
   function loadSampleLeaseIntoCalculator() {
@@ -6807,22 +6833,8 @@ function renderInspections() {
   }
 
   function resetCalculator() {
-    state.calculator = {
-      leaseRef: "",
-      titleholder: "",
-      district: "Chakwal",
-      branch: "SSM",
-      mineral: "Coal",
-      royaltyRate: 500,
-      acreage: 100,
-      deadRentRate: 1000,
-      isAuctioned: false,
-      year: 2026,
-      period: "JAN_JUN",
-      assessmentDate: "2026-10-22",
-      monthlyProduction: [0, 0, 0, 0, 0, 0],
-      monthlyPayments: [0, 0, 0, 0, 0, 0]
-    };
+    state.calculator.monthlyProduction = [0, 0, 0, 0, 0, 0];
+    state.calculator.monthlyPayments = [0, 0, 0, 0, 0, 0];
     syncCalculatorInputsFromState();
     renderMonthlyInputs();
     recalculateRoyaltyAssessment(false);
@@ -6832,19 +6844,22 @@ function renderInspections() {
   window.launchRoyaltyCalculator = function(encodedRef) {
     const leaseRef = decodeURIComponent(encodedRef);
 
-    const finNav = document.querySelector(`.sidebar-nav .nav-link[data-tab="tab-financials"]`);
-    if (finNav) finNav.click();
-
-    if (typeof window.switchFinancialSubview === "function") {
-      window.switchFinancialSubview("subview-royalty-calculator");
+    // 1. Activate the dedicated Royalty Calculator tab
+    const calcNav = document.querySelector(`.sidebar-nav .nav-link[data-tab="tab-royalty-calculator"]`);
+    if (calcNav) {
+      calcNav.click();
+    } else if (typeof window.activateTab === "function") {
+      window.activateTab("tab-royalty-calculator");
     }
 
+    // 2. Load lease (auto-fetches and locks mineral and acreage)
     loadLeaseIntoCalculator(leaseRef);
 
+    // 3. Smooth scroll to top of calculator
     setTimeout(() => {
-      const calcBanner = document.getElementById("subview-royalty-calculator");
-      if (calcBanner) calcBanner.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 150);
+      const calcTab = document.getElementById("tab-royalty-calculator");
+      if (calcTab) calcTab.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   };
 
   function exportCalculatorExcel() {
@@ -6865,8 +6880,8 @@ function renderInspections() {
       ["CONCESSION PARAMETERS & AUDIT BASES"],
       ["Concession Reference:", res.leaseRef, "Concessionaire / Titleholder:", res.titleholder],
       ["Mining Branch:", res.branch, "District / Formation:", res.district],
-      ["Mineral Extracted:", res.mineral, "Notified Royalty Rate (July 2024):", `PKR ${res.royaltyRatePerTon} / Ton`],
-      ["Leased Acreage:", `${res.acres} Acres`, "Notified Dead Rent Rate:", `PKR ${res.deadRentRateHalfYearly} / Acre / 6-Mo`],
+      ["Mineral Extracted (Auto-Fetched):", res.mineral, "Notified Royalty Rate (July 2024):", `PKR ${res.royaltyRatePerTon} / Ton`],
+      ["Leased Acreage (Auto-Fetched):", `${res.acres} Acres`, "Notified Dead Rent Rate:", `PKR ${res.deadRentRateHalfYearly} / Acre / 6-Mo`],
       ["Royalty Auction Status:", res.isAuctioned ? "AUCTION CONTRACT (Direct Royalty Waived)" : "DIRECT PRODUCTION ROYALTY APPLIES", "Assessment Cycle:", `${res.period} ${res.year}`],
       ["Statutory Penalty Basis:", "1% per month prior to 2026; 10% per month since 01/01/2026", "Audit Cutoff Date:", state.calculator.assessmentDate],
       [],
@@ -7097,13 +7112,13 @@ function renderInspections() {
             <td>${res.branch === 'LSM' ? 'Large Scale Mining' : (res.branch === 'MM' ? 'Minor Minerals' : 'Small Scale Mining')}</td>
           </tr>
           <tr>
-            <td class="label">Notified Mineral:</td>
+            <td class="label">Notified Mineral (Auto-Fetched):</td>
             <td><strong>${res.mineral}</strong></td>
-            <td class="label">Notified Royalty Rate:</td>
+            <td class="label">Notified Royalty Rate (July 2024):</td>
             <td><strong>Rs. ${res.royaltyRatePerTon}</strong> per Metric Ton</td>
           </tr>
           <tr>
-            <td class="label">Concession Acreage:</td>
+            <td class="label">Concession Acreage (Auto-Fetched):</td>
             <td><strong>${res.acres} Acres</strong></td>
             <td class="label">Notified Dead Rent Rate:</td>
             <td><strong>Rs. ${res.deadRentRateHalfYearly}</strong> / Acre / Half-Year</td>

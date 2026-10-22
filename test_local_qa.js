@@ -189,41 +189,41 @@ async function runLocalQA() {
     `);
     console.log('[PASS] Financial tables rendering:', finCheck);
 
-    // TEST 4: Statutory Royalty & Dead Rent Calculator Verification
-    console.log('\n--- TEST 4: Statutory Royalty & Dead Rent Calculator Verification ---');
+    // TEST 4: Statutory Royalty & Dead Rent Calculator Dedicated Tab Verification
+    console.log('\n--- TEST 4: Statutory Royalty & Dead Rent Calculator Dedicated Tab Verification ---');
     const calcCheck = await evalInPage(`
       (() => {
         const results = {};
 
-        // 1. Switch to Revenue & Royalties tab
-        document.querySelector('.nav-link[data-tab="tab-financials"]')?.click();
+        // 1. Click dedicated Royalty Calculator tab in sidebar (just below Revenue)
+        const calcNav = document.getElementById('navBtnRoyaltyCalculator');
+        if (calcNav) calcNav.click();
 
-        // 2. Click Calculator Subview button
-        const calcBtn = document.getElementById('btnFinViewCalculator');
-        if (calcBtn) calcBtn.click();
-
-        const calcPaneActive = document.getElementById('subview-royalty-calculator')?.classList.contains('active');
+        const calcPaneActive = document.getElementById('tab-royalty-calculator')?.classList.contains('active');
         results.calcPaneActive = calcPaneActive;
+        results.activeBreadcrumb = document.getElementById('activeBreadcrumbTitle')?.innerText;
 
-        // 3. Check Minerals dropdown
-        const mineralSelect = document.getElementById('calcMineral');
-        results.mineralsCount = mineralSelect?.options.length || 0;
-
-        // 4. Check Lease picker options
+        // 2. Check Lease picker options
         const leasePicker = document.getElementById('calcLeasePicker');
         results.leasesPickerCount = leasePicker?.options.length || 0;
 
-        // 5. Check 6-month table rows
+        // 3. Verify Auto-Fetched & Locked Attributes
+        results.displayRef = document.getElementById('calcDisplayRef')?.innerText;
+        results.displayMineral = document.getElementById('calcDisplayMineral')?.innerText;
+        results.displayAcres = document.getElementById('calcDisplayAcres')?.innerText;
+        results.displayRoyRate = document.getElementById('calcDisplayRoyaltyRate')?.innerText;
+        results.displayDrRate = document.getElementById('calcDisplayDeadRentRate')?.innerText;
+
+        // Check that manual mineral select and acreage inputs are not present/cluttering
+        results.manualMineralSelectAbsent = !document.getElementById('calcMineral');
+        results.manualAcreageInputAbsent = !document.getElementById('calcAcreage');
+
+        // 4. Check 6-month table rows
         const rowsCount = document.querySelectorAll('#monthlyCalcTbody tr').length;
         results.monthlyRowsCount = rowsCount;
 
-        // 6. Test Royalty Higher scenario: Coal, 100 acres, 300 tons/mo => 1,800 tons * 500 = 900,000 > 100,000 dead rent
-        const acreageInput = document.getElementById('calcAcreage');
-        if (acreageInput) {
-          acreageInput.value = '100';
-          acreageInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
-
+        // 5. Test entering 300 tons/mo for Coal (100 acres):
+        // 1,800 tons * Rs. 500 = Rs. 900,000 royalty > Rs. 100,000 dead rent (100 * 1,000)
         const prodInputs = document.querySelectorAll('#monthlyCalcTbody .calc-prod-input');
         prodInputs.forEach(inp => {
           inp.value = '300';
@@ -232,13 +232,10 @@ async function runLocalQA() {
 
         results.whicheverRuling1 = document.getElementById('calcRulingBadge')?.innerText;
         results.rulingAmount1 = document.getElementById('calcRulingAmount')?.innerText;
-        results.isWinnerRoyalty = document.getElementById('calcBoxRoyalty')?.closest('div')?.classList.contains('is-winner');
+        results.isWinnerRoyalty = document.getElementById('calcBoxRoyaltyCard')?.classList.contains('is-winner');
 
-        // 7. Test Dead Rent Higher scenario: 1000 acres, 10 tons/mo => 60 tons * 500 = 30,000 < 1,000,000 dead rent
-        if (acreageInput) {
-          acreageInput.value = '1000';
-          acreageInput.dispatchEvent(new Event('input', { bubbles: true }));
-        }
+        // 6. Test Dead Rent Higher scenario by entering 10 tons/mo:
+        // 60 tons * Rs. 500 = Rs. 30,000 royalty < Rs. 100,000 dead rent
         prodInputs.forEach(inp => {
           inp.value = '10';
           inp.dispatchEvent(new Event('input', { bubbles: true }));
@@ -246,9 +243,9 @@ async function runLocalQA() {
 
         results.whicheverRuling2 = document.getElementById('calcRulingBadge')?.innerText;
         results.rulingAmount2 = document.getElementById('calcRulingAmount')?.innerText;
-        results.isWinnerDeadRent = document.getElementById('calcBoxDeadRent')?.closest('div')?.classList.contains('is-winner-amber');
+        results.isWinnerDeadRent = document.getElementById('calcBoxDeadRentCard')?.classList.contains('is-winner-amber');
 
-        // 8. Test Auctioned Concession toggle
+        // 7. Test Auctioned Concession toggle
         const aucCheckbox = document.getElementById('calcIsAuctioned');
         if (aucCheckbox) {
           aucCheckbox.checked = true;
@@ -257,26 +254,28 @@ async function runLocalQA() {
         results.whicheverRulingAuc = document.getElementById('calcRulingBadge')?.innerText;
         results.royaltyBoxAuc = document.getElementById('calcBoxRoyalty')?.innerText;
 
-        // Uncheck auctioned for normal state
         if (aucCheckbox) {
           aucCheckbox.checked = false;
           aucCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
         }
 
-        // 9. Test row action "Calc" button from historical table
+        // 8. Test row action "Calc" button from historical table
+        document.getElementById('navBtnFinancials')?.click();
         document.getElementById('btnFinViewHistorical')?.click();
         const firstCalcBtn = document.querySelector('#historicalLeasesTableBody .btn-calc-row-action');
         results.tableCalcBtnPresent = !!firstCalcBtn;
         if (firstCalcBtn) {
           firstCalcBtn.click();
-          results.launchedPaneActive = document.getElementById('subview-royalty-calculator')?.classList.contains('active');
-          results.loadedLeaseRef = document.getElementById('calcLeaseRef')?.value;
+          results.launchedTabActive = document.getElementById('tab-royalty-calculator')?.classList.contains('active');
+          results.loadedLeaseRef = document.getElementById('calcDisplayRef')?.innerText;
+          results.loadedMineral = document.getElementById('calcDisplayMineral')?.innerText;
+          results.loadedAcres = document.getElementById('calcDisplayAcres')?.innerText;
         }
 
         return results;
       })()
     `);
-    console.log('[PASS] Statutory Royalty & Dead Rent Calculator:', calcCheck);
+    console.log('[PASS] Statutory Royalty & Dead Rent Calculator Dedicated Tab:', calcCheck);
 
     // TEST 5: Page Console Error Check
     console.log('\n--- TEST 5: Error & Exception Check ---');
