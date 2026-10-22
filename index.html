@@ -70,123 +70,130 @@
         </div>
       </button>
 
-      <!-- 1. Large Scale Mining with Dropdown -->
-      <div class="nav-dropdown-wrap" id="dropdownLsmWrap">
-        <div class="nav-link nav-dropdown-toggle" data-tab="tab-lsm" id="navBtnLsm">
+      <!-- Licensing Master Division (LSM, SSM, MM) -->
+      <div class="nav-dropdown-wrap open" id="dropdownLicensingWrap">
+        <div class="nav-link nav-dropdown-toggle active" id="navBtnLicensing" style="cursor: pointer;">
           <div class="nav-link-content">
-            <span class="nav-icon-box"><i class="fa-solid fa-industry"></i></span>
-            <span>Large Scale Mining</span>
+            <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;"><i class="fa-solid fa-stamp"></i></span>
+            <span style="font-weight: 700;">Licensing</span>
           </div>
           <div class="nav-meta-wrap">
-            <span class="nav-pill pill-lsm">126</span>
+            <span class="nav-pill pill-lsm" style="background: rgba(10, 98, 56, 0.18); color: #0A6238; font-weight: 800;">1,808</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
-        <div class="sidebar-submenu" id="submenuLsm">
-          <button class="submenu-item active" data-lsm-sub="leases" id="menuItemLsmLeases">
-            <div class="submenu-item-content">
-              <i class="fa-solid fa-file-contract"></i>
-              <span>Mining Leases</span>
-            </div>
-            <div class="submenu-meta-wrap">
-              <span class="submenu-pill">75</span>
-            </div>
-          </button>
-          <button class="submenu-item" data-lsm-sub="exploration" id="menuItemLsmExploration">
-            <div class="submenu-item-content">
-              <i class="fa-solid fa-compass-drafting"></i>
-              <span>Exploration Licenses</span>
-            </div>
-            <div class="submenu-meta-wrap">
-              <span class="submenu-pill">51</span>
-            </div>
-          </button>
-        </div>
-      </div>
-
-      <!-- 2. Small Scale Mining with Multi-Tier Dropdowns -->
-      <div class="nav-dropdown-wrap" id="dropdownSmaWrap">
-        <div class="nav-link nav-dropdown-toggle" data-tab="tab-sma" id="navBtnSma">
-          <div class="nav-link-content">
-            <span class="nav-icon-box"><i class="fa-solid fa-trowel-bricks"></i></span>
-            <span>Small Scale Mining</span>
-          </div>
-          <div class="nav-meta-wrap">
-            <span class="nav-pill pill-sma">1,172</span>
-            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
-          </div>
-        </div>
-        <div class="sidebar-submenu" id="submenuSma">
+        <div class="sidebar-submenu" id="submenuLicensing">
           
-          <!-- Nested: Mining Leases (1,040) -->
-          <div class="nested-dropdown-wrap open" id="nestedSmaLeasesWrap">
-            <div class="submenu-item submenu-dropdown-toggle active" data-sma-category="leases" id="menuItemSmaLeases">
+          <!-- 1. Large Scale Mining with Submenu -->
+          <div class="nav-dropdown-wrap" id="dropdownLsmWrap" style="margin-bottom: 2px;">
+            <div class="submenu-item submenu-dropdown-toggle" data-tab="tab-lsm" id="navBtnLsm">
               <div class="submenu-item-content">
-                <i class="fa-solid fa-folder-open nested-folder-icon"></i>
-                <span>Mining Leases</span>
+                <i class="fa-solid fa-industry" style="color: #2563EB;"></i>
+                <span>Large Scale Mining</span>
               </div>
               <div class="submenu-meta-wrap">
-                <span class="submenu-pill">1,040</span>
+                <span class="submenu-pill pill-lsm">126</span>
                 <i class="fa-solid fa-chevron-down nested-dropdown-arrow"></i>
               </div>
             </div>
-            <div class="nested-submenu" id="nestedSubmenuLeases">
-              <button class="nested-item active" data-sma-category="leases" data-sma-mode="ALL" id="menuItemSmaLeasesAll">
-                <span class="nested-item-label"><i class="fa-solid fa-layer-group"></i> All Mining Leases</span>
-                <span class="nested-pill">1,040</span>
+            <div class="nested-submenu" id="submenuLsm">
+              <button class="nested-item active" data-lsm-sub="leases" id="menuItemLsmLeases">
+                <span class="nested-item-label"><i class="fa-solid fa-file-contract"></i> Mining Leases</span>
+                <span class="nested-pill">75</span>
               </button>
-              <button class="nested-item" data-sma-category="leases" data-sma-mode="application" id="menuItemSmaLeasesApp">
-                <span class="nested-item-label"><i class="fa-regular fa-file-lines"></i> Application Mode</span>
-                <span class="nested-pill pill-app">789</span>
-              </button>
-              <button class="nested-item" data-sma-category="leases" data-sma-mode="auction" id="menuItemSmaLeasesAuc">
-                <span class="nested-item-label"><i class="fa-solid fa-gavel"></i> Auction Mode</span>
-                <span class="nested-pill pill-auc">251</span>
+              <button class="nested-item" data-lsm-sub="exploration" id="menuItemLsmExploration">
+                <span class="nested-item-label"><i class="fa-solid fa-compass-drafting"></i> Exploration Licenses</span>
+                <span class="nested-pill">51</span>
               </button>
             </div>
           </div>
 
-          <!-- Nested: Prospecting Licenses (132) -->
-          <div class="nested-dropdown-wrap" id="nestedSmaProspectingWrap">
-            <div class="submenu-item submenu-dropdown-toggle" data-sma-category="prospecting" id="menuItemSmaProspecting">
+          <!-- 2. Small Scale Mining with Multi-Tier Dropdowns -->
+          <div class="nav-dropdown-wrap open" id="dropdownSmaWrap" style="margin-bottom: 2px;">
+            <div class="submenu-item submenu-dropdown-toggle" data-tab="tab-sma" id="navBtnSma">
               <div class="submenu-item-content">
-                <i class="fa-solid fa-folder nested-folder-icon"></i>
-                <span>Prospecting Licenses</span>
+                <i class="fa-solid fa-trowel-bricks" style="color: #059669;"></i>
+                <span>Small Scale Mining</span>
               </div>
               <div class="submenu-meta-wrap">
-                <span class="submenu-pill">132</span>
+                <span class="submenu-pill pill-sma">1,172</span>
                 <i class="fa-solid fa-chevron-down nested-dropdown-arrow"></i>
               </div>
             </div>
-            <div class="nested-submenu" id="nestedSubmenuProspecting">
-              <button class="nested-item" data-sma-category="prospecting" data-sma-mode="ALL" id="menuItemSmaProsAll">
-                <span class="nested-item-label"><i class="fa-solid fa-layer-group"></i> All Prospecting</span>
-                <span class="nested-pill">132</span>
-              </button>
-              <button class="nested-item" data-sma-category="prospecting" data-sma-mode="application" id="menuItemSmaProsApp">
-                <span class="nested-item-label"><i class="fa-regular fa-file-lines"></i> Application Mode</span>
-                <span class="nested-pill pill-app">103</span>
-              </button>
-              <button class="nested-item" data-sma-category="prospecting" data-sma-mode="auction" id="menuItemSmaProsAuc">
-                <span class="nested-item-label"><i class="fa-solid fa-gavel"></i> Auction Mode</span>
-                <span class="nested-pill pill-auc">29</span>
-              </button>
+            <div class="nested-submenu" id="submenuSma">
+              
+              <!-- Nested: Mining Leases (1,040) -->
+              <div class="nested-dropdown-wrap open" id="nestedSmaLeasesWrap">
+                <div class="submenu-item submenu-dropdown-toggle active" data-sma-category="leases" id="menuItemSmaLeases" style="font-size: 0.76rem;">
+                  <div class="submenu-item-content">
+                    <i class="fa-solid fa-folder-open nested-folder-icon"></i>
+                    <span>Mining Leases</span>
+                  </div>
+                  <div class="submenu-meta-wrap">
+                    <span class="submenu-pill">1,040</span>
+                    <i class="fa-solid fa-chevron-down nested-dropdown-arrow"></i>
+                  </div>
+                </div>
+                <div class="nested-submenu" id="nestedSubmenuLeases">
+                  <button class="nested-item active" data-sma-category="leases" data-sma-mode="ALL" id="menuItemSmaLeasesAll">
+                    <span class="nested-item-label"><i class="fa-solid fa-layer-group"></i> All Mining Leases</span>
+                    <span class="nested-pill">1,040</span>
+                  </button>
+                  <button class="nested-item" data-sma-category="leases" data-sma-mode="application" id="menuItemSmaLeasesApp">
+                    <span class="nested-item-label"><i class="fa-regular fa-file-lines"></i> Application Mode</span>
+                    <span class="nested-pill pill-app">789</span>
+                  </button>
+                  <button class="nested-item" data-sma-category="leases" data-sma-mode="auction" id="menuItemSmaLeasesAuc">
+                    <span class="nested-item-label"><i class="fa-solid fa-gavel"></i> Auction Mode</span>
+                    <span class="nested-pill pill-auc">251</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Nested: Prospecting Licenses (132) -->
+              <div class="nested-dropdown-wrap" id="nestedSmaProspectingWrap">
+                <div class="submenu-item submenu-dropdown-toggle" data-sma-category="prospecting" id="menuItemSmaProspecting" style="font-size: 0.76rem;">
+                  <div class="submenu-item-content">
+                    <i class="fa-solid fa-folder nested-folder-icon"></i>
+                    <span>Prospecting Licenses</span>
+                  </div>
+                  <div class="submenu-meta-wrap">
+                    <span class="submenu-pill">132</span>
+                    <i class="fa-solid fa-chevron-down nested-dropdown-arrow"></i>
+                  </div>
+                </div>
+                <div class="nested-submenu" id="nestedSubmenuProspecting">
+                  <button class="nested-item" data-sma-category="prospecting" data-sma-mode="ALL" id="menuItemSmaProsAll">
+                    <span class="nested-item-label"><i class="fa-solid fa-layer-group"></i> All Prospecting</span>
+                    <span class="nested-pill">132</span>
+                  </button>
+                  <button class="nested-item" data-sma-category="prospecting" data-sma-mode="application" id="menuItemSmaProsApp">
+                    <span class="nested-item-label"><i class="fa-regular fa-file-lines"></i> Application Mode</span>
+                    <span class="nested-pill pill-app">103</span>
+                  </button>
+                  <button class="nested-item" data-sma-category="prospecting" data-sma-mode="auction" id="menuItemSmaProsAuc">
+                    <span class="nested-item-label"><i class="fa-solid fa-gavel"></i> Auction Mode</span>
+                    <span class="nested-pill pill-auc">29</span>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- 3. Minor Minerals -->
+          <div class="submenu-item" data-tab="tab-mm" id="navBtnMm" style="cursor: pointer;">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-cubes-stacked" style="color: #D97706;"></i>
+              <span>Minor Minerals</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill pill-mm">510</span>
             </div>
           </div>
 
         </div>
       </div>
-
-      <!-- 3. Minor Minerals -->
-      <button class="nav-link" data-tab="tab-mm" id="navBtnMm">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-cubes-stacked"></i></span>
-          <span>Minor Minerals</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-mm">510</span>
-        </div>
-      </button>
 
       <!-- 4. Relevant Rules & Acts -->
       <div class="nav-dropdown-wrap" id="dropdownRulesWrap">
@@ -434,7 +441,7 @@
           </div>
 
           <!-- Card 4: Official Cadastre Registry -> tab-cadastre -->
-          <div class="kpi-card kpi-accent-emerald clickable-card" data-nav-target="tab-cadastre" title="Click to search Official Mining Cadastre Registry">
+          <div class="kpi-card kpi-accent-cadastre clickable-card" data-nav-target="tab-cadastre" title="Click to search Official Mining Cadastre Registry">
             <div class="kpi-top-row">
               <span class="kpi-label">MCIS Cadastre</span>
               <div class="kpi-icon-wrap icon-emerald" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;">
@@ -466,7 +473,7 @@
           </div>
 
           <!-- Card 6: Field Monitoring & Inspections -> tab-inspections -->
-          <div class="kpi-card kpi-accent-blue clickable-card" data-nav-target="tab-inspections" title="Click to view Field Inspection &amp; Monitoring Logs">
+          <div class="kpi-card kpi-accent-cyan clickable-card" data-nav-target="tab-inspections" title="Click to view Field Inspection &amp; Monitoring Logs">
             <div class="kpi-top-row">
               <span class="kpi-label">Field Monitoring</span>
               <div class="kpi-icon-wrap icon-blue" style="background: rgba(14, 111, 116, 0.12); color: #0E6F74;">

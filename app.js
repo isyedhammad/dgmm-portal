@@ -645,6 +645,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
       state.activeTab = tabId;
 
+      // Ensure Licensing dropdown is open if navigating to LSM, SSM, or MM
+      const licWrap = document.getElementById("dropdownLicensingWrap");
+      if (licWrap && (tabId === "tab-lsm" || tabId === "tab-sma" || tabId === "tab-mm")) {
+        licWrap.classList.add("open");
+      }
+
       if (tabMeta[tabId]) {
         breadcrumbSection.textContent = tabMeta[tabId].section;
         breadcrumbTitle.textContent = tabMeta[tabId].title;
@@ -664,6 +670,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const tabId = link.getAttribute("data-tab");
         if (!tabId) return;
         activateTab(tabId);
+      });
+    });
+
+    // Also bind any submenu items with data-tab (such as navBtnMm)
+    document.querySelectorAll(".sidebar-submenu [data-tab]").forEach(item => {
+      item.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const tabId = item.getAttribute("data-tab");
+        if (tabId) activateTab(tabId);
       });
     });
 
@@ -692,6 +707,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    // Licensing Master Dropdown Submenu
+    const licensingWrap = document.getElementById("dropdownLicensingWrap");
+    const btnLicensing = document.getElementById("navBtnLicensing");
+    if (btnLicensing && licensingWrap) {
+      btnLicensing.addEventListener("click", () => {
+        licensingWrap.classList.toggle("open");
+      });
+    }
+
     // Large Scale Mining Dropdown Submenu
     const lsmWrap = document.getElementById("dropdownLsmWrap");
     const btnLsm = document.getElementById("navBtnLsm");
@@ -707,7 +731,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         activateTab("tab-lsm");
         state.lsm.category = "leases";
-        document.querySelectorAll("[data-lsm-sub]").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll("#tab-lsm [data-lsm-sub]").forEach(b => b.classList.remove("active"));
         document.getElementById("subBtnLsmLeases")?.classList.add("active");
         itemLsmExpl?.classList.remove("active");
         itemLsmLeases.classList.add("active");
@@ -719,7 +743,7 @@ document.addEventListener("DOMContentLoaded", () => {
         e.stopPropagation();
         activateTab("tab-lsm");
         state.lsm.category = "exploration";
-        document.querySelectorAll("[data-lsm-sub]").forEach(b => b.classList.remove("active"));
+        document.querySelectorAll("#tab-lsm [data-lsm-sub]").forEach(b => b.classList.remove("active"));
         document.getElementById("subBtnLsmExploration")?.classList.add("active");
         itemLsmLeases?.classList.remove("active");
         itemLsmExpl.classList.add("active");
@@ -1906,12 +1930,19 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // LSM Category Sub-tabs
-  document.querySelectorAll("[data-lsm-sub]").forEach(btn => {
+  document.querySelectorAll("#tab-lsm [data-lsm-sub]").forEach(btn => {
     btn.addEventListener("click", () => {
-      document.querySelectorAll("[data-lsm-sub]").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll("#tab-lsm [data-lsm-sub]").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      state.lsm.category = btn.getAttribute("data-lsm-sub");
+      const cat = btn.getAttribute("data-lsm-sub");
+      state.lsm.category = cat;
       state.lsm.page = 1;
+      const mLeases = document.getElementById("menuItemLsmLeases");
+      const mExpl = document.getElementById("menuItemLsmExploration");
+      if (mLeases && mExpl) {
+        mLeases.classList.toggle("active", cat === "leases");
+        mExpl.classList.toggle("active", cat === "exploration");
+      }
       renderLsm();
     });
   });
