@@ -1,0 +1,167 @@
+[
+  {
+    "id": 2,
+    "district_royalty": "Attock",
+    "client": "Muhammad Yousaf Khan S/o Ghulam Sarwar Khan,",
+    "status": "Expired",
+    "grant_date": "2024-12-25",
+    "expiry_date": "2025-12-24",
+    "bid_money": 1015000000,
+    "created_at": "May 21, 2025 16:25:33",
+    "updated_at": "May 21, 2025 16:25:50"
+  },
+  {
+    "id": 1,
+    "district_royalty": "Dera Ghazi Khan",
+    "client": "M/S. KOH-e-SULEMAN STONE CRUSHING",
+    "status": "Expired",
+    "grant_date": "2024-06-29",
+    "expiry_date": "2025-06-28",
+    "bid_money": 89012034,
+    "created_at": "May 21, 2025 12:10:46",
+    "updated_at": "May 21, 2025 16:26:35"
+  },
+  {
+    "id": 3,
+    "district_royalty": "Khushab",
+    "client": "CH.MUHAMMAD ZAFAR IQBAL S/O ALLAH DITA",
+    "status": "Expired",
+    "grant_date": "2024-12-14",
+    "expiry_date": "2025-12-13",
+    "bid_money": 706500000,
+    "created_at": "May 21, 2025 16:36:31",
+    "updated_at": "May 21, 2025 16:36:31"
+  },
+  {
+    "id": 4,
+    "district_royalty": "Mianwali",
+    "client": "Kaleem Ullah s/o Muhammad Ashraf",
+    "status": "Expired",
+    "grant_date": "2024-07-10",
+    "expiry_date": "2025-07-09",
+    "bid_money": 390850000,
+    "created_at": "May 21, 2025 16:39:15",
+    "updated_at": "May 21, 2025 16:39:15"
+  },
+  {
+    "id": 8,
+    "district_royalty": "Chakwal and Jhelum",
+    "client": "M/S.KHAKSAR TRADERS 723-GULSHIN COLONY,GT ROAD PESHAWAR",
+    "status": "Expired",
+    "grant_date": "2024-05-10",
+    "expiry_date": "2025-05-09",
+    "bid_money": 450100000,
+    "created_at": "Jun 11, 2025 13:47:06",
+    "updated_at": "Jun 11, 2025 13:47:06"
+  },
+  {
+    "id": 9,
+    "district_royalty": "Rawalpindi",
+    "client": "M/S.KHAKSAR TRADERS 723-GULSHIN COLONY,GT ROAD PESHAWAR",
+    "status": "Expired",
+    "grant_date": "2024-12-06",
+    "expiry_date": "2025-12-05",
+    "bid_money": 225520000,
+    "created_at": "Aug 15, 2025 14:14:23",
+    "updated_at": "Aug 15, 2025 14:14:23"
+  },
+  {
+    "id": 11,
+    "district_royalty": "Mianwali",
+    "client": "M/S.Khyber Group of Companies 723- Gulshin Colony G.T.Road Peshawer",
+    "status": "Expired",
+    "grant_date": "2025-07-10",
+    "expiry_date": "2026-07-09",
+    "bid_money": 687000786,
+    "created_at": "Nov 13, 2025 12:22:05",
+    "updated_at": "Nov 13, 2025 12:22:05"
+  },
+  {
+    "id": 12,
+    "district_royalty": "Dera Ghazi Khan",
+    "client": "M/S. KOH-e-SULEMAN STONE CRUSHING",
+    "status": "Expired",
+    "grant_date": "2025-06-29",
+    "expiry_date": "2026-06-28",
+    "bid_money": 210000000,
+    "created_at": "Nov 14, 2025 09:27:17",
+    "updated_at": "Nov 14, 2025 09:27:17"
+  },
+  {
+    "id": 13,
+    "district_royalty": "Rawalpindi",
+    "client": "Esab Khan S/o Sher Khan",
+    "status": "Granted",
+    "grant_date": "2025-12-06",
+    "expiry_date": "2026-12-05",
+    "bid_money": 370000100,
+    "created_at": "Nov 28, 2025 10:48:26",
+    "updated_at": "Nov 28, 2025 10:48:26"
+  },
+  {
+    "id": 14,
+    "district_royalty": "Khushab",
+    "client": "Muhammad Yousaf Khan S/o Ghulam Sarwar Khan,",
+    "status": "Granted",
+    "grant_date": "2025-12-14",
+    "expiry_date": "2026-12-13",
+    "bid_money": 1090000100,
+    "created_at": "Dec 14, 2025 18:37:38",
+    "updated_at": "Dec 14, 2025 18:37:38"
+  },
+  {
+    "id": 16,
+    "district_royalty": "Attock",
+    "client": "M/S.KHAKSAR TRADERS 723-GULSHIN COLONY,GT ROAD PESHAWAR",
+    "status": "Granted",
+    "grant_date": "2025-12-25",
+    "expiry_date": "2026-12-24",
+    "bid_money": 1243000000,
+    "created_at": "Feb 16, 2026 18:24:17",
+    "updated_at": "Feb 16, 2026 18:24:17"
+  },
+  {
+    "id": 17,
+    "district_royalty": "Mianwali",
+    "client": "M/S.Khyber Group of Companies 723- Gulshin Colony G.T.Road Peshawer",
+    "status": "Granted",
+    "grant_date": "2026-06-30",
+    "expiry_date": "2027-06-29",
+    "bid_money": 822000000,
+    "created_at": "Jun 17, 2026 12:05:24",
+    "updated_at": "Jun 17, 2026 12:05:24"
+  },
+  {
+    "id": 18,
+    "district_royalty": "Dera Ghazi Khan",
+    "client": "M/S. KOH-e-SULEMAN STONE CRUSHING",
+    "status": "Granted",
+    "grant_date": "2026-06-29",
+    "expiry_date": "2027-06-28",
+    "bid_money": 220100000,
+    "created_at": "Jun 23, 2026 10:43:40",
+    "updated_at": "Jun 23, 2026 10:43:40"
+  },
+  {
+    "id": 7,
+    "district_royalty": "Chakwal and Jhelum",
+    "client": "MR.MOHAMMAD YOUSAF KHAN S/O MEHRBAN KHAN",
+    "status": "Expired",
+    "grant_date": "2025-05-10",
+    "expiry_date": "2026-05-09",
+    "bid_money": 1000100000,
+    "created_at": "Jun 11, 2025 13:25:56",
+    "updated_at": "Nov 06, 2025 16:26:46"
+  },
+  {
+    "id": 19,
+    "district_royalty": "Chakwal and Jhelum",
+    "client": "M/S.Khyber Group of Companies 723- Gulshin Colony G.T.Road Peshawer",
+    "status": "Granted",
+    "grant_date": "2026-07-15",
+    "expiry_date": "2027-07-14",
+    "bid_money": 874500000,
+    "created_at": "Jul 21, 2026 15:41:56",
+    "updated_at": "Jul 21, 2026 15:41:56"
+  }
+]

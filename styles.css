@@ -5898,3 +5898,162 @@ body.dark-mode .section-export-item:hover {
   background: #334155;
   color: #34d399;
 }
+
+
+/* =========================================================
+   REVENUE & ROYALTIES: FISCAL PERIOD SUB-VIEW SWITCHER
+   ========================================================= */
+.fin-subview-nav {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  background: var(--card-bg);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.fin-subview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--card-border);
+  background: var(--canvas-bg);
+  color: var(--text-sub);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+.fin-subview-btn:hover {
+  background: var(--card-bg);
+  color: var(--text-main);
+  border-color: #0A6238;
+  transform: translateY(-1px);
+}
+
+.fin-subview-btn.active {
+  background: linear-gradient(135deg, #0A6238 0%, #0D7A46 100%);
+  color: #FFFFFF !important;
+  border-color: #0A6238;
+  box-shadow: 0 4px 14px rgba(10, 98, 56, 0.25);
+}
+
+.fin-subview-btn.active i {
+  color: #FFFFFF !important;
+}
+
+.fin-subview-btn.active .badge-status-pill {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #FFFFFF !important;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+.fin-subview-pane {
+  display: none;
+  animation: fadeInPane 0.25s ease-in-out;
+}
+
+.fin-subview-pane.active {
+  display: block;
+}
+
+@keyframes fadeInPane {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cadastre Category Pills */
+.cadastre-category-pills {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.cad-cat-btn {
+  padding: 0.45rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 20px;
+  border: 1px solid var(--card-border);
+  background: var(--canvas-bg);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.cad-cat-btn:hover {
+  border-color: #0A6238;
+  color: var(--text-main);
+}
+
+.cad-cat-btn.active {
+  background: #0A6238;
+  color: #FFFFFF;
+  border-color: #0A6238;
+  box-shadow: 0 2px 6px rgba(10, 98, 56, 0.2);
+}
+
+/* Cadastre Receipt Link Button */
+.btn-cadastre-receipt {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 4px;
+  background: rgba(10, 98, 56, 0.12);
+  color: #0A6238;
+  border: 1px solid rgba(10, 98, 56, 0.25);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.btn-cadastre-receipt:hover {
+  background: #0A6238;
+  color: #FFFFFF;
+}
+
+/* Dark mode adjustments for financial subviews */
+body.dark-mode .fin-subview-nav {
+  background: #0f172a;
+  border-color: #1e293b;
+}
+
+body.dark-mode .fin-subview-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-mode .fin-subview-btn:hover {
+  background: #334155;
+  border-color: #10b981;
+  color: #f1f5f9;
+}
+
+body.dark-mode .fin-subview-btn.active {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #FFFFFF !important;
+  border-color: #10b981;
+}
+
+body.dark-mode .cad-cat-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-mode .cad-cat-btn.active {
+  background: #059669;
+  border-color: #059669;
+  color: #ffffff;
+}

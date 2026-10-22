@@ -426,7 +426,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Financials
     financials: {
+      subview: "subview-cadastre-fy27",
       office: "ALL"
+    },
+
+    // Official Cadastre Lease-Wise Revenue Ledger (FY 2026-27)
+    cadastreFin: {
+      category: "ALL",       // "ALL" | "Chalan" | "BlockInstallment" | "RoyaltyContract" | "BankGuarantee"
+      search: "",
+      district: "ALL",
+      branch: "ALL",
+      status: "ALL",
+      page: 1,
+      pageSize: 15
+    },
+
+    // 5-Year Historical Monitored Leases Ledger (1,004 Leases)
+    histLeases: {
+      search: "",
+      office: "ALL",
+      mineral: "ALL",
+      branch: "ALL",
+      page: 1,
+      pageSize: 15
     },
 
     // Inspections (MM, LSM, SMA Concession Leases)
@@ -3740,6 +3762,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     renderOfficeSummaryCard();
+    renderCadastreLeaseFinance();
+    renderHistoricalLeases();
   }
 
   function renderOfficeSummaryCard() {
@@ -3850,6 +3874,305 @@ document.addEventListener("DOMContentLoaded", () => {
         </div>
       </div>
     `;
+  }
+
+
+  // -------------------------------------------------------------
+  // CADASTRE LEASE-WISE REVENUE FILTER & RENDERER (FY 2026-27)
+  // -------------------------------------------------------------
+  function getCadastreFinanceFilteredRecords() {
+    const dataObj = window.CADASTRE_LEASE_FINANCE;
+    if (!dataObj) return [];
+
+    let records = [];
+    if (state.cadastreFin.category === "ALL") {
+      records = dataObj.unifiedLedger || [];
+    } else if (state.cadastreFin.category === "Chalan") {
+      records = dataObj.chalans || [];
+    } else if (state.cadastreFin.category === "BlockInstallment") {
+      records = dataObj.blockAccounts || [];
+    } else if (state.cadastreFin.category === "RoyaltyContract") {
+      records = dataObj.royaltyContracts || [];
+    } else if (state.cadastreFin.category === "BankGuarantee") {
+      records = dataObj.bankGuarantees || [];
+    } else {
+      records = dataObj.unifiedLedger || [];
+    }
+
+    return records.filter(r => {
+      // District filter
+      if (state.cadastreFin.district !== "ALL") {
+        const dTarget = state.cadastreFin.district.toLowerCase();
+        const dActual = (r.district || "").toLowerCase();
+        if (dActual !== dTarget && !dActual.includes(dTarget)) return false;
+      }
+
+      // Branch filter
+      if (state.cadastreFin.branch !== "ALL") {
+        if ((r.branch || "").toUpperCase() !== state.cadastreFin.branch) return false;
+      }
+
+      // Status filter
+      if (state.cadastreFin.status !== "ALL") {
+        if (state.cadastreFin.status === "PAID" && !r.isPaid) return false;
+        if (state.cadastreFin.status === "DUE" && r.isPaid) return false;
+      }
+
+      // Keyword search
+      const term = (state.cadastreFin.search || state.globalSearch || "").toLowerCase().trim();
+      if (term) {
+        const text = (r.ref + " " + r.client + " " + r.mineral + " " + r.district + " " + (r.chalanNo || "")).toLowerCase();
+        if (!text.includes(term)) return false;
+      }
+
+      return true;
+    });
+  }
+
+  function renderCadastreLeaseFinance() {
+    const tbody = document.getElementById("cadastreLeaseFinanceTableBody");
+    const pageInfo = document.getElementById("cadastreFinancePageInfo");
+    const counterBadge = document.getElementById("cadastreFinCounterBadge");
+    const distSelect = document.getElementById("cadastreFinDistrictSelect");
+    if (!tbody) return;
+
+    const dataObj = window.CADASTRE_LEASE_FINANCE;
+    if (!dataObj) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 2rem; color: #94A3B8;">Loading official Cadastre financial ledger...</td></tr>';
+      return;
+    }
+
+    // Populate district select if empty
+    if (distSelect && distSelect.options.length <= 1) {
+      const allDists = Array.from(new Set((dataObj.unifiedLedger || []).map(r => r.district).filter(Boolean))).sort();
+      allDists.forEach(d => {
+        const opt = document.createElement("option");
+        opt.value = d;
+        opt.textContent = d;
+        distSelect.appendChild(opt);
+      });
+    }
+
+    const filtered = getCadastreFinanceFilteredRecords();
+    const total = filtered.length;
+
+    // Active Chips
+    const activeChips = [];
+    if (state.cadastreFin.category !== "ALL") activeChips.push({ key: "category", label: "Mode", value: state.cadastreFin.category });
+    if (state.cadastreFin.search) activeChips.push({ key: "search", label: "Search", value: `"${state.cadastreFin.search}"` });
+    if (state.cadastreFin.district !== "ALL") activeChips.push({ key: "district", label: "District", value: state.cadastreFin.district });
+    if (state.cadastreFin.branch !== "ALL") activeChips.push({ key: "branch", label: "Branch", value: state.cadastreFin.branch });
+    if (state.cadastreFin.status !== "ALL") activeChips.push({ key: "status", label: "Status", value: state.cadastreFin.status });
+
+    renderActiveChips("cadastreFinChipsContainer", activeChips, key => {
+      if (key === "category") {
+        state.cadastreFin.category = "ALL";
+        document.querySelectorAll("#cadastreCategoryPills .cad-cat-btn").forEach(b => b.classList.toggle("active", b.getAttribute("data-cat") === "ALL"));
+      }
+      if (key === "search") { state.cadastreFin.search = ""; setVal("cadastreFinSearchInput", ""); }
+      if (key === "district") { state.cadastreFin.district = "ALL"; setVal("cadastreFinDistrictSelect", "ALL"); }
+      if (key === "branch") { state.cadastreFin.branch = "ALL"; setVal("cadastreFinBranchSelect", "ALL"); }
+      if (key === "status") { state.cadastreFin.status = "ALL"; setVal("cadastreFinStatusSelect", "ALL"); }
+      state.cadastreFin.page = 1;
+      renderCadastreLeaseFinance();
+    });
+
+    // Summary totals for filtered view
+    let sumDue = 0;
+    let sumPaid = 0;
+    filtered.forEach(r => {
+      sumDue += (r.amountDue || 0);
+      sumPaid += (r.amountPaid || 0);
+    });
+
+    if (counterBadge) {
+      counterBadge.innerHTML = `<i class="fa-solid fa-layer-group"></i> Showing <strong>${total.toLocaleString()}</strong> records | Assessed Dues: <strong>PKR ${formatNumber(sumDue)}</strong> | Realized: <strong>PKR ${formatNumber(sumPaid)}</strong>`;
+    }
+
+    const start = (state.cadastreFin.page - 1) * state.cadastreFin.pageSize;
+    const pageRecords = filtered.slice(start, start + state.cadastreFin.pageSize);
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 2.5rem; color: #94A3B8;">No Cadastre revenue records matching current filters.</td></tr>';
+    } else {
+      tbody.innerHTML = pageRecords.map(r => {
+        let branchPill = '<span class="branch-pill pill-sma">SSM</span>';
+        if (r.branch === 'LSM') branchPill = '<span class="branch-pill pill-lsm">LSM</span>';
+        else if (r.branch === 'MM') branchPill = '<span class="branch-pill pill-mm">MM</span>';
+
+        let statusBadge = '<span class="badge-status-pill badge-granted"><i class="fa-solid fa-circle-check"></i> Paid</span>';
+        if (!r.isPaid) {
+          statusBadge = '<span class="badge-status-pill badge-vacant"><i class="fa-solid fa-clock"></i> Outstanding Due</span>';
+        }
+
+        let docAction = '-';
+        if (r.receiptUrl) {
+          docAction = `<a href="${r.receiptUrl}" target="_blank" rel="noopener noreferrer" class="btn-cadastre-receipt" title="View Official Scanned Receipt"><i class="fa-solid fa-file-invoice"></i> Receipt</a>`;
+        } else if (r.type === 'BlockInstallment') {
+          docAction = `<span style="font-size: 0.72rem; color: #64748B;">${r.paidInstallments}/${r.totalInstallments} Inst.</span>`;
+        }
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main); font-size: 0.82rem; white-space: nowrap;">
+              ${r.ref}
+              ${r.chalanNo && r.chalanNo !== '-' ? `<small style="display:block; color:#64748B; font-weight:normal;">Chalan #${r.chalanNo}</small>` : ''}
+            </td>
+            <td style="font-weight: 600; max-width: 220px; overflow: hidden; text-overflow: ellipsis;">
+              ${r.client}
+            </td>
+            <td style="text-align: center;">${branchPill}</td>
+            <td>${r.district}</td>
+            <td><span class="badge-status-pill badge-process" style="font-size: 0.72rem;">${r.mineral}</span></td>
+            <td><small style="color: #64748B;">${r.mode}</small></td>
+            <td class="currency-bid-val" style="font-weight: 700;">${formatPKR(r.amountDue)}</td>
+            <td class="currency-paid-val" style="font-weight: 800; color: #059669;">${formatPKR(r.amountPaid)}</td>
+            <td style="color: ${r.balance > 0 ? '#DC2626' : '#64748B'}; font-weight: ${r.balance > 0 ? '700' : 'normal'};">
+              ${r.balance > 0 ? formatPKR(r.balance) : '-'}
+            </td>
+            <td style="text-align: center; white-space: nowrap;">
+              ${statusBadge}
+              ${docAction !== '-' ? `<div style="margin-top: 3px;">${docAction}</div>` : ''}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    const end = Math.min(start + state.cadastreFin.pageSize, total);
+    if (pageInfo) pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total.toLocaleString()} records` : `0 records`;
+    const btnPrev = document.getElementById("btnPrevCadastreFin");
+    const btnNext = document.getElementById("btnNextCadastreFin");
+    if (btnPrev) btnPrev.disabled = state.cadastreFin.page <= 1;
+    if (btnNext) btnNext.disabled = end >= total;
+  }
+
+  // -------------------------------------------------------------
+  // 5-YEAR HISTORICAL MONITORED LEASES FILTER & RENDERER (1,004 LEASES)
+  // -------------------------------------------------------------
+  function getHistoricalLeasesFilteredRecords() {
+    const dataObj = window.HISTORICAL_LEASES_DATA;
+    if (!dataObj || !dataObj.leases) return [];
+
+    let records = dataObj.leases;
+
+    return records.filter(r => {
+      // Office / District filter
+      if (state.histLeases.office !== "ALL") {
+        if (r.fieldOffice.toLowerCase() !== state.histLeases.office.toLowerCase()) return false;
+      }
+
+      // Mineral filter
+      if (state.histLeases.mineral !== "ALL") {
+        if ((r.mineral || "").toLowerCase() !== state.histLeases.mineral.toLowerCase()) return false;
+      }
+
+      // Branch filter
+      if (state.histLeases.branch !== "ALL") {
+        if (r.branch !== state.histLeases.branch) return false;
+      }
+
+      // Keyword search
+      const term = (state.histLeases.search || state.globalSearch || "").toLowerCase().trim();
+      if (term) {
+        const text = (r.ref + " " + r.company + " " + r.mineral + " " + r.fieldOffice).toLowerCase();
+        if (!text.includes(term)) return false;
+      }
+
+      return true;
+    });
+  }
+
+  function renderHistoricalLeases() {
+    const tbody = document.getElementById("historicalLeasesTableBody");
+    const pageInfo = document.getElementById("historicalLeasesPageInfo");
+    const counterBadge = document.getElementById("histLeaseCounterBadge");
+    const minSelect = document.getElementById("histLeaseMineralSelect");
+    if (!tbody) return;
+
+    const dataObj = window.HISTORICAL_LEASES_DATA;
+    if (!dataObj || !dataObj.leases) {
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 2rem; color: #94A3B8;">Loading 5-year historical monitored leases ledger...</td></tr>';
+      return;
+    }
+
+    // Populate mineral select if empty
+    if (minSelect && minSelect.options.length <= 1) {
+      const allMins = Array.from(new Set(dataObj.leases.map(l => l.mineral).filter(Boolean))).sort();
+      allMins.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m;
+        opt.textContent = m;
+        minSelect.appendChild(opt);
+      });
+    }
+
+    const filtered = getHistoricalLeasesFilteredRecords();
+    const total = filtered.length;
+
+    // Active Chips
+    const activeChips = [];
+    if (state.histLeases.search) activeChips.push({ key: "search", label: "Search", value: `"${state.histLeases.search}"` });
+    if (state.histLeases.office !== "ALL") activeChips.push({ key: "office", label: "Field Office", value: state.histLeases.office });
+    if (state.histLeases.mineral !== "ALL") activeChips.push({ key: "mineral", label: "Mineral", value: state.histLeases.mineral });
+    if (state.histLeases.branch !== "ALL") activeChips.push({ key: "branch", label: "Branch", value: state.histLeases.branch });
+
+    renderActiveChips("histLeaseChipsContainer", activeChips, key => {
+      if (key === "search") { state.histLeases.search = ""; setVal("histLeaseSearchInput", ""); }
+      if (key === "office") { state.histLeases.office = "ALL"; setVal("histLeaseOfficeSelect", "ALL"); }
+      if (key === "mineral") { state.histLeases.mineral = "ALL"; setVal("histLeaseMineralSelect", "ALL"); }
+      if (key === "branch") { state.histLeases.branch = "ALL"; setVal("histLeaseBranchSelect", "ALL"); }
+      state.histLeases.page = 1;
+      renderHistoricalLeases();
+    });
+
+    let sumProd = 0;
+    let sumRoy = 0;
+    let sumPaid = 0;
+    filtered.forEach(l => {
+      sumProd += (l.production5YTons || 0);
+      sumRoy += (l.royalty5YPKR || 0);
+      sumPaid += (l.grandTotalPaidPKR || 0);
+    });
+
+    if (counterBadge) {
+      counterBadge.innerHTML = `<i class="fa-solid fa-layer-group"></i> Showing <strong>${total.toLocaleString()}</strong> of 1,004 Leases | 5Y Output: <strong>${formatNumber(sumProd)} Tons</strong> | 5Y Realized: <strong>PKR ${formatNumber(sumPaid)}</strong>`;
+    }
+
+    const start = (state.histLeases.page - 1) * state.histLeases.pageSize;
+    const pageRecords = filtered.slice(start, start + state.histLeases.pageSize);
+
+    if (pageRecords.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align: center; padding: 2.5rem; color: #94A3B8;">No historical leases matching current filters.</td></tr>';
+    } else {
+      tbody.innerHTML = pageRecords.map(l => {
+        let branchPill = '<span class="branch-pill pill-sma">SSM</span>';
+        if (l.branch === 'LSM') branchPill = '<span class="branch-pill pill-lsm">LSM</span>';
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: #64748B; text-align: center;">${l.sr}</td>
+            <td style="font-weight: 700; color: var(--text-main); font-size: 0.82rem; white-space: nowrap;">${l.ref}</td>
+            <td style="font-weight: 600; max-width: 220px; overflow: hidden; text-overflow: ellipsis;">${l.company}</td>
+            <td><i class="fa-solid fa-location-dot" style="color: #10B981; margin-right: 4px;"></i> ${l.fieldOffice}</td>
+            <td><span class="badge-status-pill badge-process" style="font-size: 0.72rem;">${l.mineral}</span></td>
+            <td style="text-align: center;">${branchPill}</td>
+            <td style="text-align: right;">${formatNumber(l.acreage)} ac</td>
+            <td style="font-weight: 600; text-align: right;">${formatNumber(l.production5YTons)} Tons</td>
+            <td class="currency-bid-val" style="font-weight: 700; text-align: right;">${formatPKR(l.royalty5YPKR)}</td>
+            <td class="currency-grandtotal-val" style="font-weight: 800; color: #059669; text-align: right;">${formatPKR(l.grandTotalPaidPKR)}</td>
+            <td style="text-align: center;"><span class="badge-status-pill badge-granted">${l.status}</span></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    const end = Math.min(start + state.histLeases.pageSize, total);
+    if (pageInfo) pageInfo.textContent = total > 0 ? `Showing ${start + 1} to ${end} of ${total.toLocaleString()} leases` : `0 leases`;
+    const btnPrev = document.getElementById("btnPrevHistLease");
+    const btnNext = document.getElementById("btnNextHistLease");
+    if (btnPrev) btnPrev.disabled = state.histLeases.page <= 1;
+    if (btnNext) btnNext.disabled = end >= total;
   }
 
   function renderEpa() {
@@ -4702,6 +5025,111 @@ function renderInspections() {
   // REVAMPED EXPORT ACTIVE DATA CONTROLLER (EXCEL, CSV, PDF)
   // -------------------------------------------------------------
   function initExport() {
+
+    // Sub-View Switcher (FY 2026-27 Cadastre vs 5-Year Historical)
+    document.getElementById("btnFinViewCadastre")?.addEventListener("click", () => {
+      document.getElementById("btnFinViewCadastre")?.classList.add("active");
+      document.getElementById("btnFinViewHistorical")?.classList.remove("active");
+      document.getElementById("subview-cadastre-fy27")?.classList.add("active");
+      document.getElementById("subview-historical-5y")?.classList.remove("active");
+      state.financials.subview = "subview-cadastre-fy27";
+      renderCadastreLeaseFinance();
+    });
+
+    document.getElementById("btnFinViewHistorical")?.addEventListener("click", () => {
+      document.getElementById("btnFinViewHistorical")?.classList.add("active");
+      document.getElementById("btnFinViewCadastre")?.classList.remove("active");
+      document.getElementById("subview-historical-5y")?.classList.add("active");
+      document.getElementById("subview-cadastre-fy27")?.classList.remove("active");
+      state.financials.subview = "subview-historical-5y";
+      renderHistoricalLeases();
+    });
+
+    // Cadastre category pills
+    document.querySelectorAll("#cadastreCategoryPills .cad-cat-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#cadastreCategoryPills .cad-cat-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        state.cadastreFin.category = btn.getAttribute("data-cat") || "ALL";
+        state.cadastreFin.page = 1;
+        renderCadastreLeaseFinance();
+      });
+    });
+
+    // Cadastre filter inputs
+    document.getElementById("cadastreFinSearchInput")?.addEventListener("input", e => {
+      state.cadastreFin.search = e.target.value;
+      state.cadastreFin.page = 1;
+      renderCadastreLeaseFinance();
+    });
+
+    document.getElementById("cadastreFinDistrictSelect")?.addEventListener("change", e => {
+      state.cadastreFin.district = e.target.value;
+      state.cadastreFin.page = 1;
+      renderCadastreLeaseFinance();
+    });
+
+    document.getElementById("cadastreFinBranchSelect")?.addEventListener("change", e => {
+      state.cadastreFin.branch = e.target.value;
+      state.cadastreFin.page = 1;
+      renderCadastreLeaseFinance();
+    });
+
+    document.getElementById("cadastreFinStatusSelect")?.addEventListener("change", e => {
+      state.cadastreFin.status = e.target.value;
+      state.cadastreFin.page = 1;
+      renderCadastreLeaseFinance();
+    });
+
+    document.getElementById("btnPrevCadastreFin")?.addEventListener("click", () => {
+      if (state.cadastreFin.page > 1) {
+        state.cadastreFin.page--;
+        renderCadastreLeaseFinance();
+      }
+    });
+
+    document.getElementById("btnNextCadastreFin")?.addEventListener("click", () => {
+      state.cadastreFin.page++;
+      renderCadastreLeaseFinance();
+    });
+
+    // Historical Leases filter inputs
+    document.getElementById("histLeaseSearchInput")?.addEventListener("input", e => {
+      state.histLeases.search = e.target.value;
+      state.histLeases.page = 1;
+      renderHistoricalLeases();
+    });
+
+    document.getElementById("histLeaseOfficeSelect")?.addEventListener("change", e => {
+      state.histLeases.office = e.target.value;
+      state.histLeases.page = 1;
+      renderHistoricalLeases();
+    });
+
+    document.getElementById("histLeaseMineralSelect")?.addEventListener("change", e => {
+      state.histLeases.mineral = e.target.value;
+      state.histLeases.page = 1;
+      renderHistoricalLeases();
+    });
+
+    document.getElementById("histLeaseBranchSelect")?.addEventListener("change", e => {
+      state.histLeases.branch = e.target.value;
+      state.histLeases.page = 1;
+      renderHistoricalLeases();
+    });
+
+    document.getElementById("btnPrevHistLease")?.addEventListener("click", () => {
+      if (state.histLeases.page > 1) {
+        state.histLeases.page--;
+        renderHistoricalLeases();
+      }
+    });
+
+    document.getElementById("btnNextHistLease")?.addEventListener("click", () => {
+      state.histLeases.page++;
+      renderHistoricalLeases();
+    });
+
     initSectionExports();
     initClickableCards();
   }
@@ -4918,6 +5346,14 @@ function renderInspections() {
       case "financials-offices":
         reportCategory = "Field Offices Financial Performance Matrix";
         rawData = (db.fiveYearSummary && db.fiveYearSummary.fieldOffices) || [];
+        break;
+      case "cadastre-lease-ledger":
+        reportCategory = "Official Cadastre Lease Revenue Ledger (FY 2026-27)";
+        rawData = getCadastreFinanceFilteredRecords();
+        break;
+      case "historical-leases-ledger":
+        reportCategory = "5-Year Historical Monitored Leases Ledger";
+        rawData = getHistoricalLeasesFilteredRecords();
         break;
       case "financials-single-office": {
         reportCategory = "Field Office Summary";

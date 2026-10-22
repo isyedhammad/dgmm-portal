@@ -1428,300 +1428,661 @@
       <!-- =====================================================
            TAB 6: FINANCIAL INTELLIGENCE & REVENUE
            ===================================================== -->
-      <div class="tab-pane" id="tab-financials">
+            <div class="tab-pane" id="tab-financials">
         
-        <!-- OFFICIAL MINING CADASTRE FISCAL INTELLIGENCE CONSOLE -->
-        <div class="cadastre-fiscal-console">
-          <div class="cadastre-fiscal-banner">
+        <!-- FISCAL PERIOD SUB-VIEW SELECTOR: FY 2026-27 CADASTRE vs. 5-YEAR HISTORICAL -->
+        <div class="fin-subview-nav">
+          <button class="fin-subview-btn active" id="btnFinViewCadastre" data-target-subview="subview-cadastre-fy27" type="button">
+            <i class="fa-solid fa-satellite-dish" style="color: #0A6238;"></i>
+            <span>FY 2026-27 Cadastre Fiscal Operations &amp; Lease-Wise Revenue</span>
+            <span class="badge-status-pill badge-granted">FY 26-27 • Live Cadastre</span>
+          </button>
+          <button class="fin-subview-btn" id="btnFinViewHistorical" data-target-subview="subview-historical-5y" type="button">
+            <i class="fa-solid fa-clock-rotate-left" style="color: #2563EB;"></i>
+            <span>5-Year Historical Performance (FY 2021-22 to FY 2025-26)</span>
+            <span class="badge-status-pill" style="background: rgba(37, 99, 235, 0.12); color: #2563EB;">5-Year Baseline • 1,004 Leases</span>
+          </button>
+        </div>
+
+        <!-- =========================================================
+             SUBVIEW 1: FY 2026-27 CADASTRE FISCAL OPERATIONS & LEASE LEDGER
+             ========================================================= -->
+        <div class="fin-subview-pane active" id="subview-cadastre-fy27">
+
+          <!-- OFFICIAL MINING CADASTRE FISCAL INTELLIGENCE CONSOLE (FY 2026-27) -->
+          <div class="cadastre-fiscal-console">
+            <div class="cadastre-fiscal-banner">
+              <div class="cadastre-banner-left">
+                <div class="cadastre-banner-emblem">
+                  <i class="fa-solid fa-building-columns"></i>
+                </div>
+                <div>
+                  <div class="cadastre-banner-badge-row">
+                    <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals</span>
+                    <span class="cadastre-badge-live"><i class="fa-solid fa-circle"></i> Authenticated Cadastre API Snapshot • FY 2026-27</span>
+                  </div>
+                  <h2 class="cadastre-banner-title">Punjab Mining Cadastre Fiscal Operations Console (FY 2026-27)</h2>
+                  <p class="cadastre-banner-desc">Official audited provincial revenue position, statutory annual target vs legally enforceable net dues, realized collections, and lease-wise revenue ledger for <strong>Fiscal Year 2026-27</strong> from the official Punjab Mining Cadastre System (MCIS)</p>
+                </div>
+              </div>
+              <div class="cadastre-banner-actions">
+                <a href="https://mining-cadastre.geosoftsolution.com/dashboard/home" target="_blank" rel="noopener noreferrer" class="btn-cadastre-ext" title="Launch Official Mining Cadastre Portal">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  <span>Cadastre Portal</span>
+                </a>
+              </div>
+            </div>
+
+            <!-- Top Rollup KPI Row (5 Cards) explicitly labeled FY 2026-27 -->
+            <div class="cadastre-kpi-grid">
+              <div class="cadastre-kpi-card">
+                <div class="cadastre-kpi-label"><i class="fa-solid fa-bullseye"></i> FY 2026-27 Annual Target</div>
+                <div class="cadastre-kpi-value">PKR 115.05B</div>
+                <div class="cadastre-kpi-detail">Provincial target (LSM, MM, SSM)</div>
+                <div class="cadastre-kpi-subval">Rs 115,053,702,942</div>
+              </div>
+              <div class="cadastre-kpi-card">
+                <div class="cadastre-kpi-label"><i class="fa-solid fa-file-invoice-dollar"></i> FY 2026-27 Net Dues Assessed</div>
+                <div class="cadastre-kpi-value">PKR 86.21B</div>
+                <div class="cadastre-kpi-detail">Legally enforceable demand</div>
+                <div class="cadastre-kpi-subval">Rs 86,211,496,813</div>
+              </div>
+              <div class="cadastre-kpi-card cadastre-kpi-highlight">
+                <div class="cadastre-kpi-label"><i class="fa-solid fa-hand-holding-dollar"></i> FY 2026-27 Total Realized</div>
+                <div class="cadastre-kpi-value cadastre-val-realized">PKR 33.78B</div>
+                <div class="cadastre-kpi-detail"><strong>39.19% of Net Due</strong> • 29.36% Target</div>
+                <div class="cadastre-kpi-subval">Rs 33,784,889,662</div>
+              </div>
+              <div class="cadastre-kpi-card">
+                <div class="cadastre-kpi-label"><i class="fa-solid fa-scale-unbalanced"></i> FY 2026-27 Recoverable</div>
+                <div class="cadastre-kpi-value cadastre-val-rec">PKR 53.45B</div>
+                <div class="cadastre-kpi-detail">Net outstanding enforceable due</div>
+                <div class="cadastre-kpi-subval">Rs 53,449,361,706</div>
+              </div>
+              <div class="cadastre-kpi-card cadastre-kpi-guarantee">
+                <div class="cadastre-kpi-label"><i class="fa-solid fa-vault"></i> Bank Guarantees Held</div>
+                <div class="cadastre-kpi-value cadastre-val-sec">PKR 18.33B</div>
+                <div class="cadastre-kpi-detail">100% Large Scale Mining (Uninvoked)</div>
+                <div class="cadastre-kpi-subval">Rs 18,326,671,508</div>
+              </div>
+            </div>
+
+            <!-- Dual Progress Meter Bar -->
+            <div class="cadastre-progress-container">
+              <div class="cadastre-progress-box">
+                <div class="cadastre-progress-label-row">
+                  <span><i class="fa-solid fa-chart-line"></i> Annual FY 2026-27 Target Achievement (PKR 33.78B / 115.05B)</span>
+                  <span class="cadastre-progress-pct">29.36%</span>
+                </div>
+                <div class="cadastre-progress-track">
+                  <div class="cadastre-progress-fill target-fill" style="width: 29.36%;"></div>
+                </div>
+                <div class="cadastre-progress-subtext">Remaining statutory gap for FY 2026-27: PKR 81.27 Billion across provincial formations</div>
+              </div>
+              <div class="cadastre-progress-box">
+                <div class="cadastre-progress-label-row">
+                  <span><i class="fa-solid fa-circle-check"></i> FY 2026-27 Net Due Collection Efficiency (PKR 33.78B / 86.21B)</span>
+                  <span class="cadastre-progress-pct highlight-pct">39.19%</span>
+                </div>
+                <div class="cadastre-progress-track">
+                  <div class="cadastre-progress-fill due-fill" style="width: 39.19%;"></div>
+                </div>
+                <div class="cadastre-progress-subtext">Outstanding recoverable balance against FY 2026-27 assessed dues: PKR 53.45 Billion</div>
+              </div>
+            </div>
+
+            <!-- Three Branch Deep Dive Cards (LSM, MM, SSM) -->
+            <div class="cadastre-branches-grid">
+              <!-- LSM Card -->
+              <div class="cadastre-branch-card branch-lsm">
+                <div class="cadastre-branch-header">
+                  <div class="cadastre-branch-title-wrap">
+                    <span class="branch-pill pill-lsm">LSM</span>
+                    <div>
+                      <h4 class="cadastre-branch-name">Large Scale Mining</h4>
+                      <div class="cadastre-branch-sub">Cement &amp; Strategic Concessions</div>
+                    </div>
+                  </div>
+                  <span class="cadastre-branch-badge badge-top-perf"><i class="fa-solid fa-trophy"></i> 99.84% Dues Efficiency</span>
+                </div>
+                <div class="cadastre-branch-stats">
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">FY 2026-27 Statutory Target</span>
+                    <span class="stat-val">PKR 51.87 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">FY 2026-27 Net Due Assessed</span>
+                    <span class="stat-val">PKR 7.31 Billion</span>
+                  </div>
+                  <div class="branch-stat-row highlight-row">
+                    <span class="stat-lbl">FY 2026-27 Realized / Paid</span>
+                    <span class="stat-val val-green">PKR 7.30 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Recoverable Balance</span>
+                    <span class="stat-val val-muted">PKR 9.32 Million</span>
+                  </div>
+                  <div class="branch-stat-row guarantee-row">
+                    <span class="stat-lbl"><i class="fa-solid fa-lock"></i> Statutory Bank Guarantees</span>
+                    <span class="stat-val val-gold">PKR 18.33 Billion</span>
+                  </div>
+                </div>
+                <div class="cadastre-branch-meta">
+                  <span><i class="fa-solid fa-receipt"></i> 100% Paid via Chalan</span>
+                  <span><i class="fa-solid fa-file-contract"></i> 140 Concessions</span>
+                </div>
+              </div>
+
+              <!-- MM Card -->
+              <div class="cadastre-branch-card branch-mm">
+                <div class="cadastre-branch-header">
+                  <div class="cadastre-branch-title-wrap">
+                    <span class="branch-pill pill-mm">MM</span>
+                    <div>
+                      <h4 class="cadastre-branch-name">Minor Minerals</h4>
+                      <div class="cadastre-branch-sub">Sand, Gravel, Stone &amp; Bajri</div>
+                    </div>
+                  </div>
+                  <span class="cadastre-branch-badge"><i class="fa-solid fa-gavel"></i> 467 Active Blocks</span>
+                </div>
+                <div class="cadastre-branch-stats">
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">FY 2026-27 Statutory Target</span>
+                    <span class="stat-val">PKR 41.84 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">FY 2026-27 Net Due Assessed</span>
+                    <span class="stat-val">PKR 56.60 Billion</span>
+                  </div>
+                  <div class="branch-stat-row highlight-row">
+                    <span class="stat-lbl">FY 2026-27 Realized / Paid</span>
+                    <span class="stat-val val-green">PKR 18.65 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Auction Installments Paid</span>
+                    <span class="stat-val">PKR 16.77B (Due: 55.61B)</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Chalans &amp; Dangling</span>
+                    <span class="stat-val">PKR 1.88 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Recoverable Balance</span>
+                    <span class="stat-val val-red">PKR 38.97 Billion</span>
+                  </div>
+                </div>
+                <div class="cadastre-branch-meta">
+                  <span><i class="fa-solid fa-check"></i> 467 Granted Blocks</span>
+                  <span><i class="fa-solid fa-tag"></i> 12 Upcoming (Rs 1.23B ERP)</span>
+                </div>
+              </div>
+
+              <!-- SSM Card -->
+              <div class="cadastre-branch-card branch-ssm">
+                <div class="cadastre-branch-header">
+                  <div class="cadastre-branch-title-wrap">
+                    <span class="branch-pill pill-sma">SSM</span>
+                    <div>
+                      <h4 class="cadastre-branch-name">Small Scale Mining</h4>
+                      <div class="cadastre-branch-sub">Coal, Silica Sand, Fireclay &amp; Salt</div>
+                    </div>
+                  </div>
+                  <span class="cadastre-branch-badge"><i class="fa-solid fa-handshake"></i> Rs 5.06B Royalties</span>
+                </div>
+                <div class="cadastre-branch-stats">
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">FY 2026-27 Statutory Target</span>
+                    <span class="stat-val">PKR 21.34 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">FY 2026-27 Net Due Assessed</span>
+                    <span class="stat-val">PKR 22.30 Billion</span>
+                  </div>
+                  <div class="branch-stat-row highlight-row">
+                    <span class="stat-lbl">FY 2026-27 Realized / Paid</span>
+                    <span class="stat-val val-green">PKR 7.84 Billion</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Royalty Contracts Paid</span>
+                    <span class="stat-val">PKR 5.06B (Due: 9.36B)</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Auction Installments Paid</span>
+                    <span class="stat-val">PKR 2.55B (Due: 12.70B)</span>
+                  </div>
+                  <div class="branch-stat-row">
+                    <span class="stat-lbl">Recoverable Balance</span>
+                    <span class="stat-val val-red">PKR 14.47 Billion</span>
+                  </div>
+                </div>
+                <div class="cadastre-branch-meta">
+                  <span><i class="fa-solid fa-check"></i> 260 Granted Blocks</span>
+                  <span><i class="fa-solid fa-tag"></i> 30 Upcoming (Rs 249.8M ERP)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Minor Mineral Cadastre Auction Blocks Bar -->
+            <div class="cadastre-blocks-banner">
+              <div class="blocks-banner-item">
+                <i class="fa-solid fa-cubes"></i>
+                <div>
+                  <div class="blocks-num">874</div>
+                  <div class="blocks-label">Total Monitored Blocks</div>
+                </div>
+              </div>
+              <div class="blocks-divider"></div>
+              <div class="blocks-banner-item">
+                <i class="fa-solid fa-circle-check" style="color: #10B981;"></i>
+                <div>
+                  <div class="blocks-num">727</div>
+                  <div class="blocks-label">Granted / Active Blocks (83.2%)</div>
+                </div>
+              </div>
+              <div class="blocks-divider"></div>
+              <div class="blocks-banner-item">
+                <i class="fa-solid fa-circle-notch" style="color: #94A3B8;"></i>
+                <div>
+                  <div class="blocks-num">147</div>
+                  <div class="blocks-label">Vacant Blocks (16.8%)</div>
+                </div>
+              </div>
+              <div class="blocks-divider"></div>
+              <div class="blocks-banner-item">
+                <i class="fa-solid fa-gavel" style="color: #F59E0B;"></i>
+                <div>
+                  <div class="blocks-num">42 Blocks</div>
+                  <div class="blocks-label">Upcoming Auctions (ERP: PKR 1.48B)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROVINCIAL FISCAL TRAJECTORY COMPARISON (FY 2021-22 TO FY 2026-27 TARGET) -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color: #0A6238; margin-right: 0.4rem;"></i> Multi-Year Fiscal Trajectory Alignment (FY 2021-22 through FY 2026-27)</h3>
+                <span class="card-subtitle">Official benchmark comparison between 5-year historical realizations and the FY 2026-27 statutory Cadastre target</span>
+              </div>
+              <span class="badge-status-pill badge-granted">Statutory FY Comparison</span>
+            </div>
+            <div class="table-scroll-container">
+              <table class="table-clean">
+                <thead>
+                  <tr>
+                    <th>Fiscal Year (FY)</th>
+                    <th>Fiscal Classification</th>
+                    <th>Mineral Output (Tons)</th>
+                    <th>Assessed Target / Due</th>
+                    <th>Royalty Paid (PKR)</th>
+                    <th>Total Realized (PKR)</th>
+                    <th>Collection Performance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>FY 2021-22</strong></td>
+                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
+                    <td>3,833,443 Tons</td>
+                    <td>-</td>
+                    <td>Rs 499,880,283</td>
+                    <td class="currency-grandtotal-val">Rs 524,102,140</td>
+                    <td>Baseline Year</td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2022-23</strong></td>
+                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
+                    <td>4,680,239 Tons</td>
+                    <td>-</td>
+                    <td>Rs 589,605,238</td>
+                    <td class="currency-grandtotal-val">Rs 618,420,950</td>
+                    <td><span style="color: #059669; font-weight: 700;">+18.0% YoY</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2023-24</strong></td>
+                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
+                    <td>5,467,613 Tons</td>
+                    <td>-</td>
+                    <td>Rs 662,879,402</td>
+                    <td class="currency-grandtotal-val">Rs 694,150,300</td>
+                    <td><span style="color: #059669; font-weight: 700;">+12.2% YoY</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2024-25</strong></td>
+                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
+                    <td>4,510,566 Tons</td>
+                    <td>-</td>
+                    <td>Rs 1,420,224,627</td>
+                    <td class="currency-grandtotal-val">Rs 1,445,830,110</td>
+                    <td><span style="color: #059669; font-weight: 700;">+108.3% YoY</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2025-26</strong></td>
+                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
+                    <td>4,946,787 Tons</td>
+                    <td>-</td>
+                    <td>Rs 1,405,511,152</td>
+                    <td class="currency-grandtotal-val">Rs 1,458,986,558</td>
+                    <td><span style="color: #059669; font-weight: 700;">+0.9% YoY</span></td>
+                  </tr>
+                  <tr style="background: rgba(10, 98, 56, 0.08); font-weight: 800; border-top: 2px solid #0A6238; border-bottom: 2px solid #0A6238;">
+                    <td style="color: #0A6238;"><strong>FY 2026-27</strong></td>
+                    <td><span class="badge-status-pill badge-granted">Current FY • Cadastre Target</span></td>
+                    <td>Active Mining Cycle</td>
+                    <td style="color: #0A6238;">Target: Rs 115.05B<br><small style="color: #64748B;">Net Due: Rs 86.21B</small></td>
+                    <td>Rs 7.30B (LSM) + Rs 5.06B (SSM)</td>
+                    <td class="currency-grandtotal-val" style="color: #0A6238; font-size: 1.05rem;">PKR 33.78 Billion</td>
+                    <td><span style="color: #0A6238; font-weight: 800;">39.19% Net Due<br><small>29.36% of 115B Target</small></span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- =========================================================
+               OFFICIAL MINING CADASTRE LEASE-WISE REVENUE LEDGER (FY 2026-27)
+               ========================================================= -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-file-invoice-dollar" style="color: #0A6238; margin-right: 0.4rem;"></i> Official Cadastre Lease-Wise Revenue Ledger (FY 2026-27)</h3>
+                <span class="card-subtitle">Authenticated concession-by-concession financial dues, realized payments, verified chalan receipts, auction installments, and bank guarantees directly from Punjab Mining Cadastre</span>
+              </div>
+              
+              <div class="section-export-wrap" data-export-source="cadastre-lease-ledger" data-export-table="tableCadastreLeaseFinance" data-export-title="Punjab_Cadastre_Lease_Wise_Revenue_Ledger_FY2026_27">
+                <button class="btn-section-export" type="button" title="Export Cadastre Lease Revenue Ledger">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cadastre Revenue Category Pills -->
+            <div class="cadastre-category-pills" id="cadastreCategoryPills">
+              <button class="cad-cat-btn active" data-cat="ALL" type="button"><i class="fa-solid fa-layer-group"></i> All Cadastre Concessions (2,846)</button>
+              <button class="cad-cat-btn" data-cat="Chalan" type="button"><i class="fa-solid fa-receipt"></i> Concession Chalans (1,728)</button>
+              <button class="cad-cat-btn" data-cat="BlockInstallment" type="button"><i class="fa-solid fa-gavel"></i> Auction Block Accounts (897)</button>
+              <button class="cad-cat-btn" data-cat="RoyaltyContract" type="button"><i class="fa-solid fa-handshake"></i> District Royalty Contracts (15)</button>
+              <button class="cad-cat-btn" data-cat="BankGuarantee" type="button"><i class="fa-solid fa-vault"></i> Bank Guarantees (206)</button>
+            </div>
+
+            <!-- Smart Filter Controls for Cadastre Lease Revenue -->
+            <div class="smart-filter-panel">
+              <div class="filter-inputs-row">
+                <div class="filter-control-wrap search-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Search Concession / Titleholder</label>
+                  <div class="input-with-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="smart-input" id="cadastreFinSearchInput" placeholder="Search reference, client name, chalan number, plant...">
+                  </div>
+                </div>
+
+                <div class="filter-control-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-location-dot"></i> District</label>
+                  <select class="smart-select" id="cadastreFinDistrictSelect">
+                    <option value="ALL">All Districts (36)</option>
+                  </select>
+                </div>
+
+                <div class="filter-control-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-diagram-project"></i> Branch</label>
+                  <select class="smart-select" id="cadastreFinBranchSelect">
+                    <option value="ALL">All Branches</option>
+                    <option value="LSM">Large Scale Mining (LSM)</option>
+                    <option value="SSM">Small Scale Mining (SSM)</option>
+                    <option value="MM">Minor Minerals (MM)</option>
+                  </select>
+                </div>
+
+                <div class="filter-control-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-circle-check"></i> Payment Status</label>
+                  <select class="smart-select" id="cadastreFinStatusSelect">
+                    <option value="ALL">All Statuses</option>
+                    <option value="PAID">Paid / Realized</option>
+                    <option value="DUE">Outstanding / Due</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Chips and Counter -->
+              <div class="filter-meta-bar">
+                <div class="chips-container" id="cadastreFinChipsContainer"></div>
+                <div class="filter-counter-badge" id="cadastreFinCounterBadge">
+                  <i class="fa-solid fa-layer-group"></i> Showing 2,846 records
+                </div>
+              </div>
+            </div>
+
+            <!-- Cadastre Table -->
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableCadastreLeaseFinance">
+                <thead>
+                  <tr>
+                    <th>Concession / Block Ref</th>
+                    <th>Titleholder / Client / Plant</th>
+                    <th>Branch</th>
+                    <th>District</th>
+                    <th>Mineral</th>
+                    <th>Revenue Mode</th>
+                    <th>Assessed Due (PKR)</th>
+                    <th>Realized / Paid (PKR)</th>
+                    <th>Recoverable (PKR)</th>
+                    <th>Status / Receipt</th>
+                  </tr>
+                </thead>
+                <tbody id="cadastreLeaseFinanceTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div class="pagination-bar" style="margin-top: 1rem;">
+              <span class="pagination-info" id="cadastreFinancePageInfo">Showing 1 to 15 of 2,846 records</span>
+              <div class="pagination-controls">
+                <button class="btn-page" id="btnPrevCadastreFin" type="button" disabled><i class="fa-solid fa-chevron-left"></i> Previous</button>
+                <button class="btn-page" id="btnNextCadastreFin" type="button">Next <i class="fa-solid fa-chevron-right"></i></button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- =========================================================
+             SUBVIEW 2: 5-YEAR HISTORICAL PERFORMANCE (FY 2021-22 TO FY 2025-26)
+             ========================================================= -->
+        <div class="fin-subview-pane" id="subview-historical-5y">
+
+          <!-- 5-Year Historical Header Banner -->
+          <div class="cadastre-fiscal-banner" style="background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 60%, #2563eb 100%); margin-bottom: 1.5rem;">
             <div class="cadastre-banner-left">
-              <div class="cadastre-banner-emblem">
-                <i class="fa-solid fa-building-columns"></i>
+              <div class="cadastre-banner-emblem" style="background: rgba(255, 255, 255, 0.2);">
+                <i class="fa-solid fa-clock-rotate-left"></i>
               </div>
               <div>
                 <div class="cadastre-banner-badge-row">
                   <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals</span>
-                  <span class="cadastre-badge-live"><i class="fa-solid fa-circle"></i> Authenticated Cadastre API Snapshot</span>
+                  <span class="cadastre-badge-live" style="background: rgba(255, 255, 255, 0.25); color: #FFFFFF;"><i class="fa-solid fa-database"></i> 5-Year Cumulative Baseline • FY 2021-22 to FY 2025-26</span>
                 </div>
-                <h2 class="cadastre-banner-title">Punjab Mining Cadastre Fiscal Intelligence Console</h2>
-                <p class="cadastre-banner-desc">Audited provincial revenue position, assessment vs net dues, and statutory bank guarantees from the official Punjab Mining Cadastre System (MCIS)</p>
+                <h2 class="cadastre-banner-title">5-Year Historical Performance &amp; Royalty Baseline (FY 2021-22 to FY 2025-26)</h2>
+                <p class="cadastre-banner-desc">Comprehensive historical audit across 1,004 monitored provincial leases, documenting 23.44M metric tons of mineral production, PKR 4.741 Billion in cumulative receipts, and regional field office revenue share.</p>
               </div>
-            </div>
-            <div class="cadastre-banner-actions">
-              <a href="https://mining-cadastre.geosoftsolution.com/dashboard/home" target="_blank" rel="noopener noreferrer" class="btn-cadastre-ext" title="Launch Official Mining Cadastre Portal">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                <span>Cadastre Portal</span>
-              </a>
             </div>
           </div>
 
-          <!-- Top Rollup KPI Row (5 Cards) -->
-          <div class="cadastre-kpi-grid">
-            <div class="cadastre-kpi-card">
-              <div class="cadastre-kpi-label"><i class="fa-solid fa-bullseye"></i> Fiscal Year Target</div>
-              <div class="cadastre-kpi-value">PKR 115.05B</div>
-              <div class="cadastre-kpi-detail">Provincial target (LSM, MM, SSM)</div>
-              <div class="cadastre-kpi-subval">Rs 115,053,702,942</div>
+          <!-- 5-Year KPI Grid -->
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">5-Year Royalty &amp; Revenue</div>
+                <div class="kpi-value">PKR 4.741B</div>
+                <div class="kpi-subtext"><span>FY 2021-22 to FY 2025-26 cumulative</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-gold"><i class="fa-solid fa-coins"></i></div>
             </div>
-            <div class="cadastre-kpi-card">
-              <div class="cadastre-kpi-label"><i class="fa-solid fa-file-invoice-dollar"></i> Net Dues Assessed</div>
-              <div class="cadastre-kpi-value">PKR 86.21B</div>
-              <div class="cadastre-kpi-detail">Legally enforceable demand</div>
-              <div class="cadastre-kpi-subval">Rs 86,211,496,813</div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">5-Year Production Output</div>
+                <div class="kpi-value">23.44M Tons</div>
+                <div class="kpi-subtext"><span>Across 1,004 monitored leases</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-emerald"><i class="fa-solid fa-boxes-stacked"></i></div>
             </div>
-            <div class="cadastre-kpi-card cadastre-kpi-highlight">
-              <div class="cadastre-kpi-label"><i class="fa-solid fa-hand-holding-dollar"></i> Total Realized / Paid</div>
-              <div class="cadastre-kpi-value cadastre-val-realized">PKR 33.78B</div>
-              <div class="cadastre-kpi-detail"><strong>39.19% of Net Due</strong> • 29.36% Target</div>
-              <div class="cadastre-kpi-subval">Rs 33,784,889,662</div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">Annual Realization Benchmark</div>
+                <div class="kpi-value">PKR 948.3M</div>
+                <div class="kpi-subtext"><span>5-Year average annual collection</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-blue"><i class="fa-solid fa-chart-line"></i></div>
             </div>
-            <div class="cadastre-kpi-card">
-              <div class="cadastre-kpi-label"><i class="fa-solid fa-scale-unbalanced"></i> Recoverable Balance</div>
-              <div class="cadastre-kpi-value cadastre-val-rec">PKR 53.45B</div>
-              <div class="cadastre-kpi-detail">Net outstanding enforceable due</div>
-              <div class="cadastre-kpi-subval">Rs 53,449,361,706</div>
-            </div>
-            <div class="cadastre-kpi-card cadastre-kpi-guarantee">
-              <div class="cadastre-kpi-label"><i class="fa-solid fa-vault"></i> Bank Guarantees Held</div>
-              <div class="cadastre-kpi-value cadastre-val-sec">PKR 18.33B</div>
-              <div class="cadastre-kpi-detail">100% Large Scale Mining (Uninvoked)</div>
-              <div class="cadastre-kpi-subval">Rs 18,326,671,508</div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">Securities &amp; Dead Rent Held</div>
+                <div class="kpi-value">PKR 190.77M</div>
+                <div class="kpi-subtext"><span>Statutory security reserves</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-amber"><i class="fa-solid fa-vault"></i></div>
             </div>
           </div>
 
-          <!-- Dual Progress Meter Bar -->
-          <div class="cadastre-progress-container">
-            <div class="cadastre-progress-box">
-              <div class="cadastre-progress-label-row">
-                <span><i class="fa-solid fa-chart-line"></i> Annual Target Achievement (PKR 33.78B / 115.05B)</span>
-                <span class="cadastre-progress-pct">29.36%</span>
+          <!-- =========================================================
+               5-YEAR HISTORICAL LEASE-BY-LEASE AUDIT LEDGER (1,004 LEASES)
+               ========================================================= -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-table-list" style="color: #2563EB; margin-right: 0.4rem;"></i> 5-Year Historical Lease-by-Lease Audit Ledger (1,004 Leases)</h3>
+                <span class="card-subtitle">Complete historical inventory of all 1,004 monitored lease formations (FY 2021-22 to FY 2025-26), documenting company name, mineral, field office, acreage, 5-year production tonnage, and royalty yield</span>
               </div>
-              <div class="cadastre-progress-track">
-                <div class="cadastre-progress-fill target-fill" style="width: 29.36%;"></div>
+              
+              <div class="section-export-wrap" data-export-source="historical-leases-ledger" data-export-table="tableHistoricalLeases" data-export-title="Punjab_5Year_Historical_Monitored_Leases_Ledger">
+                <button class="btn-section-export" type="button" title="Export 5-Year Historical Lease Ledger">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
               </div>
-              <div class="cadastre-progress-subtext">Remaining target gap: PKR 81.27 Billion across provincial formations</div>
             </div>
-            <div class="cadastre-progress-box">
-              <div class="cadastre-progress-label-row">
-                <span><i class="fa-solid fa-circle-check"></i> Net Due Collection Efficiency (PKR 33.78B / 86.21B)</span>
-                <span class="cadastre-progress-pct highlight-pct">39.19%</span>
-              </div>
-              <div class="cadastre-progress-track">
-                <div class="cadastre-progress-fill due-fill" style="width: 39.19%;"></div>
-              </div>
-              <div class="cadastre-progress-subtext">Outstanding recoverable balance against assessed dues: PKR 53.45 Billion</div>
-            </div>
-          </div>
 
-          <!-- Three Branch Deep Dive Cards (LSM, MM, SSM) -->
-          <div class="cadastre-branches-grid">
-            <!-- LSM Card -->
-            <div class="cadastre-branch-card branch-lsm">
-              <div class="cadastre-branch-header">
-                <div class="cadastre-branch-title-wrap">
-                  <span class="branch-pill pill-lsm">LSM</span>
-                  <div>
-                    <h4 class="cadastre-branch-name">Large Scale Mining</h4>
-                    <div class="cadastre-branch-sub">Cement &amp; Strategic Concessions</div>
+            <!-- Smart Filter Panel for Historical Leases -->
+            <div class="smart-filter-panel">
+              <div class="filter-inputs-row">
+                <div class="filter-control-wrap search-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-magnifying-glass"></i> Search Historical Lease</label>
+                  <div class="input-with-icon">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="smart-input" id="histLeaseSearchInput" placeholder="Search lease reference, company name, mineral...">
                   </div>
                 </div>
-                <span class="cadastre-branch-badge badge-top-perf"><i class="fa-solid fa-trophy"></i> 99.84% Dues Efficiency</span>
+
+                <div class="filter-control-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-building-user"></i> Regional Field Office</label>
+                  <select class="smart-select" id="histLeaseOfficeSelect">
+                    <option value="ALL">All Field Formations (1,004)</option>
+                    <option value="Attock">Attock (17 Leases)</option>
+                    <option value="Chakwal">Chakwal (363 Leases)</option>
+                    <option value="D.G. Khan">D.G. Khan (37 Leases)</option>
+                    <option value="Jhelum">Jhelum (58 Leases)</option>
+                    <option value="Khushab">Khushab (229 Leases)</option>
+                    <option value="Mianwali">Mianwali (300 Leases)</option>
+                  </select>
+                </div>
+
+                <div class="filter-control-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-gem"></i> Mineral</label>
+                  <select class="smart-select" id="histLeaseMineralSelect">
+                    <option value="ALL">All Minerals</option>
+                  </select>
+                </div>
+
+                <div class="filter-control-wrap">
+                  <label class="filter-label"><i class="fa-solid fa-diagram-project"></i> Branch</label>
+                  <select class="smart-select" id="histLeaseBranchSelect">
+                    <option value="ALL">All Branches</option>
+                    <option value="LSM">Large Scale Mining (LSM)</option>
+                    <option value="SSM">Small Scale Mining (SSM)</option>
+                  </select>
+                </div>
               </div>
-              <div class="cadastre-branch-stats">
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Statutory Fiscal Target</span>
-                  <span class="stat-val">PKR 51.87 Billion</span>
+
+              <!-- Filter Meta Bar -->
+              <div class="filter-meta-bar">
+                <div class="chips-container" id="histLeaseChipsContainer"></div>
+                <div class="filter-counter-badge" id="histLeaseCounterBadge">
+                  <i class="fa-solid fa-layer-group"></i> Showing 1,004 historical leases
                 </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Net Due Assessed</span>
-                  <span class="stat-val">PKR 7.31 Billion</span>
-                </div>
-                <div class="branch-stat-row highlight-row">
-                  <span class="stat-lbl">Total Realized / Paid</span>
-                  <span class="stat-val val-green">PKR 7.30 Billion</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Recoverable Balance</span>
-                  <span class="stat-val val-muted">PKR 9.32 Million</span>
-                </div>
-                <div class="branch-stat-row guarantee-row">
-                  <span class="stat-lbl"><i class="fa-solid fa-lock"></i> Statutory Bank Guarantees</span>
-                  <span class="stat-val val-gold">PKR 18.33 Billion</span>
-                </div>
-              </div>
-              <div class="cadastre-branch-meta">
-                <span><i class="fa-solid fa-receipt"></i> 100% Paid via Chalan</span>
-                <span><i class="fa-solid fa-file-contract"></i> 140 Concessions</span>
               </div>
             </div>
 
-            <!-- MM Card -->
-            <div class="cadastre-branch-card branch-mm">
-              <div class="cadastre-branch-header">
-                <div class="cadastre-branch-title-wrap">
-                  <span class="branch-pill pill-mm">MM</span>
-                  <div>
-                    <h4 class="cadastre-branch-name">Minor Minerals</h4>
-                    <div class="cadastre-branch-sub">Sand, Gravel, Stone &amp; Bajri</div>
-                  </div>
-                </div>
-                <span class="cadastre-branch-badge"><i class="fa-solid fa-gavel"></i> 467 Active Blocks</span>
-              </div>
-              <div class="cadastre-branch-stats">
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Statutory Fiscal Target</span>
-                  <span class="stat-val">PKR 41.84 Billion</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Net Due Assessed</span>
-                  <span class="stat-val">PKR 56.60 Billion</span>
-                </div>
-                <div class="branch-stat-row highlight-row">
-                  <span class="stat-lbl">Total Realized / Paid</span>
-                  <span class="stat-val val-green">PKR 18.65 Billion</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Auction Installments Paid</span>
-                  <span class="stat-val">PKR 16.77B (Due: 55.61B)</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Chalans &amp; Dangling</span>
-                  <span class="stat-val">PKR 1.88 Billion</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Recoverable Balance</span>
-                  <span class="stat-val val-red">PKR 38.97 Billion</span>
-                </div>
-              </div>
-              <div class="cadastre-branch-meta">
-                <span><i class="fa-solid fa-check"></i> 467 Granted Blocks</span>
-                <span><i class="fa-solid fa-tag"></i> 12 Upcoming (Rs 1.23B ERP)</span>
-              </div>
+            <!-- Historical Leases Table -->
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableHistoricalLeases">
+                <thead>
+                  <tr>
+                    <th>Sr No</th>
+                    <th>Lease / License Ref</th>
+                    <th>Company / Lessee Name</th>
+                    <th>Field Office / District</th>
+                    <th>Mineral</th>
+                    <th>Branch</th>
+                    <th>Acreage (Acres)</th>
+                    <th>5-Year Output (Tons)</th>
+                    <th>5-Year Royalty (PKR)</th>
+                    <th>Grand Total Paid (PKR)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="historicalLeasesTableBody"></tbody>
+              </table>
             </div>
 
-            <!-- SSM Card -->
-            <div class="cadastre-branch-card branch-ssm">
-              <div class="cadastre-branch-header">
-                <div class="cadastre-branch-title-wrap">
-                  <span class="branch-pill pill-sma">SSM</span>
-                  <div>
-                    <h4 class="cadastre-branch-name">Small Scale Mining</h4>
-                    <div class="cadastre-branch-sub">Coal, Silica Sand, Fireclay &amp; Salt</div>
-                  </div>
-                </div>
-                <span class="cadastre-branch-badge"><i class="fa-solid fa-handshake"></i> Rs 5.06B Royalties</span>
-              </div>
-              <div class="cadastre-branch-stats">
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Statutory Fiscal Target</span>
-                  <span class="stat-val">PKR 21.34 Billion</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Net Due Assessed</span>
-                  <span class="stat-val">PKR 22.30 Billion</span>
-                </div>
-                <div class="branch-stat-row highlight-row">
-                  <span class="stat-lbl">Total Realized / Paid</span>
-                  <span class="stat-val val-green">PKR 7.84 Billion</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Royalty Contracts Paid</span>
-                  <span class="stat-val">PKR 5.06B (Due: 9.36B)</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Auction Installments Paid</span>
-                  <span class="stat-val">PKR 2.55B (Due: 12.70B)</span>
-                </div>
-                <div class="branch-stat-row">
-                  <span class="stat-lbl">Recoverable Balance</span>
-                  <span class="stat-val val-red">PKR 14.47 Billion</span>
-                </div>
-              </div>
-              <div class="cadastre-branch-meta">
-                <span><i class="fa-solid fa-check"></i> 260 Granted Blocks</span>
-                <span><i class="fa-solid fa-tag"></i> 30 Upcoming (Rs 249.8M ERP)</span>
+            <!-- Pagination Bar -->
+            <div class="pagination-bar" style="margin-top: 1rem;">
+              <span class="pagination-info" id="historicalLeasesPageInfo">Showing 1 to 15 of 1,004 records</span>
+              <div class="pagination-controls">
+                <button class="btn-page" id="btnPrevHistLease" type="button" disabled><i class="fa-solid fa-chevron-left"></i> Previous</button>
+                <button class="btn-page" id="btnNextHistLease" type="button">Next <i class="fa-solid fa-chevron-right"></i></button>
               </div>
             </div>
           </div>
 
-          <!-- Minor Mineral Cadastre Auction Blocks Bar -->
-          <div class="cadastre-blocks-banner">
-            <div class="blocks-banner-item">
-              <i class="fa-solid fa-cubes"></i>
-              <div>
-                <div class="blocks-num">874</div>
-                <div class="blocks-label">Total Monitored Blocks</div>
+          <!-- Individual Field Office Financial Summary Console -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-building-user" style="color: #10B981; margin-right: 0.4rem;"></i> Individual Field Office Financial Summary</h3>
+                <span class="card-subtitle">Select any individual regional field formation to inspect 5-year royalty yield, production tonnage, active leases, and revenue share</span>
               </div>
-            </div>
-            <div class="blocks-divider"></div>
-            <div class="blocks-banner-item">
-              <i class="fa-solid fa-circle-check" style="color: #10B981;"></i>
-              <div>
-                <div class="blocks-num">727</div>
-                <div class="blocks-label">Granted / Active Blocks (83.2%)</div>
-              </div>
-            </div>
-            <div class="blocks-divider"></div>
-            <div class="blocks-banner-item">
-              <i class="fa-solid fa-circle-notch" style="color: #94A3B8;"></i>
-              <div>
-                <div class="blocks-num">147</div>
-                <div class="blocks-label">Vacant Blocks (16.8%)</div>
-              </div>
-            </div>
-            <div class="blocks-divider"></div>
-            <div class="blocks-banner-item">
-              <i class="fa-solid fa-gavel" style="color: #F59E0B;"></i>
-              <div>
-                <div class="blocks-num">42 Blocks</div>
-                <div class="blocks-label">Upcoming Auctions (ERP: PKR 1.48B)</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="kpi-grid">
-          <div class="kpi-card">
-            <div>
-              <div class="kpi-label">5-Year Royalty & Revenue</div>
-              <div class="kpi-value">PKR 4.741B</div>
-              <div class="kpi-subtext"><span>FY 2021-22 to FY 2025-26</span></div>
-            </div>
-            <div class="kpi-icon-wrap icon-gold"><i class="fa-solid fa-coins"></i></div>
-          </div>
-          <div class="kpi-card">
-            <div>
-              <div class="kpi-label">5-Year Production Output</div>
-              <div class="kpi-value">23.44M Tons</div>
-              <div class="kpi-subtext"><span>Across 1,004 monitored leases</span></div>
-            </div>
-            <div class="kpi-icon-wrap icon-emerald"><i class="fa-solid fa-boxes-stacked"></i></div>
-          </div>
-          <div class="kpi-card">
-            <div>
-              <div class="kpi-label">Annual Realization Benchmark</div>
-              <div class="kpi-value">PKR 948.3M</div>
-              <div class="kpi-subtext"><span>5-Year average annual collection</span></div>
-            </div>
-            <div class="kpi-icon-wrap icon-blue"><i class="fa-solid fa-chart-line"></i></div>
-          </div>
-          <div class="kpi-card">
-            <div>
-              <div class="kpi-label">Securities & Dead Rent Held</div>
-              <div class="kpi-value">PKR 190.77M</div>
-              <div class="kpi-subtext"><span>Statutory security reserves</span></div>
-            </div>
-            <div class="kpi-icon-wrap icon-amber"><i class="fa-solid fa-vault"></i></div>
-          </div>
-        </div>
-
-        <!-- Individual Field Office Financial Summary Console -->
-        <div class="card-section" style="margin-bottom: 1.5rem;">
-          <div class="card-header-clean">
-            <div class="card-title-group">
-              <h3 class="card-title"><i class="fa-solid fa-building-user" style="color: #10B981; margin-right: 0.4rem;"></i> Individual Field Office Financial Summary</h3>
-              <span class="card-subtitle">Select any individual regional field formation to inspect 5-year royalty yield, production tonnage, active leases, and revenue share</span>
-            </div>
-            
+              
               <div class="section-export-wrap" data-export-source="financials-single-office" data-export-table="" data-export-title="Field_Office_Financial_Summary">
                 <button class="btn-section-export" type="button" title="Export this dataset">
                   <i class="fa-solid fa-download"></i>
@@ -1743,54 +2104,54 @@
                   </button>
                 </div>
               </div>
-            <div class="sub-tabs-bar" id="officeSummarySelectorBar">
-              <button class="sub-tab-btn active" data-office-sel="ALL">All Formations (1,004)</button>
-              <button class="sub-tab-btn" data-office-sel="Attock">Attock (17)</button>
-              <button class="sub-tab-btn" data-office-sel="Chakwal">Chakwal (363)</button>
-              <button class="sub-tab-btn" data-office-sel="D.G. Khan">D.G. Khan (37)</button>
-              <button class="sub-tab-btn" data-office-sel="Jhelum">Jhelum (58)</button>
-              <button class="sub-tab-btn" data-office-sel="Khushab">Khushab (229)</button>
-              <button class="sub-tab-btn" data-office-sel="Mianwali">Mianwali (300)</button>
+              <div class="sub-tabs-bar" id="officeSummarySelectorBar">
+                <button class="sub-tab-btn active" data-office-sel="ALL">All Formations (1,004)</button>
+                <button class="sub-tab-btn" data-office-sel="Attock">Attock (17)</button>
+                <button class="sub-tab-btn" data-office-sel="Chakwal">Chakwal (363)</button>
+                <button class="sub-tab-btn" data-office-sel="D.G. Khan">D.G. Khan (37)</button>
+                <button class="sub-tab-btn" data-office-sel="Jhelum">Jhelum (58)</button>
+                <button class="sub-tab-btn" data-office-sel="Khushab">Khushab (229)</button>
+                <button class="sub-tab-btn" data-office-sel="Mianwali">Mianwali (300)</button>
+              </div>
+            </div>
+            <div id="officeSummaryCardContainer" style="padding: 1.25rem 1.5rem;">
+              <!-- Rendered by renderOfficeSummaryCard() in app.js -->
             </div>
           </div>
-          <div id="officeSummaryCardContainer" style="padding: 1.25rem 1.5rem;">
-            <!-- Rendered by renderOfficeSummaryCard() in app.js -->
-          </div>
-        </div>
 
-        <!-- Geographic Revenue Concentration Policy Insight -->
-        <div class="card-section" style="margin-bottom: 1.5rem;">
-          <div class="card-header-clean">
-            <div class="card-title-group">
-              <h3 class="card-title"><i class="fa-solid fa-coins" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> Revenue Concentration & Cadastre Policy Intelligence</h3>
-              <span class="card-subtitle">Geographic distribution of provincial reserve values across mineral clusters</span>
+          <!-- Geographic Revenue Concentration Policy Insight -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-coins" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> Revenue Concentration &amp; Cadastre Policy Intelligence</h3>
+                <span class="card-subtitle">Geographic distribution of provincial reserve values across mineral clusters</span>
+              </div>
+              <span class="badge-status-pill badge-granted">Executive Cadastre Audit</span>
             </div>
-            <span class="badge-status-pill badge-granted">Executive Cadastre Audit</span>
+            <div style="padding: 1.25rem 1.5rem; font-size: 0.84rem; color: var(--text-sub); line-height: 1.65; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;">
+              <div style="background: var(--canvas-bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+                <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;"><i class="fa-solid fa-chart-pie" style="color: #2563EB;"></i> 51.6% Revenue Concentration</div>
+                Together, <strong>Sargodha (Rs 9.42B)</strong> and <strong>Attock (Rs 7.97B)</strong> account for over half of Punjab's entire provincial mining reserve valuation.
+              </div>
+              <div style="background: var(--canvas-bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+                <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;"><i class="fa-solid fa-gem" style="color: #059669;"></i> Exceptional Acre Yield</div>
+                Attock generates an unprecedented <strong>Rs 176,991 per acre</strong>, making it the most financially intensive and efficient mineral territory in the province.
+              </div>
+              <div style="background: var(--canvas-bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
+                <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;"><i class="fa-solid fa-mountain" style="color: #D97706;"></i> Sandstone Cluster Domination</div>
+                Sandstone commands 88 blocks evaluated at <strong>Rs 8.91 Billion</strong> in reserve value, with 52 strategic blocks clustered in the Sargodha formation.
+              </div>
+            </div>
           </div>
-          <div style="padding: 1.25rem 1.5rem; font-size: 0.84rem; color: var(--text-sub); line-height: 1.65; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;">
-            <div style="background: var(--canvas-bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
-              <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;"><i class="fa-solid fa-chart-pie" style="color: #2563EB;"></i> 51.6% Revenue Concentration</div>
-              Together, <strong>Sargodha (Rs 9.42B)</strong> and <strong>Attock (Rs 7.97B)</strong> account for over half of Punjab's entire provincial mining reserve valuation.
-            </div>
-            <div style="background: var(--canvas-bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
-              <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;"><i class="fa-solid fa-gem" style="color: #059669;"></i> Exceptional Acre Yield</div>
-              Attock generates an unprecedented <strong>Rs 176,991 per acre</strong>, making it the most financially intensive and efficient mineral territory in the province.
-            </div>
-            <div style="background: var(--canvas-bg); padding: 1rem; border-radius: var(--radius-sm); border: 1px solid var(--card-border);">
-              <div style="font-weight: 700; color: var(--text-main); margin-bottom: 0.35rem;"><i class="fa-solid fa-mountain" style="color: #D97706;"></i> Sandstone Cluster Domination</div>
-              Sandstone commands 88 blocks evaluated at <strong>Rs 8.91 Billion</strong> in reserve value, with 52 strategic blocks clustered in the Sargodha formation.
-            </div>
-          </div>
-        </div>
 
-        <!-- Major Cement Manufacturers Audit -->
-        <div class="card-section">
-          <div class="card-header-clean">
-            <div class="card-title-group">
-              <h3 class="card-title">Major Cement Manufacturers Royalty Audit</h3>
-              <span class="card-subtitle">5-Year cumulative receipts and quarry acreage across major LSM operators</span>
-            </div>
-            
+          <!-- Major Cement Manufacturers Audit -->
+          <div class="card-section">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title">Major Cement Manufacturers Royalty Audit</h3>
+                <span class="card-subtitle">5-Year cumulative receipts and quarry acreage across major LSM operators</span>
+              </div>
+              
               <div class="section-export-wrap" data-export-source="financials-producers" data-export-table="tableProducers" data-export-title="Major_Cement_Manufacturers_Royalty_Audit">
                 <button class="btn-section-export" type="button" title="Export this dataset">
                   <i class="fa-solid fa-download"></i>
@@ -1812,33 +2173,33 @@
                   </button>
                 </div>
               </div>
-          </div>
-          <div class="table-scroll-container">
-            <table class="table-clean" id="tableProducers">
-              <thead>
-                <tr>
-                  <th>Producer / Cement Group</th>
-                  <th>Primary District</th>
-                  <th>Quarry Minerals</th>
-                  <th>Leased Acreage</th>
-                  <th>5-Year Royalty Paid (PKR)</th>
-                  <th>Total Mineral Output</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="producersTableBody"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Field Office Performance Matrix -->
-        <div class="card-section">
-          <div class="card-header-clean">
-            <div class="card-title-group">
-              <h3 class="card-title">Field Offices Five-Year Financial Performance Matrix</h3>
-              <span class="card-subtitle">Detailed financial rollups across Attock, Chakwal, D.G. Khan, Jhelum, Khushab, and Mianwali</span>
             </div>
-            
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableProducers">
+                <thead>
+                  <tr>
+                    <th>Producer / Cement Group</th>
+                    <th>Primary District</th>
+                    <th>Quarry Minerals</th>
+                    <th>Leased Acreage</th>
+                    <th>5-Year Royalty Paid (PKR)</th>
+                    <th>Total Mineral Output</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="producersTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Field Office Performance Matrix -->
+          <div class="card-section">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title">Field Offices Five-Year Financial Performance Matrix</h3>
+                <span class="card-subtitle">Detailed financial rollups across Attock, Chakwal, D.G. Khan, Jhelum, Khushab, and Mianwali</span>
+              </div>
+              
               <div class="section-export-wrap" data-export-source="financials-offices" data-export-table="tableFieldOffices" data-export-title="Field_Offices_Financial_Matrix">
                 <button class="btn-section-export" type="button" title="Export this dataset">
                   <i class="fa-solid fa-download"></i>
@@ -1860,23 +2221,25 @@
                   </button>
                 </div>
               </div>
+            </div>
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableFieldOffices">
+                <thead>
+                  <tr>
+                    <th>Field Office</th>
+                    <th>Active Leases</th>
+                    <th>5-Year Production (Tons)</th>
+                    <th>5-Year Royalty (PKR)</th>
+                    <th>Securities Held (PKR)</th>
+                    <th>Grand Total Realized (PKR)</th>
+                    <th>Revenue Share</th>
+                  </tr>
+                </thead>
+                <tbody id="fieldOfficesTableBody"></tbody>
+              </table>
+            </div>
           </div>
-          <div class="table-scroll-container">
-            <table class="table-clean" id="tableFieldOffices">
-              <thead>
-                <tr>
-                  <th>Field Office</th>
-                  <th>Active Leases</th>
-                  <th>5-Year Production (Tons)</th>
-                  <th>5-Year Royalty (PKR)</th>
-                  <th>Securities Held (PKR)</th>
-                  <th>Grand Total Realized (PKR)</th>
-                  <th>Revenue Share</th>
-                </tr>
-              </thead>
-              <tbody id="fieldOfficesTableBody"></tbody>
-            </table>
-          </div>
+
         </div>
 
       </div>
@@ -3152,6 +3515,8 @@
 <!-- Compiled In-Memory Master Database -->
 <script src="data.js"></script>
 <script src="cadastre_data.js"></script>
+<script src="cadastre_lease_finance.js"></script>
+<script src="historical_leases_data.js"></script>
 <script src="admin_data.js"></script>
 <script src="map_polygons.js"></script>
 <script src="rules_data.js"></script>
