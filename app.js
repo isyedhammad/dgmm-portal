@@ -1639,11 +1639,11 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false,
+          maintainAspectRatio: true,
+          aspectRatio: 1.35,
           plugins: {
             legend: {
-              position: "right",
-              labels: { color: textColor, font: { family: fontFam, size: 11, weight: 600 }, boxWidth: 12 }
+              display: false // Enhanced side panel displays rich interactive breakdown
             },
             tooltip: {
               backgroundColor: isDark ? "#1E293B" : "#0F172A",
@@ -1651,7 +1651,7 @@ document.addEventListener("DOMContentLoaded", () => {
               cornerRadius: 8
             }
           },
-          cutout: "68%"
+          cutout: "66%"
         }
       });
     }
@@ -1674,7 +1674,8 @@ document.addEventListener("DOMContentLoaded", () => {
               "#EAB308",
               "#F97316"
             ],
-            borderRadius: 6
+            borderRadius: 6,
+            maxBarThickness: 24
           }]
         },
         options: {
@@ -1722,7 +1723,8 @@ document.addEventListener("DOMContentLoaded", () => {
               "#06B6D4",
               "#EF4444"
             ],
-            borderRadius: 6
+            borderRadius: 6,
+            maxBarThickness: 38
           }]
         },
         options: {
