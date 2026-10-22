@@ -430,6 +430,24 @@ document.addEventListener("DOMContentLoaded", () => {
       office: "ALL"
     },
 
+    // Statutory Royalty & Dead Rent Calculator (Pursuant to Notification No. SOT(M&MD)5-3/2007(Vol-II))
+    calculator: {
+      leaseRef: "ML-CHK-Coal-000004",
+      titleholder: "Punjab Minerals Mining Ltd.",
+      district: "Chakwal",
+      branch: "SSM",
+      mineral: "Coal",
+      royaltyRate: 500,
+      acreage: 100,
+      deadRentRate: 1000,
+      isAuctioned: false,
+      year: 2026,
+      period: "JAN_JUN",
+      assessmentDate: "2026-10-22",
+      monthlyProduction: [350, 420, 280, 500, 310, 450],
+      monthlyPayments: [0, 0, 0, 0, 0, 0]
+    },
+
     // Official Cadastre Lease-Wise Revenue Ledger (FY 2026-27)
     cadastreFin: {
       category: "ALL",       // "ALL" | "Chalan" | "BlockInstallment" | "RoyaltyContract" | "BankGuarantee"
@@ -498,6 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
   bindFilterListeners();
   initGlobalSearch();
   initExport();
+  initRoyaltyCalculator();
   initCadastreMatrix();
   renderLsm();
   renderSma();
@@ -3764,6 +3783,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderOfficeSummaryCard();
     renderCadastreLeaseFinance();
     renderHistoricalLeases();
+    if (state.financials && state.financials.subview === "subview-royalty-calculator") {
+      renderRoyaltyCalculator();
+    }
   }
 
   function renderOfficeSummaryCard() {
@@ -4033,6 +4055,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <td style="text-align: center; white-space: nowrap;">
               ${statusBadge}
               ${docAction !== '-' ? `<div style="margin-top: 3px;">${docAction}</div>` : ''}
+              <div style="margin-top: 4px;">
+                <button type="button" class="btn-calc-row-action" onclick="window.launchRoyaltyCalculator('${encodeURIComponent(r.ref)}')" title="Calculate Statutory Royalty & Dead Rent">
+                  <i class="fa-solid fa-calculator"></i> Calc
+                </button>
+              </div>
             </td>
           </tr>
         `;
@@ -4161,7 +4188,14 @@ document.addEventListener("DOMContentLoaded", () => {
             <td style="font-weight: 600; text-align: right;">${formatNumber(l.production5YTons)} Tons</td>
             <td class="currency-bid-val" style="font-weight: 700; text-align: right;">${formatPKR(l.royalty5YPKR)}</td>
             <td class="currency-grandtotal-val" style="font-weight: 800; color: #059669; text-align: right;">${formatPKR(l.grandTotalPaidPKR)}</td>
-            <td style="text-align: center;"><span class="badge-status-pill badge-granted">${l.status}</span></td>
+            <td style="text-align: center; white-space: nowrap;">
+              <span class="badge-status-pill badge-granted">${l.status}</span>
+              <div style="margin-top: 4px;">
+                <button type="button" class="btn-calc-row-action" onclick="window.launchRoyaltyCalculator('${encodeURIComponent(l.ref)}')" title="Calculate Statutory Royalty & Dead Rent">
+                  <i class="fa-solid fa-calculator"></i> Calc
+                </button>
+              </div>
+            </td>
           </tr>
         `;
       }).join("");
@@ -5026,24 +5060,34 @@ function renderInspections() {
   // -------------------------------------------------------------
   function initExport() {
 
-    // Sub-View Switcher (FY 2026-27 Cadastre vs 5-Year Historical)
-    document.getElementById("btnFinViewCadastre")?.addEventListener("click", () => {
-      document.getElementById("btnFinViewCadastre")?.classList.add("active");
-      document.getElementById("btnFinViewHistorical")?.classList.remove("active");
-      document.getElementById("subview-cadastre-fy27")?.classList.add("active");
-      document.getElementById("subview-historical-5y")?.classList.remove("active");
-      state.financials.subview = "subview-cadastre-fy27";
-      renderCadastreLeaseFinance();
-    });
+    // Sub-View Switcher (FY 2026-27 Cadastre vs 5-Year Historical vs Statutory Calculator)
+    function switchFinancialSubview(targetId) {
+      state.financials.subview = targetId;
 
-    document.getElementById("btnFinViewHistorical")?.addEventListener("click", () => {
-      document.getElementById("btnFinViewHistorical")?.classList.add("active");
-      document.getElementById("btnFinViewCadastre")?.classList.remove("active");
-      document.getElementById("subview-historical-5y")?.classList.add("active");
-      document.getElementById("subview-cadastre-fy27")?.classList.remove("active");
-      state.financials.subview = "subview-historical-5y";
-      renderHistoricalLeases();
-    });
+      const subviewConfig = [
+        { btn: "btnFinViewCadastre", pane: "subview-cadastre-fy27", action: renderCadastreLeaseFinance },
+        { btn: "btnFinViewHistorical", pane: "subview-historical-5y", action: renderHistoricalLeases },
+        { btn: "btnFinViewCalculator", pane: "subview-royalty-calculator", action: renderRoyaltyCalculator }
+      ];
+
+      subviewConfig.forEach(cfg => {
+        const btn = document.getElementById(cfg.btn);
+        const pane = document.getElementById(cfg.pane);
+        if (cfg.pane === targetId) {
+          btn?.classList.add("active");
+          pane?.classList.add("active");
+          if (typeof cfg.action === "function") cfg.action();
+        } else {
+          btn?.classList.remove("active");
+          pane?.classList.remove("active");
+        }
+      });
+    }
+    window.switchFinancialSubview = switchFinancialSubview;
+
+    document.getElementById("btnFinViewCadastre")?.addEventListener("click", () => switchFinancialSubview("subview-cadastre-fy27"));
+    document.getElementById("btnFinViewHistorical")?.addEventListener("click", () => switchFinancialSubview("subview-historical-5y"));
+    document.getElementById("btnFinViewCalculator")?.addEventListener("click", () => switchFinancialSubview("subview-royalty-calculator"));
 
     // Cadastre category pills
     document.querySelectorAll("#cadastreCategoryPills .cad-cat-btn").forEach(btn => {
@@ -6065,4 +6109,1108 @@ function renderInspections() {
       renderCadastreRegistry();
     });
   }
+
+  // =========================================================================
+  // STATUTORY ROYALTY & DEAD RENT CALCULATOR CONTROLLER
+  // Pursuant to Notification No. SOT(M&MD)5-3/2007(Vol-II) Dated 01-07-2024
+  // PMCR 2002 Rules 65, 66, 135, 141 & Official Statutory Penalty Rules
+  // =========================================================================
+
+  function initRoyaltyCalculator() {
+    populateCalculatorMineralDropdown();
+    populateCalculatorLeasePicker();
+    bindCalculatorListeners();
+    syncCalculatorInputsFromState();
+    renderMonthlyInputs();
+    recalculateRoyaltyAssessment(false);
+  }
+
+  function populateCalculatorMineralDropdown() {
+    const select = document.getElementById("calcMineral");
+    if (!select) return;
+
+    const minerals = window.ROYALTY_NOTIFICATION_2024 || [];
+    select.innerHTML = "";
+
+    minerals.forEach(m => {
+      const opt = document.createElement("option");
+      opt.value = m.mineral;
+      opt.textContent = `${m.mineral} — Rs. ${m.rate}/Ton (Dead Rent: Rs. ${m.defaultDeadRentHalfYearly}/Acre)`;
+      select.appendChild(opt);
+    });
+
+    if (state.calculator && state.calculator.mineral) {
+      select.value = state.calculator.mineral;
+    }
+  }
+
+  function populateCalculatorLeasePicker() {
+    const select = document.getElementById("calcLeasePicker");
+    if (!select) return;
+
+    const currentVal = select.value;
+    select.innerHTML = '<option value="">-- Choose from Registered Provincial Leases or Type Below --</option>';
+
+    const leaseMap = new Map();
+
+    // 1. Historical Monitored Leases (1,004 Baseline)
+    const hist = window.HISTORICAL_LEASES_DATA?.leases || [];
+    hist.forEach(l => {
+      if (l.ref && !leaseMap.has(l.ref)) {
+        leaseMap.set(l.ref, {
+          ref: l.ref,
+          client: l.company,
+          mineral: l.mineral,
+          district: l.fieldOffice || l.district,
+          branch: l.branch || "SSM",
+          acreage: l.acreage || 100,
+          prod5Y: l.production5YTons,
+          isAuctioned: false
+        });
+      }
+    });
+
+    // 2. Cadastre Unified Ledger (FY 2026-27)
+    const cad = window.CADASTRE_LEASE_FINANCE?.unifiedLedger || [];
+    cad.forEach(c => {
+      if (c.ref && !leaseMap.has(c.ref)) {
+        const isAuc = c.type === "RoyaltyContract" || c.type === "BlockInstallment" || (c.mode || "").includes("Auction");
+        leaseMap.set(c.ref, {
+          ref: c.ref,
+          client: c.client,
+          mineral: c.mineral,
+          district: c.district,
+          branch: c.branch || "SSM",
+          acreage: 100,
+          prod5Y: 0,
+          isAuctioned: isAuc
+        });
+      }
+    });
+
+    // Sort alphabetically by district then ref
+    const sorted = Array.from(leaseMap.values()).sort((a, b) => {
+      const distA = a.district || "";
+      const distB = b.district || "";
+      if (distA !== distB) return distA.localeCompare(distB);
+      return (a.ref || "").localeCompare(b.ref || "");
+    });
+
+    sorted.forEach(l => {
+      const opt = document.createElement("option");
+      opt.value = l.ref;
+      const clientTrunc = (l.client || "Concessionaire").length > 36
+        ? (l.client || "Concessionaire").substring(0, 33) + "..."
+        : (l.client || "Concessionaire");
+      opt.textContent = `${l.ref} • ${clientTrunc} (${l.mineral}, ${l.district})`;
+      select.appendChild(opt);
+    });
+
+    if (currentVal && leaseMap.has(currentVal)) {
+      select.value = currentVal;
+    }
+  }
+
+  function bindCalculatorListeners() {
+    // 1. Lease Picker Dropdown
+    document.getElementById("calcLeasePicker")?.addEventListener("change", (e) => {
+      const val = e.target.value;
+      if (val) {
+        loadLeaseIntoCalculator(val);
+      }
+    });
+
+    // 2. Mineral Dropdown
+    document.getElementById("calcMineral")?.addEventListener("change", (e) => {
+      const mineralName = e.target.value;
+      state.calculator.mineral = mineralName;
+
+      const notified = (window.ROYALTY_NOTIFICATION_2024 || []).find(
+        m => m.mineral.toLowerCase() === mineralName.toLowerCase()
+      );
+      if (notified) {
+        state.calculator.royaltyRate = notified.rate;
+        state.calculator.deadRentRate = notified.defaultDeadRentHalfYearly;
+        const rateInp = document.getElementById("calcRoyaltyRate");
+        const drInp = document.getElementById("calcDeadRentRate");
+        if (rateInp) rateInp.value = notified.rate;
+        if (drInp) drInp.value = notified.defaultDeadRentHalfYearly;
+      }
+      recalculateRoyaltyAssessment(false);
+    });
+
+    // 3. Concession Attribute Inputs
+    document.getElementById("calcLeaseRef")?.addEventListener("input", (e) => {
+      state.calculator.leaseRef = e.target.value;
+    });
+
+    document.getElementById("calcTitleholder")?.addEventListener("input", (e) => {
+      state.calculator.titleholder = e.target.value;
+    });
+
+    document.getElementById("calcDistrict")?.addEventListener("change", (e) => {
+      state.calculator.district = e.target.value;
+    });
+
+    document.getElementById("calcBranch")?.addEventListener("change", (e) => {
+      state.calculator.branch = e.target.value;
+    });
+
+    document.getElementById("calcRoyaltyRate")?.addEventListener("input", (e) => {
+      state.calculator.royaltyRate = parseFloat(e.target.value) || 0;
+      recalculateRoyaltyAssessment(false);
+    });
+
+    document.getElementById("calcAcreage")?.addEventListener("input", (e) => {
+      state.calculator.acreage = parseFloat(e.target.value) || 0;
+      recalculateRoyaltyAssessment(false);
+    });
+
+    document.getElementById("calcDeadRentRate")?.addEventListener("input", (e) => {
+      state.calculator.deadRentRate = parseFloat(e.target.value) || 0;
+      recalculateRoyaltyAssessment(false);
+    });
+
+    // 4. Royalty Contract Auctioned Toggle
+    document.getElementById("calcIsAuctioned")?.addEventListener("change", (e) => {
+      state.calculator.isAuctioned = e.target.checked;
+      syncCalculatorInputsFromState();
+      recalculateRoyaltyAssessment(false);
+    });
+
+    // 5. Year Selector
+    document.getElementById("calcYear")?.addEventListener("change", (e) => {
+      state.calculator.year = parseInt(e.target.value, 10) || 2026;
+      syncCalculatorInputsFromState();
+      renderMonthlyInputs();
+      recalculateRoyaltyAssessment(false);
+    });
+
+    // 6. Period Buttons (1st Jan – 30th June vs 1st July – 31st Dec)
+    document.getElementById("btnPeriodJanJun")?.addEventListener("click", () => {
+      state.calculator.period = "JAN_JUN";
+      syncCalculatorInputsFromState();
+      renderMonthlyInputs();
+      recalculateRoyaltyAssessment(false);
+    });
+
+    document.getElementById("btnPeriodJulDec")?.addEventListener("click", () => {
+      state.calculator.period = "JUL_DEC";
+      syncCalculatorInputsFromState();
+      renderMonthlyInputs();
+      recalculateRoyaltyAssessment(false);
+    });
+
+    // 7. Assessment Date
+    document.getElementById("calcAssessmentDate")?.addEventListener("change", (e) => {
+      state.calculator.assessmentDate = e.target.value;
+      recalculateRoyaltyAssessment(false);
+    });
+
+    // 8. Monthly Production & Payment Inputs (Delegated on Table Body)
+    const monthlyTbody = document.getElementById("monthlyCalcTbody");
+    if (monthlyTbody) {
+      monthlyTbody.addEventListener("input", (e) => {
+        if (e.target.classList.contains("calc-prod-input")) {
+          const mIdx = parseInt(e.target.getAttribute("data-month-index"), 10);
+          const val = parseFloat(e.target.value) || 0;
+          state.calculator.monthlyProduction[mIdx] = val;
+          recalculateRoyaltyAssessment(false);
+        } else if (e.target.classList.contains("calc-paid-input")) {
+          const mIdx = parseInt(e.target.getAttribute("data-month-index"), 10);
+          const val = parseFloat(e.target.value) || 0;
+          state.calculator.monthlyPayments[mIdx] = val;
+          recalculateRoyaltyAssessment(false);
+        }
+      });
+    }
+
+    // 9. Sample & Reset Action Buttons
+    document.getElementById("btnCalcQuickSample")?.addEventListener("click", () => {
+      loadSampleLeaseIntoCalculator();
+    });
+
+    document.getElementById("btnCalcReset")?.addEventListener("click", () => {
+      resetCalculator();
+    });
+
+    // 10. Calculator Exports
+    document.getElementById("btnExportCalcExcel")?.addEventListener("click", () => {
+      exportCalculatorExcel();
+    });
+
+    document.getElementById("btnExportCalcCsv")?.addEventListener("click", () => {
+      exportCalculatorCsv();
+    });
+
+    document.getElementById("btnExportCalcPdf")?.addEventListener("click", () => {
+      exportCalculatorPdf();
+    });
+  }
+
+  function syncCalculatorInputsFromState() {
+    const c = state.calculator;
+    const setVal = (id, val) => {
+      const el = document.getElementById(id);
+      if (el) el.value = val !== undefined ? val : "";
+    };
+
+    setVal("calcLeaseRef", c.leaseRef);
+    setVal("calcTitleholder", c.titleholder);
+    setVal("calcDistrict", c.district);
+    setVal("calcBranch", c.branch);
+    setVal("calcMineral", c.mineral);
+    setVal("calcRoyaltyRate", c.royaltyRate);
+    setVal("calcAcreage", c.acreage);
+    setVal("calcDeadRentRate", c.deadRentRate);
+    setVal("calcYear", c.year);
+    setVal("calcAssessmentDate", c.assessmentDate);
+
+    const picker = document.getElementById("calcLeasePicker");
+    if (picker) picker.value = c.leaseRef || "";
+
+    const isAuc = document.getElementById("calcIsAuctioned");
+    if (isAuc) isAuc.checked = !!c.isAuctioned;
+
+    const aucBadge = document.getElementById("calcAuctionStatusBadge");
+    if (aucBadge) {
+      if (c.isAuctioned) {
+        aucBadge.className = "badge-status-pill badge-vacant";
+        aucBadge.style.background = "rgba(217, 119, 6, 0.15)";
+        aucBadge.style.color = "#D97706";
+        aucBadge.innerHTML = '<i class="fa-solid fa-gavel"></i> Auctioned Contract: Direct Royalty Exempt';
+      } else {
+        aucBadge.className = "badge-status-pill badge-granted";
+        aucBadge.style.background = "rgba(16, 185, 129, 0.12)";
+        aucBadge.style.color = "#059669";
+        aucBadge.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Non-Auctioned: Direct Royalty Applies';
+      }
+    }
+
+    const btnJan = document.getElementById("btnPeriodJanJun");
+    const btnJul = document.getElementById("btnPeriodJulDec");
+    if (c.period === "JAN_JUN") {
+      btnJan?.classList.add("active");
+      btnJan?.style.setProperty("background", "#D97706", "important");
+      btnJan?.style.setProperty("color", "#FFFFFF", "important");
+      btnJan?.style.setProperty("border-color", "#D97706", "important");
+
+      btnJul?.classList.remove("active");
+      btnJul?.style.removeProperty("background");
+      btnJul?.style.removeProperty("color");
+      btnJul?.style.removeProperty("border-color");
+    } else {
+      btnJul?.classList.add("active");
+      btnJul?.style.setProperty("background", "#D97706", "important");
+      btnJul?.style.setProperty("color", "#FFFFFF", "important");
+      btnJul?.style.setProperty("border-color", "#D97706", "important");
+
+      btnJan?.classList.remove("active");
+      btnJan?.style.removeProperty("background");
+      btnJan?.style.removeProperty("color");
+      btnJan?.style.removeProperty("border-color");
+    }
+
+    const cycleLabel = document.getElementById("calcCycleLabel");
+    if (cycleLabel) {
+      cycleLabel.textContent = c.period === "JAN_JUN"
+        ? `Cycle: 1st Jan – 30th June ${c.year}`
+        : `Cycle: 1st July – 31st Dec ${c.year}`;
+    }
+  }
+
+  function renderMonthlyInputs() {
+    const tbody = document.getElementById("monthlyCalcTbody");
+    if (!tbody) return;
+
+    const c = state.calculator;
+    const monthNames = c.period === "JAN_JUN"
+      ? ["January", "February", "March", "April", "May", "June"]
+      : ["July", "August", "September", "October", "November", "December"];
+
+    const monthIndices = c.period === "JAN_JUN" ? [0, 1, 2, 3, 4, 5] : [6, 7, 8, 9, 10, 11];
+
+    tbody.innerHTML = monthNames.map((mName, i) => {
+      const prodVal = c.monthlyProduction[i] !== undefined ? c.monthlyProduction[i] : 0;
+      const paidVal = c.monthlyPayments[i] !== undefined ? c.monthlyPayments[i] : 0;
+
+      const mIdx = monthIndices[i];
+      let dueYear = c.year;
+      let dueMonthIdx = mIdx + 1;
+      if (dueMonthIdx > 11) {
+        dueMonthIdx = 0;
+        dueYear = Number(c.year) + 1;
+      }
+      const dueFormatted = `14 ${["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][dueMonthIdx]} ${dueYear}`;
+
+      return `
+        <tr id="calcRow_${i}">
+          <td style="font-weight: 700; color: var(--text-main); font-size: 0.84rem;">
+            <i class="fa-solid fa-calendar-day" style="color: #D97706; margin-right: 5px;"></i> ${mName}
+          </td>
+          <td style="color: #64748B; font-size: 0.78rem; white-space: nowrap;">
+            <i class="fa-regular fa-clock" style="color: #10B981; margin-right: 4px;"></i><span class="calc-row-duedate">${dueFormatted}</span>
+          </td>
+          <td>
+            <input type="number" class="calc-table-input calc-prod-input" data-month-index="${i}" value="${prodVal}" min="0" step="any" placeholder="0">
+          </td>
+          <td style="font-size: 0.8rem; color: #64748B; text-align: right; white-space: nowrap;">
+            <span class="calc-row-rate">Rs. ${formatNumber(c.royaltyRate)}</span>
+          </td>
+          <td class="currency-bid-val calc-row-royalty" style="font-weight: 700; text-align: right; white-space: nowrap;">
+            PKR 0
+          </td>
+          <td>
+            <input type="number" class="calc-table-input calc-paid-input" data-month-index="${i}" value="${paidVal}" min="0" step="any" placeholder="0">
+          </td>
+          <td class="calc-row-arrears" style="font-weight: 700; text-align: right; color: #64748B; white-space: nowrap;">-</td>
+          <td class="calc-row-delay" style="text-align: center; font-size: 0.8rem; color: #64748B; white-space: nowrap;">-</td>
+          <td class="calc-row-rate-label" style="text-align: center; font-size: 0.76rem; color: #64748B; white-space: nowrap;">-</td>
+          <td class="calc-row-penalty" style="font-weight: 700; text-align: right; color: #64748B; white-space: nowrap;">-</td>
+          <td class="currency-grandtotal-val calc-row-total" style="font-weight: 800; text-align: right; color: #0F172A; white-space: nowrap;">PKR 0</td>
+        </tr>
+      `;
+    }).join("");
+  }
+
+  function recalculateRoyaltyAssessment(fullRerender = false) {
+    if (fullRerender) {
+      syncCalculatorInputsFromState();
+      renderMonthlyInputs();
+    }
+
+    const c = state.calculator;
+    const assessmentDateObj = new Date(c.assessmentDate || "2026-10-22");
+
+    const res = window.calculateRoyaltyAssessment({
+      leaseRef: c.leaseRef,
+      titleholder: c.titleholder,
+      mineralName: c.mineral,
+      district: c.district,
+      branch: c.branch,
+      acres: Number(c.acreage) || 0,
+      deadRentRateHalfYearly: Number(c.deadRentRate) || 0,
+      isAuctioned: !!c.isAuctioned,
+      period: c.period,
+      year: Number(c.year) || 2026,
+      monthlyProduction: c.monthlyProduction,
+      monthlyPayments: c.monthlyPayments,
+      assessmentDate: assessmentDateObj
+    });
+
+    // 1. Update Monthly Row cells without redrawing inputs
+    res.monthlyBreakdown.forEach((m, i) => {
+      const row = document.getElementById(`calcRow_${i}`);
+      if (!row) return;
+
+      const royCell = row.querySelector(".calc-row-royalty");
+      const arrCell = row.querySelector(".calc-row-arrears");
+      const delCell = row.querySelector(".calc-row-delay");
+      const rateLblCell = row.querySelector(".calc-row-rate-label");
+      const penCell = row.querySelector(".calc-row-penalty");
+      const totCell = row.querySelector(".calc-row-total");
+      const rateCell = row.querySelector(".calc-row-rate");
+
+      if (rateCell) rateCell.textContent = `Rs. ${formatNumber(res.royaltyRatePerTon)}`;
+
+      if (royCell) {
+        if (res.isAuctioned) {
+          royCell.innerHTML = '<span style="color: #64748B; font-style: italic; font-size: 0.75rem;">EXEMPT (Auctioned)</span>';
+        } else {
+          royCell.textContent = formatPKR(m.royaltyCalculated);
+        }
+      }
+
+      if (arrCell) {
+        arrCell.textContent = m.arrears > 0 ? formatPKR(m.arrears) : "-";
+        arrCell.style.color = m.arrears > 0 ? "#DC2626" : "#64748B";
+      }
+
+      if (delCell) {
+        delCell.textContent = m.monthsDelayed > 0 ? `${m.monthsDelayed} mo` : "-";
+        delCell.style.color = m.monthsDelayed > 0 ? "#DC2626" : "#64748B";
+        delCell.style.fontWeight = m.monthsDelayed > 0 ? "700" : "normal";
+      }
+
+      if (rateLblCell) {
+        if (m.monthsDelayed > 0) {
+          rateLblCell.innerHTML = c.year >= 2026
+            ? '<span class="badge-status-pill badge-vacant" style="font-size:0.68rem; padding:1px 6px;">10% / mo</span>'
+            : '<span class="badge-status-pill badge-process" style="font-size:0.68rem; padding:1px 6px;">1% / mo</span>';
+        } else {
+          rateLblCell.textContent = "-";
+        }
+      }
+
+      if (penCell) {
+        penCell.textContent = m.penaltyCalculated > 0 ? formatPKR(m.penaltyCalculated) : "-";
+        penCell.style.color = m.penaltyCalculated > 0 ? "#DC2626" : "#64748B";
+      }
+
+      if (totCell) {
+        totCell.textContent = formatPKR(m.totalMonthlyDemand);
+      }
+    });
+
+    // 2. Update Footer Summary Cells
+    const totalArrears = res.monthlyBreakdown.reduce((sum, m) => sum + m.arrears, 0);
+    const totalDemand = res.monthlyBreakdown.reduce((sum, m) => sum + m.totalMonthlyDemand, 0);
+
+    const elTotalProd = document.getElementById("calcTotalProdCell");
+    const elTotalRoy = document.getElementById("calcTotalRoyaltyCell");
+    const elTotalPaid = document.getElementById("calcTotalPaidCell");
+    const elTotalArr = document.getElementById("calcTotalArrearsCell");
+    const elTotalPen = document.getElementById("calcTotalPenaltyCell");
+    const elTotalDem = document.getElementById("calcTotalDemandCell");
+
+    if (elTotalProd) elTotalProd.textContent = `${formatNumber(res.totalProductionTons)} Tons`;
+    if (elTotalRoy) elTotalRoy.textContent = res.isAuctioned ? "EXEMPT" : formatPKR(res.totalRoyalty);
+    if (elTotalPaid) elTotalPaid.textContent = formatPKR(res.totalPaid);
+    if (elTotalArr) elTotalArr.textContent = formatPKR(totalArrears);
+    if (elTotalPen) elTotalPen.textContent = formatPKR(res.totalPenalty);
+    if (elTotalDem) elTotalDem.textContent = formatPKR(totalDemand);
+
+    // 3. Update Step 4 Comparison & Whichever is Higher
+    const boxRoy = document.getElementById("calcBoxRoyalty");
+    const boxRoySub = document.getElementById("calcBoxRoyaltySub");
+    const boxDead = document.getElementById("calcBoxDeadRent");
+    const boxDeadSub = document.getElementById("calcBoxDeadRentSub");
+
+    if (boxRoy) boxRoy.textContent = res.isAuctioned ? "EXEMPT" : formatPKR(res.totalRoyalty);
+    if (boxRoySub) boxRoySub.textContent = res.isAuctioned 
+      ? "Auction Contract Zone (Direct Royalty Waived)"
+      : `${formatNumber(res.totalProductionTons)} Tons @ Rs. ${formatNumber(res.royaltyRatePerTon)} / Ton`;
+
+    if (boxDead) boxDead.textContent = formatPKR(res.totalDeadRent);
+    if (boxDeadSub) boxDeadSub.textContent = `${formatNumber(res.acres)} Acres × Rs. ${formatNumber(res.deadRentRateHalfYearly)} / Acre`;
+
+    const boxRoyContainer = boxRoy?.closest("div");
+    const boxDeadContainer = boxDead?.closest("div");
+
+    if (boxRoyContainer && boxDeadContainer) {
+      boxRoyContainer.classList.remove("is-winner", "is-winner-amber");
+      boxDeadContainer.classList.remove("is-winner", "is-winner-amber");
+
+      // Remove any existing winner tag
+      boxRoyContainer.querySelector(".calc-winner-tag")?.remove();
+      boxDeadContainer.querySelector(".calc-winner-tag")?.remove();
+
+      if (res.isAuctioned) {
+        boxDeadContainer.classList.add("is-winner-amber");
+        const tag = document.createElement("span");
+        tag.className = "calc-winner-tag tag-amber";
+        tag.innerHTML = '<i class="fa-solid fa-crown"></i> AUCTION FLOOR';
+        boxDeadContainer.appendChild(tag);
+      } else if (res.totalRoyalty >= res.totalDeadRent) {
+        boxRoyContainer.classList.add("is-winner");
+        const tag = document.createElement("span");
+        tag.className = "calc-winner-tag";
+        tag.innerHTML = '<i class="fa-solid fa-crown"></i> HIGHER: ROYALTY';
+        boxRoyContainer.appendChild(tag);
+      } else {
+        boxDeadContainer.classList.add("is-winner-amber");
+        const tag = document.createElement("span");
+        tag.className = "calc-winner-tag tag-amber";
+        tag.innerHTML = '<i class="fa-solid fa-crown"></i> HIGHER: DEAD RENT';
+        boxDeadContainer.appendChild(tag);
+      }
+    }
+
+    // 4. Update Decision Card
+    const badge = document.getElementById("calcRulingBadge");
+    const diff = document.getElementById("calcRulingDiff");
+    const reason = document.getElementById("calcRulingReason");
+    const rulingAmt = document.getElementById("calcRulingAmount");
+    const decCard = document.getElementById("calcDecisionCard");
+
+    if (rulingAmt) rulingAmt.textContent = formatPKR(res.whicheverIsHigher.amount);
+    if (reason) reason.textContent = res.whicheverIsHigher.reason;
+
+    if (res.isAuctioned) {
+      if (badge) {
+        badge.className = "badge-status-pill badge-vacant";
+        badge.style.background = "#D97706";
+        badge.style.color = "#FFFFFF";
+        badge.innerHTML = '<i class="fa-solid fa-gavel"></i> AUCTION CONTRACT ZONE: DIRECT ROYALTY WAIVED';
+      }
+      if (diff) diff.textContent = "Governed by auction bid & dead rent floor";
+      if (decCard) {
+        decCard.style.background = "linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)";
+        decCard.style.borderColor = "#D97706";
+      }
+    } else if (res.totalRoyalty >= res.totalDeadRent) {
+      if (badge) {
+        badge.className = "badge-status-pill badge-granted";
+        badge.style.background = "#10B981";
+        badge.style.color = "#FFFFFF";
+        badge.innerHTML = '<i class="fa-solid fa-crown"></i> WHICHEVER IS HIGHER: ROYALTY APPLIES';
+      }
+      if (diff) diff.textContent = `Exceeds Statutory Dead Rent by ${formatPKR(res.whicheverIsHigher.difference)}`;
+      if (decCard) {
+        decCard.style.background = "linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)";
+        decCard.style.borderColor = "#10B981";
+      }
+    } else {
+      if (badge) {
+        badge.className = "badge-status-pill badge-vacant";
+        badge.style.background = "#D97706";
+        badge.style.color = "#FFFFFF";
+        badge.innerHTML = '<i class="fa-solid fa-crown"></i> WHICHEVER IS HIGHER: DEAD RENT APPLIES';
+      }
+      if (diff) diff.textContent = `Exceeds Reported Production Royalty by ${formatPKR(res.whicheverIsHigher.difference)}`;
+      if (decCard) {
+        decCard.style.background = "linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)";
+        decCard.style.borderColor = "#D97706";
+      }
+    }
+
+    // 5. Update Financial Demand & Recovery Ledger
+    const sumPrincipal = document.getElementById("calcSumPrincipal");
+    const sumPenalty = document.getElementById("calcSumPenalty");
+    const sumPaid = document.getElementById("calcSumPaid");
+    const sumNetBalance = document.getElementById("calcSumNetBalance");
+    const sumStatus = document.getElementById("calcSumBalanceStatus");
+
+    if (sumPrincipal) sumPrincipal.textContent = formatPKR(res.whicheverIsHigher.amount);
+    if (sumPenalty) sumPenalty.textContent = formatPKR(res.totalPenalty);
+    if (sumPaid) sumPaid.textContent = `- ${formatPKR(res.totalPaid)}`;
+    if (sumNetBalance) sumNetBalance.textContent = formatPKR(res.netBalancePayable);
+
+    if (sumStatus) {
+      if (res.netBalancePayable === 0) {
+        sumStatus.style.color = "#059669";
+        sumStatus.textContent = "Status: Paid in Full (Statutory Compliance Met)";
+      } else {
+        sumStatus.style.color = "#DC2626";
+        sumStatus.textContent = "Action: Issue Statutory Recovery Demand";
+      }
+    }
+
+    // Save latest assessment in memory
+    window.LATEST_ROYALTY_ASSESSMENT = res;
+    return res;
+  }
+
+  function renderRoyaltyCalculator() {
+    populateCalculatorMineralDropdown();
+    populateCalculatorLeasePicker();
+    syncCalculatorInputsFromState();
+    renderMonthlyInputs();
+    recalculateRoyaltyAssessment(false);
+  }
+
+  function loadLeaseIntoCalculator(leaseRef) {
+    if (!leaseRef) return;
+
+    let found = null;
+    const hist = window.HISTORICAL_LEASES_DATA?.leases || [];
+    found = hist.find(l => l.ref === leaseRef || l.ref.toLowerCase() === leaseRef.toLowerCase());
+
+    if (!found) {
+      const cad = window.CADASTRE_LEASE_FINANCE?.unifiedLedger || [];
+      const cItem = cad.find(c => c.ref === leaseRef || c.ref.toLowerCase() === leaseRef.toLowerCase());
+      if (cItem) {
+        found = {
+          ref: cItem.ref,
+          company: cItem.client,
+          district: cItem.district,
+          mineral: cItem.mineral,
+          branch: cItem.branch || "SSM",
+          acreage: 100,
+          isAuctioned: cItem.type === "RoyaltyContract" || cItem.type === "BlockInstallment" || (cItem.mode || "").includes("Auction")
+        };
+      }
+    }
+
+    if (!found) {
+      const concs = (window.DGM_DATA && window.DGM_DATA.cadastreConcessions) || [];
+      const cc = concs.find(c => c.no === leaseRef || String(c.id) === leaseRef);
+      if (cc) {
+        found = {
+          ref: cc.no || `CONC-${cc.id}`,
+          company: cc.client,
+          district: cc.dist,
+          mineral: cc.min,
+          branch: cc.branch || "SSM",
+          acreage: parseFloat(cc.area) || 100,
+          isAuctioned: (cc.type || "").toLowerCase().includes("auction")
+        };
+      }
+    }
+
+    if (found) {
+      state.calculator.leaseRef = found.ref || leaseRef;
+      state.calculator.titleholder = found.company || found.client || "Concessionaire";
+      state.calculator.district = found.district || found.fieldOffice || "Chakwal";
+      state.calculator.branch = found.branch || "SSM";
+      state.calculator.acreage = Number(found.acreage) || 100;
+      state.calculator.isAuctioned = !!found.isAuctioned;
+
+      const minLower = (found.mineral || "").toLowerCase().trim();
+      const matched = (window.ROYALTY_NOTIFICATION_2024 || []).find(m =>
+        m.mineral.toLowerCase() === minLower ||
+        minLower.includes(m.mineral.toLowerCase()) ||
+        m.mineral.toLowerCase().includes(minLower)
+      );
+
+      if (matched) {
+        state.calculator.mineral = matched.mineral;
+        state.calculator.royaltyRate = matched.rate;
+        state.calculator.deadRentRate = matched.defaultDeadRentHalfYearly;
+      } else {
+        state.calculator.mineral = found.mineral || "Coal";
+        state.calculator.royaltyRate = 500;
+        state.calculator.deadRentRate = 1000;
+      }
+
+      if (found.production5YTons && found.production5YTons > 0) {
+        const avg = Math.round(found.production5YTons / 60) || 200;
+        state.calculator.monthlyProduction = [
+          avg,
+          Math.round(avg * 1.15),
+          Math.round(avg * 0.9),
+          Math.round(avg * 1.25),
+          Math.round(avg * 1.05),
+          avg
+        ];
+      } else {
+        state.calculator.monthlyProduction = [350, 420, 280, 500, 310, 450];
+      }
+      state.calculator.monthlyPayments = [0, 0, 0, 0, 0, 0];
+
+      syncCalculatorInputsFromState();
+      renderMonthlyInputs();
+      recalculateRoyaltyAssessment(false);
+    }
+  }
+
+  function loadSampleLeaseIntoCalculator() {
+    state.calculator = {
+      leaseRef: "ML-CHK-Coal-000004",
+      titleholder: "Punjab Minerals & Mining Corp Ltd.",
+      district: "Chakwal",
+      branch: "SSM",
+      mineral: "Coal",
+      royaltyRate: 500,
+      acreage: 120,
+      deadRentRate: 1000,
+      isAuctioned: false,
+      year: 2026,
+      period: "JAN_JUN",
+      assessmentDate: "2026-10-22",
+      monthlyProduction: [450, 520, 380, 600, 410, 550],
+      monthlyPayments: [100000, 150000, 0, 200000, 0, 0]
+    };
+    syncCalculatorInputsFromState();
+    renderMonthlyInputs();
+    recalculateRoyaltyAssessment(false);
+  }
+
+  function resetCalculator() {
+    state.calculator = {
+      leaseRef: "",
+      titleholder: "",
+      district: "Chakwal",
+      branch: "SSM",
+      mineral: "Coal",
+      royaltyRate: 500,
+      acreage: 100,
+      deadRentRate: 1000,
+      isAuctioned: false,
+      year: 2026,
+      period: "JAN_JUN",
+      assessmentDate: "2026-10-22",
+      monthlyProduction: [0, 0, 0, 0, 0, 0],
+      monthlyPayments: [0, 0, 0, 0, 0, 0]
+    };
+    syncCalculatorInputsFromState();
+    renderMonthlyInputs();
+    recalculateRoyaltyAssessment(false);
+  }
+
+  // Global launcher called from lease table rows
+  window.launchRoyaltyCalculator = function(encodedRef) {
+    const leaseRef = decodeURIComponent(encodedRef);
+
+    const finNav = document.querySelector(`.sidebar-nav .nav-link[data-tab="tab-financials"]`);
+    if (finNav) finNav.click();
+
+    if (typeof window.switchFinancialSubview === "function") {
+      window.switchFinancialSubview("subview-royalty-calculator");
+    }
+
+    loadLeaseIntoCalculator(leaseRef);
+
+    setTimeout(() => {
+      const calcBanner = document.getElementById("subview-royalty-calculator");
+      if (calcBanner) calcBanner.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+  };
+
+  function exportCalculatorExcel() {
+    const res = window.LATEST_ROYALTY_ASSESSMENT || recalculateRoyaltyAssessment(false);
+    if (!res) return;
+
+    if (!window.XLSX) {
+      alert("SheetJS library is loading, please retry in a moment.");
+      return;
+    }
+
+    const aoa = [
+      ["GOVERNMENT OF THE PUNJAB - MINES & MINERALS DEPARTMENT"],
+      ["DIRECTORATE GENERAL OF MINES & MINERALS, LAHORE"],
+      ["STATUTORY ROYALTY & DEAD RENT ASSESSMENT AUDIT REPORT"],
+      ["Pursuant to Gazette Notification No. SOT(M&MD)5-3/2007(Vol-II) Dated 01-07-2024 & PMCR 2002 Rule 135"],
+      [],
+      ["CONCESSION PARAMETERS & AUDIT BASES"],
+      ["Concession Reference:", res.leaseRef, "Concessionaire / Titleholder:", res.titleholder],
+      ["Mining Branch:", res.branch, "District / Formation:", res.district],
+      ["Mineral Extracted:", res.mineral, "Notified Royalty Rate (July 2024):", `PKR ${res.royaltyRatePerTon} / Ton`],
+      ["Leased Acreage:", `${res.acres} Acres`, "Notified Dead Rent Rate:", `PKR ${res.deadRentRateHalfYearly} / Acre / 6-Mo`],
+      ["Royalty Auction Status:", res.isAuctioned ? "AUCTION CONTRACT (Direct Royalty Waived)" : "DIRECT PRODUCTION ROYALTY APPLIES", "Assessment Cycle:", `${res.period} ${res.year}`],
+      ["Statutory Penalty Basis:", "1% per month prior to 2026; 10% per month since 01/01/2026", "Audit Cutoff Date:", state.calculator.assessmentDate],
+      [],
+      ["6-MONTH MONTH-WISE PRODUCTION & PAYMENT LEDGER"],
+      ["Month", "Statutory Due Date", "Production (Metric Tons)", "Notified Rate (Rs/Ton)", "Royalty Assessed (PKR)", "Deposited Credits (PKR)", "Arrears Principal (PKR)", "Delay (Months)", "Statutory Penalty (PKR)", "Total Month Demand (PKR)"]
+    ];
+
+    res.monthlyBreakdown.forEach(m => {
+      aoa.push([
+        m.monthName,
+        m.dueDateFormatted,
+        m.productionTons,
+        m.royaltyRate,
+        m.royaltyCalculated,
+        m.paidAmount,
+        m.arrears,
+        m.monthsDelayed,
+        m.penaltyCalculated,
+        m.totalMonthlyDemand
+      ]);
+    });
+
+    aoa.push([
+      "6-MONTH CONSOLIDATED TOTAL",
+      "-",
+      res.totalProductionTons,
+      "-",
+      res.totalRoyalty,
+      res.totalPaid,
+      res.monthlyBreakdown.reduce((s, m) => s + m.arrears, 0),
+      "-",
+      res.totalPenalty,
+      res.monthlyBreakdown.reduce((s, m) => s + m.totalMonthlyDemand, 0)
+    ]);
+
+    aoa.push([]);
+    aoa.push(["STATUTORY COMPARATIVE DETERMINATION — 'WHICHEVER IS HIGHER' (PMCR 2002 RULE 135)"]);
+    aoa.push(["Total 6-Month Production Royalty:", res.totalRoyalty]);
+    aoa.push(["Total 6-Month Statutory Dead Rent (Acres × Rate):", res.totalDeadRent]);
+    aoa.push(["Statutory Ruling (Whichever is Higher):", res.whicheverIsHigher.type]);
+    aoa.push(["Statutory Principal Assessment:", res.whicheverIsHigher.amount]);
+    aoa.push(["Variance / Exceeds By:", res.whicheverIsHigher.difference]);
+    aoa.push(["Statutory Finding & Legal Grounds:", res.whicheverIsHigher.reason]);
+    aoa.push([]);
+    aoa.push(["ENFORCEABLE RECOVERY DEMAND SETTLEMENT"]);
+    aoa.push(["Statutory Base Principal:", res.whicheverIsHigher.amount]);
+    aoa.push(["Accrued Statutory Delay Penalty:", res.totalPenalty]);
+    aoa.push(["Less Total Verified Credits Paid:", res.totalPaid]);
+    aoa.push(["Net Enforceable Demand Payable:", res.netBalancePayable]);
+    aoa.push(["Statutory Compliance Status:", res.isFullyPaid ? "PAID IN FULL - COMPLIANT" : "OUTSTANDING ARREARS - ISSUE STATUTORY DEMAND"]);
+    aoa.push([]);
+    aoa.push(["Audit Timestamp:", new Date().toLocaleString(), "Directorate General of Mines & Minerals Punjab"]);
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Royalty_Assessment");
+    const safeRef = (res.leaseRef || "Assessment").replace(/[^a-zA-Z0-9_-]/g, "_");
+    XLSX.writeFile(wb, `DGMM_Royalty_Assessment_${safeRef}_${res.year}.xlsx`);
+  }
+
+  function exportCalculatorCsv() {
+    const res = window.LATEST_ROYALTY_ASSESSMENT || recalculateRoyaltyAssessment(false);
+    if (!res) return;
+
+    if (!window.XLSX) {
+      alert("SheetJS library is loading, please retry in a moment.");
+      return;
+    }
+
+    const aoa = [
+      ["GOVERNMENT OF THE PUNJAB - MINES & MINERALS DEPARTMENT"],
+      ["STATUTORY ROYALTY & DEAD RENT ASSESSMENT AUDIT REPORT"],
+      ["Pursuant to Gazette Notification No. SOT(M&MD)5-3/2007(Vol-II) Dated 01-07-2024 & PMCR 2002 Rule 135"],
+      [],
+      ["Concession Ref", res.leaseRef, "Concessionaire", res.titleholder],
+      ["Branch", res.branch, "District", res.district],
+      ["Mineral", res.mineral, "Royalty Rate (PKR/Ton)", res.royaltyRatePerTon],
+      ["Acreage", res.acres, "Dead Rent Rate (PKR/Acre)", res.deadRentRateHalfYearly],
+      ["Auctioned", res.isAuctioned ? "YES" : "NO", "Cycle", `${res.period} ${res.year}`],
+      [],
+      ["Month", "Due Date", "Production (Tons)", "Royalty Rate", "Royalty (PKR)", "Paid (PKR)", "Arrears (PKR)", "Delay (Mo)", "Penalty (PKR)", "Total Demand (PKR)"]
+    ];
+
+    res.monthlyBreakdown.forEach(m => {
+      aoa.push([
+        m.monthName,
+        m.dueDateFormatted,
+        m.productionTons,
+        m.royaltyRate,
+        m.royaltyCalculated,
+        m.paidAmount,
+        m.arrears,
+        m.monthsDelayed,
+        m.penaltyCalculated,
+        m.totalMonthlyDemand
+      ]);
+    });
+
+    aoa.push([
+      "TOTAL",
+      "-",
+      res.totalProductionTons,
+      "-",
+      res.totalRoyalty,
+      res.totalPaid,
+      res.monthlyBreakdown.reduce((s, m) => s + m.arrears, 0),
+      "-",
+      res.totalPenalty,
+      res.monthlyBreakdown.reduce((s, m) => s + m.totalMonthlyDemand, 0)
+    ]);
+
+    aoa.push([]);
+    aoa.push(["WHICHEVER IS HIGHER RULING", res.whicheverIsHigher.type]);
+    aoa.push(["Statutory Principal Demand (PKR)", res.whicheverIsHigher.amount]);
+    aoa.push(["Statutory Delay Penalty (PKR)", res.totalPenalty]);
+    aoa.push(["Less Total Paid (PKR)", res.totalPaid]);
+    aoa.push(["Net Balance Payable (PKR)", res.netBalancePayable]);
+
+    const ws = XLSX.utils.aoa_to_sheet(aoa);
+    const csv = XLSX.utils.sheet_to_csv(ws);
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    const safeRef = (res.leaseRef || "Assessment").replace(/[^a-zA-Z0-9_-]/g, "_");
+    link.download = `DGMM_Royalty_Assessment_${safeRef}_${res.year}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  function exportCalculatorPdf() {
+    const res = window.LATEST_ROYALTY_ASSESSMENT || recalculateRoyaltyAssessment(false);
+    if (!res) return;
+
+    const printWin = window.open("", "_blank");
+    if (!printWin) {
+      alert("Please allow popups to open the official assessment notice.");
+      return;
+    }
+
+    const rowsHtml = res.monthlyBreakdown.map(m => `
+      <tr>
+        <td style="font-weight: 600; text-align: left;">${m.monthName}</td>
+        <td style="text-align: center;">${m.dueDateFormatted}</td>
+        <td style="text-align: right;">${m.productionTons.toLocaleString()}</td>
+        <td style="text-align: right;">Rs. ${m.royaltyRate}</td>
+        <td style="text-align: right; font-weight: 600;">${res.isAuctioned ? 'EXEMPT' : 'Rs. ' + m.royaltyCalculated.toLocaleString()}</td>
+        <td style="text-align: right; color: #059669;">Rs. ${m.paidAmount.toLocaleString()}</td>
+        <td style="text-align: right; color: ${m.arrears > 0 ? '#DC2626' : '#64748B'};">${m.arrears > 0 ? 'Rs. ' + m.arrears.toLocaleString() : '-'}</td>
+        <td style="text-align: center;">${m.monthsDelayed > 0 ? m.monthsDelayed + ' mo' : '-'}</td>
+        <td style="text-align: right; color: #DC2626;">${m.penaltyCalculated > 0 ? 'Rs. ' + m.penaltyCalculated.toLocaleString() : '-'}</td>
+        <td style="text-align: right; font-weight: 700;">Rs. ${m.totalMonthlyDemand.toLocaleString()}</td>
+      </tr>
+    `).join("");
+
+    const noticeHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Official Statutory Royalty Assessment — ${res.leaseRef}</title>
+        <style>
+          body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 30px 40px; color: #0F172A; font-size: 13px; line-height: 1.5; }
+          .header-top { display: flex; align-items: center; justify-content: space-between; border-bottom: 2.5px solid #065F46; padding-bottom: 12px; margin-bottom: 20px; }
+          .gov-title { font-size: 18px; font-weight: 800; color: #065F46; text-transform: uppercase; letter-spacing: 0.05em; }
+          .gov-sub { font-size: 12px; color: #334155; font-weight: 600; }
+          .docket-no { font-size: 12px; font-weight: 700; color: #64748B; text-align: right; }
+          .section-heading { font-size: 12px; font-weight: 800; text-transform: uppercase; color: #065F46; margin: 15px 0 6px 0; letter-spacing: 0.04em; }
+          .params-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; }
+          .params-table td { padding: 6px 10px; border: 1px solid #CBD5E1; font-size: 12px; }
+          .params-table td.label { background: #F8FAFC; font-weight: 700; color: #475569; width: 22%; }
+          .ledger-table { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
+          .ledger-table th { background: #065F46; color: #FFFFFF; font-size: 11px; font-weight: 700; padding: 7px 6px; border: 1px solid #065F46; text-align: right; }
+          .ledger-table th:first-child, .ledger-table th:nth-child(2) { text-align: left; }
+          .ledger-table td { padding: 6px 6px; border: 1px solid #CBD5E1; font-size: 12px; }
+          .ruling-card { background: #ECFDF5; border: 2px solid #10B981; border-radius: 8px; padding: 12px 16px; margin-bottom: 18px; display: flex; justify-content: space-between; align-items: center; }
+          .ruling-card.amber { background: #FFFBEB; border-color: #D97706; }
+          .ruling-title { font-size: 14px; font-weight: 800; margin-bottom: 3px; }
+          .ruling-title.green { color: #065F46; }
+          .ruling-title.amber { color: #B45309; }
+          .ruling-text { font-size: 11.5px; color: #334155; max-width: 520px; line-height: 1.4; }
+          .summary-box-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 25px; }
+          .summary-box { background: #F8FAFC; border: 1.5px solid #CBD5E1; border-radius: 6px; padding: 10px; text-align: center; }
+          .summary-box-lbl { font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: #64748B; margin-bottom: 3px; }
+          .summary-box-val { font-size: 15px; font-weight: 800; color: #0F172A; }
+          .signatures { display: flex; justify-content: space-between; margin-top: 55px; }
+          .sig-line { width: 200px; border-top: 1.5px solid #0F172A; text-align: center; padding-top: 6px; font-size: 11px; font-weight: 700; }
+          @media print {
+            .no-print { display: none !important; }
+            body { margin: 15mm 20mm; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="no-print" style="margin-bottom: 15px; text-align: right;">
+          <button onclick="window.print()" style="padding: 9px 20px; background: #065F46; color: #FFFFFF; border: none; border-radius: 6px; font-weight: 700; cursor: pointer; font-size: 13px;">
+            🖨️ Print Statutory Notice / Save PDF
+          </button>
+        </div>
+
+        <div class="header-top">
+          <div>
+            <div class="gov-title">Government of the Punjab</div>
+            <div class="gov-sub">Directorate General of Mines &amp; Minerals • Lahore</div>
+            <div style="font-size: 11px; color: #64748B; margin-top: 3px;">
+              Statutory Concession Audit under PMCR 2002 &amp; Notification No. SOT(M&amp;MD)5-3/2007(Vol-II) Dated 01-07-2024
+            </div>
+          </div>
+          <div class="docket-no">
+            <div><strong>DOCKET REF:</strong> DGMM-AUD-${res.year}-${res.leaseRef.replace(/[^a-zA-Z0-9]/g, "")}</div>
+            <div><strong>AUDIT DATE:</strong> ${state.calculator.assessmentDate}</div>
+            <div><strong>CYCLE:</strong> ${res.period} ${res.year}</div>
+          </div>
+        </div>
+
+        <div class="section-heading">1. Concession Information &amp; Statutory Parameters</div>
+        <table class="params-table">
+          <tr>
+            <td class="label">Lease Reference:</td>
+            <td><strong>${res.leaseRef}</strong></td>
+            <td class="label">Concessionaire:</td>
+            <td><strong>${res.titleholder}</strong></td>
+          </tr>
+          <tr>
+            <td class="label">District / Formation:</td>
+            <td>${res.district}</td>
+            <td class="label">Mining Branch:</td>
+            <td>${res.branch === 'LSM' ? 'Large Scale Mining' : (res.branch === 'MM' ? 'Minor Minerals' : 'Small Scale Mining')}</td>
+          </tr>
+          <tr>
+            <td class="label">Notified Mineral:</td>
+            <td><strong>${res.mineral}</strong></td>
+            <td class="label">Notified Royalty Rate:</td>
+            <td><strong>Rs. ${res.royaltyRatePerTon}</strong> per Metric Ton</td>
+          </tr>
+          <tr>
+            <td class="label">Concession Acreage:</td>
+            <td><strong>${res.acres} Acres</strong></td>
+            <td class="label">Notified Dead Rent Rate:</td>
+            <td><strong>Rs. ${res.deadRentRateHalfYearly}</strong> / Acre / Half-Year</td>
+          </tr>
+          <tr>
+            <td class="label">Auctioned Rights:</td>
+            <td>${res.isAuctioned ? 'YES — Royalty Auction Contract (Direct Royalty Waived)' : 'NO — Direct Statutory Monthly Production Royalty'}</td>
+            <td class="label">Statutory Penalty Basis:</td>
+            <td>1% per month prior to 2026; 10% per month since 01/01/2026</td>
+          </tr>
+        </table>
+
+        <div class="section-heading">2. Month-Wise Production &amp; Statutory Assessment Ledger</div>
+        <table class="ledger-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th style="text-align: center;">Due Date</th>
+              <th>Production (Tons)</th>
+              <th>Rate (Rs/Ton)</th>
+              <th>Royalty Assessed</th>
+              <th>Deposits Credited</th>
+              <th>Arrears</th>
+              <th style="text-align: center;">Delay</th>
+              <th>Default Penalty</th>
+              <th>Total Month Demand</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHtml}
+          </tbody>
+          <tfoot>
+            <tr style="background: #F1F5F9; font-weight: 800; border-top: 2px solid #CBD5E1;">
+              <td colspan="2" style="text-align: left;">6-MONTH SUMMARY TOTAL</td>
+              <td style="text-align: right;">${res.totalProductionTons.toLocaleString()} Tons</td>
+              <td style="text-align: right;">-</td>
+              <td style="text-align: right;">${res.isAuctioned ? 'EXEMPT' : 'Rs. ' + res.totalRoyalty.toLocaleString()}</td>
+              <td style="text-align: right; color: #059669;">Rs. ${res.totalPaid.toLocaleString()}</td>
+              <td style="text-align: right; color: #DC2626;">Rs. ${res.monthlyBreakdown.reduce((s, m) => s + m.arrears, 0).toLocaleString()}</td>
+              <td style="text-align: center;">-</td>
+              <td style="text-align: right; color: #DC2626;">Rs. ${res.totalPenalty.toLocaleString()}</td>
+              <td style="text-align: right; color: #065F46;">Rs. ${res.monthlyBreakdown.reduce((s, m) => s + m.totalMonthlyDemand, 0).toLocaleString()}</td>
+            </tr>
+          </tfoot>
+        </table>
+
+        <div class="section-heading">3. Executive Statutory Determination — "Whichever is Higher" (PMCR 2002 Rule 135)</div>
+        <div class="ruling-card ${res.whicheverIsHigher.type.includes('Dead Rent') ? 'amber' : ''}">
+          <div>
+            <div class="ruling-title ${res.whicheverIsHigher.type.includes('Dead Rent') ? 'amber' : 'green'}">
+              ⚖️ STATUTORY RULING: ${res.whicheverIsHigher.type.toUpperCase()}
+            </div>
+            <div class="ruling-text">
+              ${res.whicheverIsHigher.reason}
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 10px; font-weight: 700; text-transform: uppercase; color: #475569;">Assessed Base Principal</div>
+            <div style="font-size: 20px; font-weight: 800; color: #0F172A;">Rs. ${res.whicheverIsHigher.amount.toLocaleString()}</div>
+          </div>
+        </div>
+
+        <div class="section-heading">4. Final Settlement &amp; Enforceable Recovery Demand</div>
+        <div class="summary-box-row">
+          <div class="summary-box">
+            <div class="summary-box-lbl">Statutory Principal</div>
+            <div class="summary-box-val">Rs. ${res.whicheverIsHigher.amount.toLocaleString()}</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-box-lbl">Accrued Default Penalty</div>
+            <div class="summary-box-val" style="color: #DC2626;">Rs. ${res.totalPenalty.toLocaleString()}</div>
+          </div>
+          <div class="summary-box">
+            <div class="summary-box-lbl">Less Verified Credits</div>
+            <div class="summary-box-val" style="color: #059669;">- Rs. ${res.totalPaid.toLocaleString()}</div>
+          </div>
+          <div class="summary-box" style="border: 2px solid #B45309; background: #FFFBEB;">
+            <div class="summary-box-lbl" style="color: #B45309;">Net Enforceable Demand</div>
+            <div class="summary-box-val" style="color: #B45309;">Rs. ${res.netBalancePayable.toLocaleString()}</div>
+          </div>
+        </div>
+
+        <div style="font-size: 11px; color: #64748B; border-left: 3px solid #065F46; padding-left: 10px; margin-top: 15px;">
+          <strong>Statutory Notice:</strong> Pursuant to Rule 135 and 141 of the Punjab Mining Concession Rules 2002, the Concessionaire is legally bound to deposit the net enforceable demand into the authorized Government Treasury Head of Account within 15 days of this assessment. Failure to comply shall attract proceedings under the Punjab Land Revenue Act 1967 as arrears of land revenue.
+        </div>
+
+        <div class="signatures">
+          <div class="sig-line">
+            Prepared &amp; Audited by<br>
+            <span style="font-size: 10px; color: #64748B; font-weight: normal;">Assistant Director (Royalty Audit)</span>
+          </div>
+          <div class="sig-line">
+            Verified &amp; Reconciled by<br>
+            <span style="font-size: 10px; color: #64748B; font-weight: normal;">Deputy Director (M&amp;M) / Field Officer</span>
+          </div>
+          <div class="sig-line">
+            Approved &amp; Issued by<br>
+            <span style="font-size: 10px; color: #64748B; font-weight: normal;">Director General, Mines &amp; Minerals, Punjab</span>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    printWin.document.open();
+    printWin.document.write(noticeHtml);
+    printWin.document.close();
+  }
+
 });

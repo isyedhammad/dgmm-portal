@@ -6636,3 +6636,167 @@ body.dark-mode .section-export-menu {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* =========================================================
+   STATUTORY ROYALTY & DEAD RENT CALCULATOR STYLES
+   Pursuant to Notification No. SOT(M&MD)5-3/2007(Vol-II)
+   ========================================================= */
+.calc-table-input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: var(--input-bg, #FFFFFF);
+  border: 1px solid var(--card-border, #CBD5E1);
+  border-radius: 6px;
+  text-align: right;
+  transition: all 0.15s ease;
+  font-variant-numeric: tabular-nums;
+}
+
+.calc-table-input:focus {
+  outline: none;
+  border-color: #D97706;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.18);
+  background: var(--card-bg, #FFFFFF);
+}
+
+.calc-period-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  border: 1.5px solid #CBD5E1;
+  background: var(--card-bg, #FFFFFF);
+  color: var(--text-main, #334155);
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.calc-period-btn:hover {
+  border-color: #D97706;
+  background: rgba(217, 119, 6, 0.04);
+}
+
+.calc-period-btn.active {
+  background: linear-gradient(135deg, #B45309 0%, #D97706 100%) !important;
+  color: #FFFFFF !important;
+  border-color: #B45309 !important;
+  box-shadow: 0 3px 10px rgba(217, 119, 6, 0.3) !important;
+}
+
+.calc-period-btn.active i {
+  color: #FFFFFF !important;
+}
+
+.calc-comp-box {
+  background: var(--canvas-bg, #F8FAFC);
+  padding: 1.25rem;
+  border-radius: 12px;
+  border: 2px solid var(--card-border, #E2E8F0);
+  text-align: center;
+  transition: all 0.25s ease;
+  position: relative;
+}
+
+.calc-comp-box.is-winner {
+  border-color: #10B981 !important;
+  background: linear-gradient(180deg, rgba(16, 185, 129, 0.08) 0%, rgba(16, 185, 129, 0.02) 100%) !important;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.15) !important;
+}
+
+.calc-comp-box.is-winner-amber {
+  border-color: #D97706 !important;
+  background: linear-gradient(180deg, rgba(217, 119, 6, 0.08) 0%, rgba(217, 119, 6, 0.02) 100%) !important;
+  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.15) !important;
+}
+
+.calc-winner-tag {
+  position: absolute;
+  top: -11px;
+  right: 14px;
+  background: #10B981;
+  color: #FFFFFF;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 2px 10px;
+  border-radius: 999px;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.35);
+}
+
+.calc-winner-tag.tag-amber {
+  background: #D97706;
+  box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35);
+}
+
+.btn-calc-row-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 6px;
+  border: 1px solid #D97706;
+  background: rgba(217, 119, 6, 0.08);
+  color: #B45309;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.btn-calc-row-action:hover {
+  background: #D97706;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+}
+
+body.dark-mode .calc-table-input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+body.dark-mode .calc-table-input:focus {
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+}
+
+body.dark-mode .calc-comp-box {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-mode .calc-comp-box.is-winner {
+  border-color: #10b981 !important;
+  background: rgba(16, 185, 129, 0.12) !important;
+}
+
+body.dark-mode .calc-comp-box.is-winner-amber {
+  border-color: #f59e0b !important;
+  background: rgba(245, 158, 11, 0.12) !important;
+}
+
+body.dark-mode .calc-period-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-mode .btn-calc-row-action {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  color: #fbbf24;
+}
+
+body.dark-mode .btn-calc-row-action:hover {
+  background: #f59e0b;
+  color: #0f172a;
+}

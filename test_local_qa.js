@@ -189,8 +189,97 @@ async function runLocalQA() {
     `);
     console.log('[PASS] Financial tables rendering:', finCheck);
 
-    // TEST 4: Page Console Error Check
-    console.log('\n--- TEST 4: Error & Exception Check ---');
+    // TEST 4: Statutory Royalty & Dead Rent Calculator Verification
+    console.log('\n--- TEST 4: Statutory Royalty & Dead Rent Calculator Verification ---');
+    const calcCheck = await evalInPage(`
+      (() => {
+        const results = {};
+
+        // 1. Switch to Revenue & Royalties tab
+        document.querySelector('.nav-link[data-tab="tab-financials"]')?.click();
+
+        // 2. Click Calculator Subview button
+        const calcBtn = document.getElementById('btnFinViewCalculator');
+        if (calcBtn) calcBtn.click();
+
+        const calcPaneActive = document.getElementById('subview-royalty-calculator')?.classList.contains('active');
+        results.calcPaneActive = calcPaneActive;
+
+        // 3. Check Minerals dropdown
+        const mineralSelect = document.getElementById('calcMineral');
+        results.mineralsCount = mineralSelect?.options.length || 0;
+
+        // 4. Check Lease picker options
+        const leasePicker = document.getElementById('calcLeasePicker');
+        results.leasesPickerCount = leasePicker?.options.length || 0;
+
+        // 5. Check 6-month table rows
+        const rowsCount = document.querySelectorAll('#monthlyCalcTbody tr').length;
+        results.monthlyRowsCount = rowsCount;
+
+        // 6. Test Royalty Higher scenario: Coal, 100 acres, 300 tons/mo => 1,800 tons * 500 = 900,000 > 100,000 dead rent
+        const acreageInput = document.getElementById('calcAcreage');
+        if (acreageInput) {
+          acreageInput.value = '100';
+          acreageInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+
+        const prodInputs = document.querySelectorAll('#monthlyCalcTbody .calc-prod-input');
+        prodInputs.forEach(inp => {
+          inp.value = '300';
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        results.whicheverRuling1 = document.getElementById('calcRulingBadge')?.innerText;
+        results.rulingAmount1 = document.getElementById('calcRulingAmount')?.innerText;
+        results.isWinnerRoyalty = document.getElementById('calcBoxRoyalty')?.closest('div')?.classList.contains('is-winner');
+
+        // 7. Test Dead Rent Higher scenario: 1000 acres, 10 tons/mo => 60 tons * 500 = 30,000 < 1,000,000 dead rent
+        if (acreageInput) {
+          acreageInput.value = '1000';
+          acreageInput.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        prodInputs.forEach(inp => {
+          inp.value = '10';
+          inp.dispatchEvent(new Event('input', { bubbles: true }));
+        });
+
+        results.whicheverRuling2 = document.getElementById('calcRulingBadge')?.innerText;
+        results.rulingAmount2 = document.getElementById('calcRulingAmount')?.innerText;
+        results.isWinnerDeadRent = document.getElementById('calcBoxDeadRent')?.closest('div')?.classList.contains('is-winner-amber');
+
+        // 8. Test Auctioned Concession toggle
+        const aucCheckbox = document.getElementById('calcIsAuctioned');
+        if (aucCheckbox) {
+          aucCheckbox.checked = true;
+          aucCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        results.whicheverRulingAuc = document.getElementById('calcRulingBadge')?.innerText;
+        results.royaltyBoxAuc = document.getElementById('calcBoxRoyalty')?.innerText;
+
+        // Uncheck auctioned for normal state
+        if (aucCheckbox) {
+          aucCheckbox.checked = false;
+          aucCheckbox.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+
+        // 9. Test row action "Calc" button from historical table
+        document.getElementById('btnFinViewHistorical')?.click();
+        const firstCalcBtn = document.querySelector('#historicalLeasesTableBody .btn-calc-row-action');
+        results.tableCalcBtnPresent = !!firstCalcBtn;
+        if (firstCalcBtn) {
+          firstCalcBtn.click();
+          results.launchedPaneActive = document.getElementById('subview-royalty-calculator')?.classList.contains('active');
+          results.loadedLeaseRef = document.getElementById('calcLeaseRef')?.value;
+        }
+
+        return results;
+      })()
+    `);
+    console.log('[PASS] Statutory Royalty & Dead Rent Calculator:', calcCheck);
+
+    // TEST 5: Page Console Error Check
+    console.log('\n--- TEST 5: Error & Exception Check ---');
     console.log('Total console errors caught:', pageErrors.length);
     if (pageErrors.length > 0) {
       console.error('FAIL: Page encountered errors:', pageErrors);
