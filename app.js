@@ -572,6 +572,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     function activateTab(tabId) {
+      window.activateTab = activateTab;
       navLinks.forEach(l => l.classList.remove("active"));
       const activeBtn = document.querySelector(`.nav-link[data-tab="${tabId}"]`);
       if (activeBtn) activeBtn.classList.add("active");
@@ -4701,176 +4702,315 @@ function renderInspections() {
   // REVAMPED EXPORT ACTIVE DATA CONTROLLER (EXCEL, CSV, PDF)
   // -------------------------------------------------------------
   function initExport() {
-    const exportWrap = document.getElementById("exportDropdownWrap");
-    const exportToggle = document.getElementById("btnExportToggle") || document.getElementById("btnExportActiveTable");
-    const optExcel = document.getElementById("exportOptExcel");
-    const optCsv = document.getElementById("exportOptCsv");
-    const optPdf = document.getElementById("exportOptPdf");
-
-    if (exportToggle && exportWrap) {
-      exportToggle.addEventListener("click", (e) => {
-        e.stopPropagation();
-        const isOpen = exportWrap.classList.contains("open");
-        exportWrap.classList.toggle("open", !isOpen);
-        exportToggle.setAttribute("aria-expanded", !isOpen ? "true" : "false");
-      });
-
-      document.addEventListener("click", (e) => {
-        if (!exportWrap.contains(e.target)) {
-          exportWrap.classList.remove("open");
-          exportToggle.setAttribute("aria-expanded", "false");
-        }
-      });
-
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "Escape" && exportWrap.classList.contains("open")) {
-          exportWrap.classList.remove("open");
-          exportToggle.setAttribute("aria-expanded", "false");
-        }
-      });
-    }
-
-    function getExportPayload() {
-      let exportData = [];
-      let baseFilename = `DGMM_${state.activeTab}_Export`;
-      let reportTitle = "Executive Data Register";
-      let categoryLabel = "General";
-
-      switch (state.activeTab) {
-        case "tab-lsm":
-          if (state.lsm.category === "leases") exportData = divisions.lsm.leases;
-          else if (state.lsm.category === "exploration") {
-            exportData = state.lsm.explFilter === "valid" ? divisions.lsm.explorationValid : divisions.lsm.explorationCancelled;
-          } else {
-            exportData = divisions.lsm.pendingApplications;
-          }
-          filename = `DGMM_LSM_${state.lsm.category}.xlsx`;
-          break;
-        case "tab-sma":
-          if (state.sma.category === "leases") {
-            exportData = state.sma.mode === "auction" ? divisions.sma.auctionConcessions : divisions.sma.applicationConcessions;
-          } else if (state.sma.category === "prospecting") {
-            exportData = [...divisions.sma.auctionConcessions.filter(c => c.type === "Prospecting License"), ...divisions.sma.applicationConcessions.filter(c => c.type === "Prospecting License")];
-          } else {
-            exportData = divisions.sma.districtMatrix;
-          }
-          filename = `DGMM_SMA_${state.sma.category}.xlsx`;
-          break;
-        case "tab-mm":
-          exportData = state.mm.subTab === "upcoming" ? divisions.mm.upcomingAuctions : divisions.mm.blocks;
-          filename = `DGMM_Minor_Minerals_${state.mm.subTab}.xlsx`;
-          break;
-        case "tab-financials":
-          exportData = db.majorProducers;
-          filename = "DGMM_Cement_Producers_Royalty_Audit.xlsx";
-          break;
-        case "tab-epa":
-          exportData = db.epaCases;
-          filename = "DGMM_EPA_Clearances.xlsx";
-          break;
-        case "tab-appeals":
-          exportData = db.appealsCases;
-          filename = "DGMM_Appeals_Docket.xlsx";
-          break;
-        case "tab-admin":
-          if (state.admin.subTab === "roster") {
-            exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.roster) || [];
-            filename = "DGMM_Staff_Nominal_Roll.xlsx";
-          } else if (state.admin.subTab === "cadre") {
-            exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.cadre) || [];
-            filename = "DGMM_Sanctioned_Cadre_Matrix.xlsx";
-          } else {
-            exportData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices) || [];
-            filename = "DGMM_Regional_Offices_Staffing.xlsx";
-          }
-          break;
-        case "tab-inspections":
-          exportData = getInspectionsData();
-          filename = "DGMM_Concession_Lease_Inspections.xlsx";
-          break;
-        default:
-          exportData = divisions.mm.blocks;
-          filename = "DGMM_Executive_Export.xlsx";
-      }
-
-      if (!exportData || exportData.length === 0) {
-        return null;
-      }
-
-      // Sanitize fields (remove internal underscore helper properties and raw references)
-      const cleanData = exportData.map(row => {
-        const copy = {};
-        Object.keys(row).forEach(k => {
-          if (!k.startsWith("_") && k !== "raw" && typeof row[k] !== "object") {
-            copy[k] = row[k];
-          }
-        });
-        return copy;
-      });
-
-      return { cleanData, baseFilename, reportTitle, categoryLabel };
-    }
-
-    // Export Option 1: Excel (.xlsx)
-    if (optExcel) {
-      optExcel.addEventListener("click", () => {
-        if (exportWrap) exportWrap.classList.remove("open");
-        const payload = getExportPayload();
-        if (!payload) {
-          alert("No data available to export in the current view.");
-          return;
-        }
-        if (!window.XLSX) {
-          alert("SheetJS library is loading. Please try again.");
-          return;
-        }
-        const ws = XLSX.utils.json_to_sheet(payload.cleanData);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, "DGM&M Official");
-        XLSX.writeFile(wb, `${payload.baseFilename}.xlsx`);
-      });
-    }
-
-    // Export Option 2: CSV (.csv)
-    if (optCsv) {
-      optCsv.addEventListener("click", () => {
-        if (exportWrap) exportWrap.classList.remove("open");
-        const payload = getExportPayload();
-        if (!payload) {
-          alert("No data available to export in the current view.");
-          return;
-        }
-        if (!window.XLSX) {
-          alert("Export engine is loading. Please try again.");
-          return;
-        }
-        const ws = XLSX.utils.json_to_sheet(payload.cleanData);
-        const csv = XLSX.utils.sheet_to_csv(ws);
-        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `${payload.baseFilename}.csv`;
-        link.click();
-      });
-    }
-
-    // Export Option 3: PDF Document (.pdf)
-    if (optPdf) {
-      optPdf.addEventListener("click", () => {
-        if (exportWrap) exportWrap.classList.remove("open");
-        const payload = getExportPayload();
-        if (!payload) {
-          alert("No data available to export in the current view.");
-          return;
-        }
-        exportToPDF(payload.cleanData, payload.reportTitle, payload.categoryLabel);
-      });
-    }
+    initSectionExports();
+    initClickableCards();
   }
 
   // -------------------------------------------------------------
-  // PRINTABLE EXECUTIVE PDF GENERATOR
+  // CLICKABLE GATEWAY CARDS CONTROLLER
   // -------------------------------------------------------------
+  function initClickableCards() {
+    document.addEventListener("click", (e) => {
+      const card = e.target.closest(".clickable-card[data-nav-target]");
+      if (card) {
+        if (e.target.closest(".section-export-wrap") || e.target.closest("select") || e.target.closest("input")) {
+          return;
+        }
+        const targetTab = card.getAttribute("data-nav-target");
+        if (targetTab) {
+          const navBtn = document.querySelector(`.sidebar-nav .nav-link[data-tab="${targetTab}"]`);
+          if (navBtn) {
+            navBtn.click();
+          } else if (typeof window.activateTab === "function") {
+            window.activateTab(targetTab);
+          }
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+      }
+    });
+  }
+
+  // -------------------------------------------------------------
+  // PER-SECTION INDIVIDUAL EXPORT ENGINE (TABLES, CHARTS, INFOGRAPHICS)
+  // -------------------------------------------------------------
+  function initSectionExports() {
+    // 1. Dropdown Toggle Listener
+    document.addEventListener("click", (e) => {
+      const btn = e.target.closest(".btn-section-export");
+      if (btn) {
+        e.stopPropagation();
+        const wrap = btn.closest(".section-export-wrap");
+        const wasOpen = wrap.classList.contains("open");
+        document.querySelectorAll(".section-export-wrap.open").forEach(w => w.classList.remove("open"));
+        if (!wasOpen) wrap.classList.add("open");
+        return;
+      }
+
+      const item = e.target.closest(".section-export-item");
+      if (item) {
+        e.stopPropagation();
+        const wrap = item.closest(".section-export-wrap");
+        const format = item.getAttribute("data-format");
+        if (wrap) {
+          wrap.classList.remove("open");
+          executeSectionExport(wrap, format);
+        }
+        return;
+      }
+
+      // Close on any outside click
+      document.querySelectorAll(".section-export-wrap.open").forEach(w => w.classList.remove("open"));
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        document.querySelectorAll(".section-export-wrap.open").forEach(w => w.classList.remove("open"));
+      }
+    });
+  }
+
+  function executeSectionExport(wrap, format) {
+    if (!wrap) return;
+
+    // A. Chart Export (Image PNG, Data Excel, Data CSV)
+    if (wrap.hasAttribute("data-export-chart")) {
+      const chartId = wrap.getAttribute("data-export-chart");
+      const title = wrap.getAttribute("data-export-title") || chartId;
+      exportChart(chartId, title, format);
+      return;
+    }
+
+    // B. Table & Infographic Dataset Export
+    const source = wrap.getAttribute("data-export-source");
+    const tableId = wrap.getAttribute("data-export-table");
+    const title = wrap.getAttribute("data-export-title") || (source || "DGMM_Dataset");
+
+    exportTableDataset(source, tableId, title, format);
+  }
+
+  // Chart Exporter
+  function exportChart(chartId, title, format) {
+    const canvas = document.getElementById(chartId);
+    if (!canvas) {
+      alert("Chart canvas not found.");
+      return;
+    }
+
+    if (format === "png") {
+      try {
+        const dataUrl = canvas.toDataURL("image/png");
+        const link = document.createElement("a");
+        link.href = dataUrl;
+        link.download = `${title}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch (err) {
+        console.error("Canvas export failed:", err);
+        alert("Unable to export chart image.");
+      }
+      return;
+    }
+
+    // For Excel or CSV of the chart's underlying datapoints:
+    let chartInstance = null;
+    if (window.overviewCharts && window.overviewCharts[chartId]) {
+      chartInstance = window.overviewCharts[chartId];
+    } else if (window.Chart) {
+      chartInstance = Chart.getChart(canvas);
+    }
+
+    let chartData = [];
+    if (chartInstance && chartInstance.data && chartInstance.data.labels) {
+      const labels = chartInstance.data.labels;
+      const datasets = chartInstance.data.datasets || [];
+
+      labels.forEach((lbl, idx) => {
+        const row = { "Category / Metric": lbl };
+        datasets.forEach(ds => {
+          row[ds.label || "Value"] = ds.data[idx];
+        });
+        chartData.push(row);
+      });
+    }
+
+    if (!chartData || chartData.length === 0) {
+      alert("Chart data points not available for extraction.");
+      return;
+    }
+
+    if (format === "excel") {
+      if (!window.XLSX) { alert("SheetJS loading, please retry."); return; }
+      const ws = XLSX.utils.json_to_sheet(chartData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Chart Data");
+      XLSX.writeFile(wb, `${title}.xlsx`);
+    } else if (format === "csv") {
+      if (!window.XLSX) { alert("SheetJS loading, please retry."); return; }
+      const ws = XLSX.utils.json_to_sheet(chartData);
+      const csv = XLSX.utils.sheet_to_csv(ws);
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${title}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  }
+
+  // Table & Infographic Dataset Exporter
+  function exportTableDataset(source, tableId, title, format) {
+    let rawData = [];
+    let reportCategory = "Provincial Mining Data";
+
+    switch (source) {
+      case "matrix": {
+        reportCategory = "Provincial Cadastre Matrix";
+        const table = document.getElementById(tableId || "tableCadastreMatrix");
+        if (table) {
+          const headers = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
+          const rows = [...table.querySelectorAll("tbody tr")];
+          rows.forEach(tr => {
+            const cells = [...tr.querySelectorAll("td")].map(td => td.textContent.trim());
+            const rowObj = {};
+            headers.forEach((h, i) => {
+              rowObj[h || `Col_${i}`] = cells[i] || "";
+            });
+            rawData.push(rowObj);
+          });
+        }
+        break;
+      }
+      case "lsm":
+        reportCategory = "Large Scale Mining";
+        if (state.lsm.category === "leases") rawData = divisions.lsm.leases;
+        else if (state.lsm.category === "exploration") {
+          rawData = state.lsm.explFilter === "valid" ? divisions.lsm.explorationValid : divisions.lsm.explorationCancelled;
+        } else {
+          rawData = divisions.lsm.pendingApplications;
+        }
+        break;
+      case "sma":
+        reportCategory = "Small Scale Mining";
+        if (state.sma.category === "leases") {
+          rawData = state.sma.mode === "auction" ? divisions.sma.auctionConcessions : (state.sma.mode === "application" ? divisions.sma.applicationConcessions : [...divisions.sma.applicationConcessions, ...divisions.sma.auctionConcessions]);
+        } else if (state.sma.category === "prospecting") {
+          rawData = [...divisions.sma.auctionConcessions.filter(c => c.type === "Prospecting License"), ...divisions.sma.applicationConcessions.filter(c => c.type === "Prospecting License")];
+        } else {
+          rawData = divisions.sma.districtMatrix;
+        }
+        break;
+      case "mm":
+        reportCategory = "Minor Minerals";
+        rawData = state.mm.subTab === "upcoming" ? divisions.mm.upcomingAuctions : divisions.mm.blocks;
+        break;
+      case "cadastre":
+        reportCategory = "Mining Cadastre System (MCIS)";
+        rawData = state.cadastre.mode === "concessions" 
+          ? (window.DGM_DATA && window.DGM_DATA.cadastreConcessions) || []
+          : (window.DGM_DATA && window.DGM_DATA.cadastreApplications) || [];
+        break;
+      case "financials-producers":
+        reportCategory = "Cement Manufacturers Royalty Audit";
+        rawData = db.majorProducers || [];
+        break;
+      case "financials-offices":
+        reportCategory = "Field Offices Financial Performance Matrix";
+        rawData = (db.fiveYearSummary && db.fiveYearSummary.fieldOffices) || [];
+        break;
+      case "financials-single-office": {
+        reportCategory = "Field Office Summary";
+        const sel = state.financials.office || "ALL";
+        const fOffices = (db.fiveYearSummary && db.fiveYearSummary.fieldOffices) || [];
+        if (sel === "ALL") {
+          rawData = fOffices;
+        } else {
+          const found = fOffices.find(f => f.office.toLowerCase().includes(sel.toLowerCase()));
+          rawData = found ? [found] : fOffices;
+        }
+        break;
+      }
+      case "epa":
+        reportCategory = "Environmental Clearances (EPA)";
+        rawData = db.epaCases || [];
+        break;
+      case "appeals":
+        reportCategory = "Appellate Authority Docket";
+        rawData = db.appealsCases || [];
+        break;
+      case "inspections":
+        reportCategory = "Field Inspections";
+        rawData = typeof getInspectionsData === "function" ? getInspectionsData() : [];
+        break;
+      case "admin-roster":
+        reportCategory = "Departmental Staff Roster";
+        rawData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.roster) || [];
+        break;
+      case "admin-cadre":
+        reportCategory = "Sanctioned Cadre Matrix";
+        rawData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.cadre) || [];
+        break;
+      case "admin-offices":
+        reportCategory = "Regional Offices Staffing";
+        rawData = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices) || [];
+        break;
+      default: {
+        // Fallback: scrape table from DOM
+        const table = document.getElementById(tableId);
+        if (table) {
+          const headers = [...table.querySelectorAll("thead th")].map(th => th.textContent.trim());
+          const rows = [...table.querySelectorAll("tbody tr")];
+          rows.forEach(tr => {
+            const cells = [...tr.querySelectorAll("td")].map(td => td.textContent.trim());
+            const rowObj = {};
+            headers.forEach((h, i) => {
+              rowObj[h || `Col_${i}`] = cells[i] || "";
+            });
+            rawData.push(rowObj);
+          });
+        }
+      }
+    }
+
+    if (!rawData || rawData.length === 0) {
+      alert("No data available to export from this section.");
+      return;
+    }
+
+    // Clean data (strip internal underscore properties & raw objects)
+    const cleanData = rawData.map(row => {
+      const copy = {};
+      Object.keys(row).forEach(k => {
+        if (!k.startsWith("_") && k !== "raw" && typeof row[k] !== "object") {
+          copy[k] = row[k];
+        }
+      });
+      return copy;
+    });
+
+    if (format === "excel") {
+      if (!window.XLSX) { alert("SheetJS loading, please retry."); return; }
+      const ws = XLSX.utils.json_to_sheet(cleanData);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "DGM&M Official");
+      XLSX.writeFile(wb, `${title}.xlsx`);
+    } else if (format === "csv") {
+      if (!window.XLSX) { alert("SheetJS loading, please retry."); return; }
+      const ws = XLSX.utils.json_to_sheet(cleanData);
+      const csv = XLSX.utils.sheet_to_csv(ws);
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = `${title}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } else if (format === "pdf") {
+      exportToPDF(cleanData, title.replace(/_/g, " "), reportCategory);
+    }
+  }
+
   function exportToPDF(data, title, categoryLabel) {
     if (!data || data.length === 0) {
       alert("No data available to generate PDF.");

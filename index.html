@@ -344,44 +344,6 @@
         </div>
 
         <!-- Revamped Export Dropdown (Excel, CSV, PDF) -->
-        <div class="export-dropdown-wrap" id="exportDropdownWrap">
-          <button class="btn-topbar-outline btn-export-toggle" id="btnExportToggle" aria-haspopup="true" aria-expanded="false" title="Export dataset as Excel, CSV, or PDF">
-            <i class="fa-solid fa-file-arrow-down" style="color: #10B981;"></i>
-            <span>Export</span>
-            <i class="fa-solid fa-chevron-down export-chevron"></i>
-          </button>
-          <div class="export-dropdown-menu" id="exportDropdownMenu" role="menu">
-            <div class="export-menu-header">
-              <i class="fa-solid fa-download"></i>
-              <span>Export Options</span>
-            </div>
-            <button class="export-menu-item" id="exportOptExcel" role="menuitem">
-              <div class="export-item-icon excel-icon"><i class="fa-solid fa-file-excel"></i></div>
-              <div class="export-item-details">
-                <span class="export-item-title">Excel Spreadsheet</span>
-                <span class="export-item-desc">Microsoft Excel Workbook (.xlsx)</span>
-              </div>
-              <span class="export-badge badge-xlsx">XLSX</span>
-            </button>
-            <button class="export-menu-item" id="exportOptCsv" role="menuitem">
-              <div class="export-item-icon csv-icon"><i class="fa-solid fa-file-csv"></i></div>
-              <div class="export-item-details">
-                <span class="export-item-title">CSV Document</span>
-                <span class="export-item-desc">Comma-Separated Values (.csv)</span>
-              </div>
-              <span class="export-badge badge-csv">CSV</span>
-            </button>
-            <button class="export-menu-item" id="exportOptPdf" role="menuitem">
-              <div class="export-item-icon pdf-icon"><i class="fa-solid fa-file-pdf"></i></div>
-              <div class="export-item-details">
-                <span class="export-item-title">PDF Document</span>
-                <span class="export-item-desc">Print-Ready Official Document (.pdf)</span>
-              </div>
-              <span class="export-badge badge-pdf">PDF</span>
-            </button>
-          </div>
-        </div>
-
         <!-- Elegant Sun & Moon Theme Toggle (No "Dark Mode" Text) -->
         <button class="theme-toggle-switch" id="themeToggleBtn" title="Switch Theme (Light / Dark)" aria-label="Toggle light and dark theme">
           <span class="theme-switch-track">
@@ -404,79 +366,155 @@
       <!-- =====================================================
            TAB 1: CLEAN SUMMARY DASHBOARD (NOT RUSHY)
            ===================================================== -->
+            <!-- =====================================================
+           TAB 1: EXECUTIVE OPERATIONS & REVENUE SUMMARY DASHBOARD
+           ===================================================== -->
       <div class="tab-pane active" id="tab-overview">
         
-        <!-- World-Class 4-Card Hero KPI Ribbon -->
-        <div class="kpi-grid">
+        <!-- Executive Operations Gateway Banner -->
+        <div class="rules-hero-banner" style="background: linear-gradient(135deg, #090E17 0%, #0F172A 60%, #04321C 100%); margin-bottom: 1.5rem; border-left: 4px solid #10B981;">
+          <div class="rules-hero-content">
+            <div class="rules-hero-tags">
+              <span class="rules-badge-law" style="background: rgba(16, 185, 129, 0.2); color: #34D399;"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals</span>
+              <span class="rules-badge-matrix" style="background: rgba(245, 158, 11, 0.2); color: #FBBF24;"><i class="fa-solid fa-satellite-dish"></i> MCIS Cadastre Synced</span>
+              <span class="badge-status-pill" style="background: rgba(255,255,255,0.1); color: #F1F5F9;"><i class="fa-solid fa-hand-pointer"></i> Interactive Gateway: Click Any Card to Navigate</span>
+            </div>
+            <h2 class="rules-hero-title" style="font-size: 1.55rem; margin: 0.35rem 0 0.25rem 0;">Directorate General of Mines &amp; Minerals — Executive Command Center</h2>
+            <p class="rules-hero-desc" style="max-width: 950px; font-size: 0.86rem; color: #94A3B8; margin: 0;">
+              Statewide executive intelligence reconciling 1,808 active mining titles, PKR 115.05 Billion statutory targets, PKR 33.78 Billion verified realization, 825 GIS MultiPolygon survey blocks, and 575 departmental personnel across Punjab.
+            </p>
+          </div>
+        </div>
+
+        <!-- 6-Card Clickable Hero KPI Ribbon -->
+        <div class="kpi-grid summary-hero-ribbon" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 1.75rem;">
           
-          <div class="kpi-card kpi-accent-emerald">
+          <!-- Card 1: Active Mining Concessions (1,808) -> tab-sma -->
+          <div class="kpi-card kpi-accent-emerald clickable-card" data-nav-target="tab-sma" title="Click to view Small Scale &amp; Provincial Mining Concessions">
             <div class="kpi-top-row">
-              <span class="kpi-label">Active Mining Titles</span>
+              <span class="kpi-label">Active Concessions</span>
               <div class="kpi-icon-wrap icon-emerald">
                 <i class="fa-solid fa-layer-group"></i>
               </div>
             </div>
             <div class="kpi-value">1,808</div>
             <div class="kpi-subtext">
-              <span class="kpi-badge kpi-badge-emerald"><i class="fa-solid fa-circle-check"></i> 84.8% Granted</span>
+              <span class="kpi-badge kpi-badge-emerald"><i class="fa-solid fa-circle-check"></i> 84.8% Active</span>
               <span>126 LSM • 1,172 SSM • 510 MM</span>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Explore Operations</span>
             </div>
           </div>
 
-          <div class="kpi-card kpi-accent-gold">
+          <!-- Card 2: Provincial Revenue & Royalties -> tab-financials -->
+          <div class="kpi-card kpi-accent-gold clickable-card" data-nav-target="tab-financials" title="Click to open Fiscal Intelligence Console">
             <div class="kpi-top-row">
-              <span class="kpi-label">Provincial Realization</span>
+              <span class="kpi-label">Provincial Revenue</span>
               <div class="kpi-icon-wrap icon-gold">
                 <i class="fa-solid fa-coins"></i>
               </div>
             </div>
-            <div class="kpi-value">Rs 33.66B</div>
+            <div class="kpi-value">PKR 33.78B</div>
             <div class="kpi-subtext">
-              <span class="kpi-badge kpi-badge-gold"><i class="fa-solid fa-arrow-trend-up"></i> +14.2% YoY</span>
-              <span>Avg Rs 6,180 / acre reserve yield</span>
+              <span class="kpi-badge kpi-badge-gold"><i class="fa-solid fa-scale-balanced"></i> 39.2% Due Collection</span>
+              <span>Target: Rs 115.05B • Sec: Rs 18.33B</span>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Open Fiscal Console</span>
             </div>
           </div>
 
-          <div class="kpi-card kpi-accent-blue">
+          <!-- Card 3: Spatial GIS Boundaries -> tab-map -->
+          <div class="kpi-card kpi-accent-blue clickable-card" data-nav-target="tab-map" title="Click to launch Interactive GIS Mineral Map">
             <div class="kpi-top-row">
-              <span class="kpi-label">Surveyed Concession Acreage</span>
+              <span class="kpi-label">GIS Spatial Map</span>
               <div class="kpi-icon-wrap icon-blue">
                 <i class="fa-solid fa-draw-polygon"></i>
               </div>
             </div>
-            <div class="kpi-value">5.45M ac</div>
+            <div class="kpi-value">825 Blocks</div>
             <div class="kpi-subtext">
-              <span class="kpi-badge kpi-badge-blue"><i class="fa-solid fa-map-location-dot"></i> 36 Districts</span>
-              <span>1,260 GIS Boundary Polygons Mapped</span>
+              <span class="kpi-badge kpi-badge-blue"><i class="fa-solid fa-map-location-dot"></i> 41 Upcoming Auctions</span>
+              <span>5.45M Acres • 1,260 Polygons</span>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Launch GIS Map</span>
             </div>
           </div>
 
-          <div class="kpi-card kpi-accent-purple">
+          <!-- Card 4: Official Cadastre Registry -> tab-cadastre -->
+          <div class="kpi-card kpi-accent-emerald clickable-card" data-nav-target="tab-cadastre" title="Click to search Official Mining Cadastre Registry">
             <div class="kpi-top-row">
-              <span class="kpi-label">Human Capital & Field Offices</span>
+              <span class="kpi-label">MCIS Cadastre</span>
+              <div class="kpi-icon-wrap icon-emerald" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;">
+                <i class="fa-solid fa-satellite-dish"></i>
+              </div>
+            </div>
+            <div class="kpi-value">1,676 Titles</div>
+            <div class="kpi-subtext">
+              <span class="kpi-badge kpi-badge-emerald" style="background: rgba(10, 98, 56, 0.12); color: #0A6238;"><i class="fa-solid fa-file-contract"></i> 994 Valid Titles</span>
+              <span>1,434 Active Applications</span>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Search Cadastre</span>
+            </div>
+          </div>
+
+          <!-- Card 5: Human Capital & Field Formations -> tab-admin -->
+          <div class="kpi-card kpi-accent-purple clickable-card" data-nav-target="tab-admin" title="Click to view Administration Organogram &amp; Staff Roster">
+            <div class="kpi-top-row">
+              <span class="kpi-label">Human Capital</span>
               <div class="kpi-icon-wrap icon-purple">
                 <i class="fa-solid fa-users-gear"></i>
               </div>
             </div>
             <div class="kpi-value">575 Staff</div>
             <div class="kpi-subtext">
-              <span class="kpi-badge kpi-badge-purple"><i class="fa-solid fa-shield-halved"></i> 100% Deployed</span>
-              <span>Headquarters & 16 Regional Field Formations</span>
+              <span class="kpi-badge kpi-badge-purple"><i class="fa-solid fa-building-user"></i> 401 Filled (69.7%)</span>
+              <span>Headquarters (224) &amp; 16 Field Offices</span>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>View Organogram</span>
+            </div>
+          </div>
+
+          <!-- Card 6: Field Monitoring & Inspections -> tab-inspections -->
+          <div class="kpi-card kpi-accent-blue clickable-card" data-nav-target="tab-inspections" title="Click to view Field Inspection &amp; Monitoring Logs">
+            <div class="kpi-top-row">
+              <span class="kpi-label">Field Monitoring</span>
+              <div class="kpi-icon-wrap icon-blue" style="background: rgba(14, 111, 116, 0.12); color: #0E6F74;">
+                <i class="fa-solid fa-clipboard-check"></i>
+              </div>
+            </div>
+            <div class="kpi-value">342 Audited</div>
+            <div class="kpi-subtext">
+              <span class="kpi-badge kpi-badge-blue" style="background: rgba(14, 111, 116, 0.12); color: #0E6F74;"><i class="fa-solid fa-shield-halved"></i> Field Audited</span>
+              <span>Demarcation &amp; Safety Tracking</span>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Inspect Field Logs</span>
             </div>
           </div>
 
         </div>
 
-        <!-- 3 Pillars: Large Scale Mining, Small Scale Mining, Minor Minerals -->
+        <!-- 3 Tri-Division Operational Command Cards (Clickable) -->
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
           
-          <!-- Pillar 1: Large Scale Mining -->
-          <div class="pillar-card pillar-lsm">
+          <!-- Pillar 1: Large Scale Mining -> tab-lsm -->
+          <div class="pillar-card pillar-lsm clickable-card" data-nav-target="tab-lsm" title="Click to explore Large Scale Mining Division">
             <div class="pillar-header">
               <span class="pillar-tag tag-lsm">Major Industry</span>
-              <button class="pillar-link-btn" onclick="document.getElementById('navBtnLsm').click()">
+              <span class="pillar-link-btn">
                 Explore Division <i class="fa-solid fa-arrow-right"></i>
-              </button>
+              </span>
             </div>
             <h3 class="pillar-title">Large Scale Mining</h3>
             <p class="pillar-desc">
@@ -492,47 +530,63 @@
                 <strong>51 Titles</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Pending Scrutiny</span>
-                <strong>156 Applications</strong>
+                <span>Due Collection Efficiency</span>
+                <strong style="color: #059669;">99.84% (PKR 7.30B)</strong>
               </div>
+              <div class="pillar-stat-row">
+                <span>Statutory Bank Guarantees</span>
+                <strong style="color: #D97706;">PKR 18.33 Billion</strong>
+              </div>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Open Large Scale Mining Portal</span>
             </div>
           </div>
 
-          <!-- Pillar 2: Small Scale Mining -->
-          <div class="pillar-card pillar-sma">
+          <!-- Pillar 2: Small Scale Mining -> tab-sma -->
+          <div class="pillar-card pillar-sma clickable-card" data-nav-target="tab-sma" title="Click to explore Small Scale Mining Division">
             <div class="pillar-header">
-              <span class="pillar-tag tag-sma">Titles & Concessions</span>
-              <button class="pillar-link-btn" onclick="document.getElementById('navBtnSma').click()">
+              <span class="pillar-tag tag-sma">Titles &amp; Concessions</span>
+              <span class="pillar-link-btn">
                 Explore Division <i class="fa-solid fa-arrow-right"></i>
-              </button>
+              </span>
             </div>
             <h3 class="pillar-title">Small Scale Mining</h3>
             <p class="pillar-desc">
-              Extensive mining titles and prospecting rights for Coal, Rock Salt, Limestone, Fireclay, Gypsum, Iron Ore, and Bauxite awarded via transparent e-auctions & applications.
+              Extensive mining titles and prospecting rights for Coal, Rock Salt, Limestone, Fireclay, Gypsum, Iron Ore, and Bauxite awarded via transparent e-auctions &amp; applications.
             </p>
             <div class="pillar-stats">
-              <div class="pillar-stat-row">
-                <span>Mining Leases (Auction)</span>
-                <strong>251 Leases</strong>
-              </div>
               <div class="pillar-stat-row">
                 <span>Mining Leases (Application)</span>
                 <strong>789 Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Prospecting Licenses</span>
+                <span>Mining Leases (Auction)</span>
+                <strong>251 Leases</strong>
+              </div>
+              <div class="pillar-stat-row">
+                <span>Prospecting Licenses (PL)</span>
                 <strong>132 Licenses</strong>
               </div>
+              <div class="pillar-stat-row">
+                <span>Royalty Contracts Realized</span>
+                <strong style="color: #059669;">PKR 5.06 Billion</strong>
+              </div>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Open Small Scale Mining Portal</span>
             </div>
           </div>
 
-          <!-- Pillar 3: Minor Minerals -->
-          <div class="pillar-card pillar-mm">
+          <!-- Pillar 3: Minor Minerals -> tab-mm -->
+          <div class="pillar-card pillar-mm clickable-card" data-nav-target="tab-mm" title="Click to explore Minor Minerals Division">
             <div class="pillar-header">
-              <span class="pillar-tag tag-mm">Quarries & Riverbeds</span>
-              <button class="pillar-link-btn" onclick="document.getElementById('navBtnMm').click()">
+              <span class="pillar-tag tag-mm">Quarries &amp; Riverbeds</span>
+              <span class="pillar-link-btn">
                 Explore Division <i class="fa-solid fa-arrow-right"></i>
-              </button>
+              </span>
             </div>
             <h3 class="pillar-title">Minor Minerals</h3>
             <p class="pillar-desc">
@@ -548,25 +602,115 @@
                 <strong>460 Leases</strong>
               </div>
               <div class="pillar-stat-row">
-                <span>Vacant for Auction</span>
-                <strong>50 in Pipeline</strong>
+                <span>Upcoming E-Auctions</span>
+                <strong style="color: #D97706;">41 Blocks (ERP Rs 1.48B)</strong>
               </div>
+              <div class="pillar-stat-row">
+                <span>Auction Installments Realized</span>
+                <strong style="color: #059669;">PKR 16.77 Billion</strong>
+              </div>
+            </div>
+            <div class="card-nav-cue">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i>
+              <span>Open Minor Minerals Portal</span>
             </div>
           </div>
 
         </div>
 
-        <!-- Graphical Executive Analytics Suite -->
+        <!-- 3 Specialized Departmental Oversight Cards (Clickable) -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; margin-bottom: 1.75rem;">
+          
+          <!-- EPA Clearances -> tab-epa -->
+          <div class="pillar-card clickable-card" data-nav-target="tab-epa" style="border-top: 4px solid #059669;" title="Click to view EPA Clearances">
+            <div class="pillar-header">
+              <span class="pillar-tag" style="background: rgba(5, 150, 105, 0.12); color: #059669;"><i class="fa-solid fa-seedling"></i> Environmental Facilitation</span>
+              <span class="pillar-link-btn">View EPA <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.35rem 0;">EPA Clearances &amp; IEE/EIA</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.45;">
+              Tracking 151 environmental approvals, mandatory NOC certifications, and public hearings across provincial lease formations.
+            </p>
+            <div class="pillar-stats">
+              <div class="pillar-stat-row"><span>Total Tracked Cases</span><strong>151 Clearances</strong></div>
+              <div class="pillar-stat-row"><span>Approved / Granted</span><strong style="color: #059669;">112 Cases</strong></div>
+              <div class="pillar-stat-row"><span>In Scrutiny / Review</span><strong style="color: #D97706;">24 Cases</strong></div>
+            </div>
+            <div class="card-nav-cue"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Open EPA Clearances Docket</span></div>
+          </div>
+
+          <!-- Appellate Authority -> tab-appeals -->
+          <div class="pillar-card clickable-card" data-nav-target="tab-appeals" style="border-top: 4px solid #8B5CF6;" title="Click to view Appellate Authority">
+            <div class="pillar-header">
+              <span class="pillar-tag" style="background: rgba(139, 92, 246, 0.12); color: #8B5CF6;"><i class="fa-solid fa-gavel"></i> Judicial Oversight</span>
+              <span class="pillar-link-btn">View Appeals <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.35rem 0;">Appellate Authority Dockets</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.45;">
+              Statutory appellate tracking before Secretary Mines &amp; Minerals, adjudication of de novo remand orders and revision petitions.
+            </p>
+            <div class="pillar-stats">
+              <div class="pillar-stat-row"><span>Active Docket</span><strong>187 Appeals</strong></div>
+              <div class="pillar-stat-row"><span>Adjudicated / Disposed</span><strong style="color: #059669;">134 Orders</strong></div>
+              <div class="pillar-stat-row"><span>Under Hearing / Scrutiny</span><strong style="color: #2563EB;">53 Cases</strong></div>
+            </div>
+            <div class="card-nav-cue"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Open Appellate Docket</span></div>
+          </div>
+
+          <!-- Relevant Rules & Acts -> tab-rules -->
+          <div class="pillar-card clickable-card" data-nav-target="tab-rules" style="border-top: 4px solid #D97706;" title="Click to inspect Mining Rules &amp; Acts">
+            <div class="pillar-header">
+              <span class="pillar-tag" style="background: rgba(217, 119, 6, 0.12); color: #D97706;"><i class="fa-solid fa-scale-balanced"></i> Statutory Code</span>
+              <span class="pillar-link-btn">View Rules <i class="fa-solid fa-arrow-right"></i></span>
+            </div>
+            <h4 style="font-size: 1.05rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.35rem 0;">M&amp;M Act 2025 &amp; PMCR 2002</h4>
+            <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 0.85rem; line-height: 1.45;">
+              Comprehensive regulatory repository: 238 Rules of PMCR 2002 and 134 Sections of Mines &amp; Minerals Act 2025 with comparative matrix.
+            </p>
+            <div class="pillar-stats">
+              <div class="pillar-stat-row"><span>PMCR 2002</span><strong>238 Rules &amp; Schedules</strong></div>
+              <div class="pillar-stat-row"><span>Mines &amp; Minerals Act 2025</span><strong>134 Enacted Sections</strong></div>
+              <div class="pillar-stat-row"><span>Comparative Matrix</span><strong style="color: #059669;">Cross-Referenced</strong></div>
+            </div>
+            <div class="card-nav-cue"><i class="fa-solid fa-arrow-up-right-from-square"></i><span>Open Legal Repository</span></div>
+          </div>
+
+        </div>
+
+        <!-- Graphical Executive Analytics Suite with Individual Section Exports -->
         <div class="overview-charts-grid">
           
           <!-- Chart 1: 5-Year Revenue & Royalty Trajectory -->
           <div class="chart-card">
             <div class="chart-card-header">
               <div>
-                <h4 class="chart-card-title"><i class="fa-solid fa-chart-line" style="color: #10B981;"></i> Provincial Revenue & Royalty Trajectory (5-Year)</h4>
+                <h4 class="chart-card-title"><i class="fa-solid fa-chart-line" style="color: #10B981;"></i> Provincial Revenue &amp; Royalty Trajectory (5-Year)</h4>
                 <span class="chart-card-subtitle">Annual Realization vs. Royalty Yield (FY 2021-22 to FY 2025-26 in PKR Million)</span>
               </div>
-              <span class="badge-status-pill badge-granted">+178% 5Y Growth</span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="badge-status-pill badge-granted">+178% 5Y Growth</span>
+                <div class="section-export-wrap" data-export-chart="overviewRevenueChart" data-export-title="Provincial_Revenue_Royalty_Trajectory">
+                  <button class="btn-section-export" type="button" title="Export this chart">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export</span>
+                    <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                  </button>
+                  <div class="section-export-menu" role="menu">
+                    <button class="section-export-item" data-format="png" type="button">
+                      <i class="fa-solid fa-file-image img-color"></i>
+                      <span>Download Image (.png)</span>
+                    </button>
+                    <button class="section-export-item" data-format="excel" type="button">
+                      <i class="fa-solid fa-file-excel excel-color"></i>
+                      <span>Export Data (.xlsx)</span>
+                    </button>
+                    <button class="section-export-item" data-format="csv" type="button">
+                      <i class="fa-solid fa-file-csv csv-color"></i>
+                      <span>Export Data (.csv)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="chart-canvas-wrapper">
               <canvas id="overviewRevenueChart"></canvas>
@@ -580,7 +724,30 @@
                 <h4 class="chart-card-title"><i class="fa-solid fa-chart-pie" style="color: #F59E0B;"></i> Provincial Concession Portfolio</h4>
                 <span class="chart-card-subtitle">Active Titles across LSM, SSM, and Minor Minerals</span>
               </div>
-              <span class="badge-status-pill badge-vacant">1,808 Concessions</span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="badge-status-pill badge-vacant">1,808 Concessions</span>
+                <div class="section-export-wrap" data-export-chart="overviewPortfolioChart" data-export-title="Provincial_Concession_Portfolio">
+                  <button class="btn-section-export" type="button" title="Export this chart">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export</span>
+                    <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                  </button>
+                  <div class="section-export-menu" role="menu">
+                    <button class="section-export-item" data-format="png" type="button">
+                      <i class="fa-solid fa-file-image img-color"></i>
+                      <span>Download Image (.png)</span>
+                    </button>
+                    <button class="section-export-item" data-format="excel" type="button">
+                      <i class="fa-solid fa-file-excel excel-color"></i>
+                      <span>Export Data (.xlsx)</span>
+                    </button>
+                    <button class="section-export-item" data-format="csv" type="button">
+                      <i class="fa-solid fa-file-csv csv-color"></i>
+                      <span>Export Data (.csv)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="chart-canvas-wrapper">
               <canvas id="overviewPortfolioChart"></canvas>
@@ -594,7 +761,30 @@
                 <h4 class="chart-card-title"><i class="fa-solid fa-cubes" style="color: #3B82F6;"></i> Major Mineral Extraction Capacity</h4>
                 <span class="chart-card-subtitle">Annual Provincial Output of Core Commodities (Million Metric Tons)</span>
               </div>
-              <span class="badge-status-pill badge-process">23.4M Tons 5Y Total</span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="badge-status-pill badge-process">23.4M Tons 5Y Total</span>
+                <div class="section-export-wrap" data-export-chart="overviewMineralOutputChart" data-export-title="Major_Mineral_Extraction_Output">
+                  <button class="btn-section-export" type="button" title="Export this chart">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export</span>
+                    <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                  </button>
+                  <div class="section-export-menu" role="menu">
+                    <button class="section-export-item" data-format="png" type="button">
+                      <i class="fa-solid fa-file-image img-color"></i>
+                      <span>Download Image (.png)</span>
+                    </button>
+                    <button class="section-export-item" data-format="excel" type="button">
+                      <i class="fa-solid fa-file-excel excel-color"></i>
+                      <span>Export Data (.xlsx)</span>
+                    </button>
+                    <button class="section-export-item" data-format="csv" type="button">
+                      <i class="fa-solid fa-file-csv csv-color"></i>
+                      <span>Export Data (.csv)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="chart-canvas-wrapper">
               <canvas id="overviewMineralOutputChart"></canvas>
@@ -608,7 +798,30 @@
                 <h4 class="chart-card-title"><i class="fa-solid fa-building-columns" style="color: #8B5CF6;"></i> Regional Revenue Leadership</h4>
                 <span class="chart-card-subtitle">5-Year Realization by Field Office Formation (PKR Million)</span>
               </div>
-              <span class="badge-status-pill" style="background: rgba(139, 92, 246, 0.15); color: #8B5CF6;">6 Divisions</span>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span class="badge-status-pill" style="background: rgba(139, 92, 246, 0.15); color: #8B5CF6;">6 Formations</span>
+                <div class="section-export-wrap" data-export-chart="overviewDistrictRevenueChart" data-export-title="Regional_Revenue_Leadership_Field_Offices">
+                  <button class="btn-section-export" type="button" title="Export this chart">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Export</span>
+                    <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                  </button>
+                  <div class="section-export-menu" role="menu">
+                    <button class="section-export-item" data-format="png" type="button">
+                      <i class="fa-solid fa-file-image img-color"></i>
+                      <span>Download Image (.png)</span>
+                    </button>
+                    <button class="section-export-item" data-format="excel" type="button">
+                      <i class="fa-solid fa-file-excel excel-color"></i>
+                      <span>Export Data (.xlsx)</span>
+                    </button>
+                    <button class="section-export-item" data-format="csv" type="button">
+                      <i class="fa-solid fa-file-csv csv-color"></i>
+                      <span>Export Data (.csv)</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="chart-canvas-wrapper">
               <canvas id="overviewDistrictRevenueChart"></canvas>
@@ -623,14 +836,35 @@
         <div class="card-section" style="margin-top: 1.5rem; margin-bottom: 1.5rem;">
           <div class="card-header-clean">
             <div class="card-title-group">
-              <h3 class="card-title"><i class="fa-solid fa-table-cells" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> District & Mineral Concession Cadastre Matrix</h3>
+              <h3 class="card-title"><i class="fa-solid fa-table-cells" style="color: var(--gold-dark); margin-right: 0.4rem;"></i> District &amp; Mineral Concession Cadastre Matrix</h3>
               <span class="card-subtitle">Official verified provincial reconciliation across Large Scale Mining, Small Scale Mining, and Minor Minerals</span>
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
-              <span class="badge-status-pill badge-granted">1,808 Total Concessions</span>
+              <span class="badge-status-pill badge-granted">1,808 Total</span>
               <span class="badge-status-pill badge-process">1,172 SSM</span>
               <span class="badge-status-pill badge-vacant">510 MM</span>
               <span class="badge-status-pill pill-lsm">126 LSM</span>
+              <div class="section-export-wrap" data-export-source="matrix" data-export-table="tableCadastreMatrix" data-export-title="Provincial_Concession_Cadastre_Matrix">
+                <button class="btn-section-export" type="button" title="Export this matrix table">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -691,9 +925,6 @@
 
       </div>
 
-      <!-- =====================================================
-           TAB 2: LARGE SCALE MINING (LSM)
-           ===================================================== -->
       <div class="tab-pane" id="tab-lsm">
         
         <div class="card-section">
@@ -704,6 +935,27 @@
             </div>
             
             <div class="card-controls">
+              <div class="section-export-wrap" data-export-source="lsm" data-export-table="tableLsm" data-export-title="Large_Scale_Mining_Directory">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
               <!-- Primary Sub-tabs: Mining Leases & Exploration Licenses -->
               <div class="sub-tabs-bar">
                 <button class="sub-tab-btn active" data-lsm-sub="leases" id="subBtnLsmLeases">Mining Leases (76)</button>
@@ -817,6 +1069,27 @@
             </div>
             
             <div class="card-controls">
+              <div class="section-export-wrap" data-export-source="sma" data-export-table="tableSma" data-export-title="Small_Scale_Mining_Directory">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
               <!-- Primary Sub-tabs: Mining Leases & Prospecting Licenses -->
               <div class="sub-tabs-bar primary-segment-bar">
                 <button class="sub-tab-btn active" data-sma-category="leases" id="subBtnSmaLeases">
@@ -950,7 +1223,28 @@
             </div>
             
             <div class="card-controls">
-              <div class="sub-tabs-bar">
+              <div class="section-export-wrap" data-export-source="mm" data-export-table="tableMm" data-export-title="Minor_Minerals_Directory">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            <div class="sub-tabs-bar">
                 <button class="sub-tab-btn active" data-mm-sub="all" id="subBtnMmAll">All Leases & Blocks (510)</button>
                 <button class="sub-tab-btn" data-mm-sub="granted" id="subBtnMmGranted">Granted Leases (460)</button>
                 <button class="sub-tab-btn" data-mm-sub="vacant" id="subBtnMmVacant">Vacant for Auction (50)</button>
@@ -1427,6 +1721,28 @@
               <h3 class="card-title"><i class="fa-solid fa-building-user" style="color: #10B981; margin-right: 0.4rem;"></i> Individual Field Office Financial Summary</h3>
               <span class="card-subtitle">Select any individual regional field formation to inspect 5-year royalty yield, production tonnage, active leases, and revenue share</span>
             </div>
+            
+              <div class="section-export-wrap" data-export-source="financials-single-office" data-export-table="" data-export-title="Field_Office_Financial_Summary">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
             <div class="sub-tabs-bar" id="officeSummarySelectorBar">
               <button class="sub-tab-btn active" data-office-sel="ALL">All Formations (1,004)</button>
               <button class="sub-tab-btn" data-office-sel="Attock">Attock (17)</button>
@@ -1474,6 +1790,28 @@
               <h3 class="card-title">Major Cement Manufacturers Royalty Audit</h3>
               <span class="card-subtitle">5-Year cumulative receipts and quarry acreage across major LSM operators</span>
             </div>
+            
+              <div class="section-export-wrap" data-export-source="financials-producers" data-export-table="tableProducers" data-export-title="Major_Cement_Manufacturers_Royalty_Audit">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
           </div>
           <div class="table-scroll-container">
             <table class="table-clean" id="tableProducers">
@@ -1500,6 +1838,28 @@
               <h3 class="card-title">Field Offices Five-Year Financial Performance Matrix</h3>
               <span class="card-subtitle">Detailed financial rollups across Attock, Chakwal, D.G. Khan, Jhelum, Khushab, and Mianwali</span>
             </div>
+            
+              <div class="section-export-wrap" data-export-source="financials-offices" data-export-table="tableFieldOffices" data-export-title="Field_Offices_Financial_Matrix">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
           </div>
           <div class="table-scroll-container">
             <table class="table-clean" id="tableFieldOffices">
@@ -1531,7 +1891,28 @@
             <div class="card-title-group">
               <h3 class="card-title">EPA Environmental Clearances</h3>
               <span class="card-subtitle">Tracking environmental NOC status, e-Biz portal filings, and DAEC meeting bottlenecks across 151 concession cases</span>
-            </div>
+            
+            <div class="section-export-wrap" data-export-source="epa" data-export-table="" data-export-title="EPA_Clearances_Docket">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div></div>
           </div>
 
           <!-- Smart Filter Panel for EPA -->
@@ -1629,7 +2010,28 @@
             <div class="card-title-group">
               <h3 class="card-title">Appellate Authority Pendency Tracker</h3>
               <span class="card-subtitle">187 listed legal appeals before the Director General Lahore under Rule 207 of Punjab Mining Concession Rules 2002</span>
-            </div>
+            
+            <div class="section-export-wrap" data-export-source="appeals" data-export-table="" data-export-title="Appellate_Authority_Docket">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div></div>
           </div>
 
           <!-- Smart Filter Panel for Appeals -->
@@ -1794,7 +2196,28 @@
               <span class="card-subtitle" id="inspectionsSubtitle">Inspection logs, dates, inspecting officers, lease boundaries, and factual observations</span>
             </div>
             <div class="card-controls">
-              <div class="sub-tabs-bar" id="inspectionsWingTabs">
+              <div class="section-export-wrap" data-export-source="inspections" data-export-table="tableInspections" data-export-title="Field_Inspection_Monitoring_Docket">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            <div class="sub-tabs-bar" id="inspectionsWingTabs">
                 <button class="sub-tab-btn active" data-insp-wing="ALL"><i class="fa-solid fa-layer-group"></i> All Leases</button>
                 <button class="sub-tab-btn" data-insp-wing="MM"><i class="fa-solid fa-truck-ramp-box"></i> Minor Minerals (MM)</button>
                 <button class="sub-tab-btn" data-insp-wing="SMA"><i class="fa-solid fa-trowel-bricks"></i> Small Scale (SMA)</button>
@@ -1962,6 +2385,34 @@
 
         <!-- Cadastre Data Table -->
         <div class="card-section">
+          <div class="card-header-clean">
+            <div class="card-title-group">
+              <h3 class="card-title"><i class="fa-solid fa-table-list" style="color: #0A6238; margin-right: 0.4rem;"></i> Official Mining Cadastre Database Registry</h3>
+              <span class="card-subtitle">Complete searchable records of all concession titles and applications from MCIS</span>
+            </div>
+            
+              <div class="section-export-wrap" data-export-source="cadastre" data-export-table="tableCadastre" data-export-title="Mining_Cadastre_Registry">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+          </div>
           <div class="table-scroll-container">
             <table class="table-clean" id="tableCadastre">
               <thead id="cadastreTableHead">
@@ -2138,6 +2589,30 @@
 
           <!-- VIEW 1: Staff Directory & Nominal Roll Table -->
           <div id="adminRosterView">
+            <div class="card-header-clean" style="padding: 0.75rem 1.25rem 0.5rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+              <h4 class="card-title" style="font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-address-book" style="color: #2563EB; margin-right: 6px;"></i> Staff Directory &amp; Nominal Roll</h4>
+              <div class="section-export-wrap" data-export-source="admin-roster" data-export-table="" data-export-title="Staff_Nominal_Roll">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
             <div class="table-scroll-container">
               <table class="table-clean">
                 <thead>
@@ -2167,6 +2642,30 @@
 
           <!-- VIEW 2: Sanctioned Cadre Matrix Table -->
           <div id="adminCadreView" style="display: none;">
+            <div class="card-header-clean" style="padding: 0.75rem 1.25rem 0.5rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+              <h4 class="card-title" style="font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-sitemap" style="color: #10B981; margin-right: 6px;"></i> Sanctioned Cadre vs Working Strength</h4>
+              <div class="section-export-wrap" data-export-source="admin-cadre" data-export-table="" data-export-title="Sanctioned_Cadre_Matrix">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
             <div class="table-scroll-container">
               <table class="table-clean">
                 <thead>
@@ -2190,6 +2689,30 @@
 
           <!-- VIEW 3: Regional Offices Matrix Table -->
           <div id="adminOfficesView" style="display: none;">
+            <div class="card-header-clean" style="padding: 0.75rem 1.25rem 0.5rem 1.25rem; display: flex; justify-content: space-between; align-items: center;">
+              <h4 class="card-title" style="font-size: 0.95rem; margin: 0;"><i class="fa-solid fa-building" style="color: #8B5CF6; margin-right: 6px;"></i> Regional Formations Staffing Matrix</h4>
+              <div class="section-export-wrap" data-export-source="admin-offices" data-export-table="" data-export-title="Regional_Offices_Staffing">
+                <button class="btn-section-export" type="button" title="Export this dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
             <div class="table-scroll-container">
               <table class="table-clean">
                 <thead>

@@ -5687,3 +5687,214 @@ body.dark-mode .branch-stat-row.guarantee-row {
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+
+/* ===================================================================
+   REVAMPED SUMMARY DASHBOARD & SECTION EXPORT DESIGN SYSTEM
+   =================================================================== */
+
+/* Clickable Dashboard Gateway Cards */
+.clickable-card {
+  cursor: pointer !important;
+  user-select: none;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
+  position: relative;
+}
+
+.clickable-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1) !important;
+  border-color: #10B981 !important;
+}
+
+.clickable-card:active {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08) !important;
+}
+
+.card-nav-cue {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-top: 0.65rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--card-border);
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.clickable-card:hover .card-nav-cue {
+  color: #10B981;
+  gap: 8px;
+}
+
+.card-nav-cue i {
+  font-size: 0.68rem;
+  transition: transform 0.2s ease;
+}
+
+.clickable-card:hover .card-nav-cue i {
+  transform: translateX(2px) translateY(-1px);
+}
+
+/* Pillar Cards Clickable Treatment */
+.pillar-card.clickable-card {
+  cursor: pointer;
+}
+
+.pillar-card.clickable-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.1);
+}
+
+.pillar-card.pillar-lsm.clickable-card:hover {
+  border-color: var(--lsm-color) !important;
+}
+.pillar-card.pillar-sma.clickable-card:hover {
+  border-color: var(--sma-color) !important;
+}
+.pillar-card.pillar-mm.clickable-card:hover {
+  border-color: var(--mm-color) !important;
+}
+
+.pillar-card.pillar-lsm:hover .card-nav-cue { color: var(--lsm-color); }
+.pillar-card.pillar-sma:hover .card-nav-cue { color: var(--sma-color); }
+.pillar-card.pillar-mm:hover .card-nav-cue { color: var(--mm-color); }
+
+/* Section Export Dropdown Widget (Placed on every Table / Chart / Infographic) */
+.section-export-wrap {
+  position: relative;
+  display: inline-block;
+  margin-left: auto;
+}
+
+.btn-section-export {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.85rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  background: var(--card-bg);
+  color: var(--text-sub);
+  border: 1px solid var(--card-border);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.btn-section-export i.fa-download {
+  color: #10B981;
+}
+
+.btn-section-export:hover {
+  background: var(--canvas-bg);
+  border-color: #10B981;
+  color: var(--text-main);
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.18);
+}
+
+.export-mini-chevron {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  transition: transform 0.2s ease;
+}
+
+.section-export-wrap.open .export-mini-chevron {
+  transform: rotate(180deg);
+}
+
+.section-export-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 200px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+  padding: 0.35rem 0;
+  z-index: 1050;
+  display: none;
+  animation: fadeInDown 0.15s ease-out;
+}
+
+.section-export-wrap.open .section-export-menu {
+  display: block;
+}
+
+.section-export-item {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.5rem 0.95rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-main);
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.section-export-item:hover {
+  background: var(--canvas-bg);
+  color: #10B981;
+}
+
+.section-export-item i.excel-color { color: #107C41; }
+.section-export-item i.csv-color { color: #0284C7; }
+.section-export-item i.pdf-color { color: #DC2626; }
+.section-export-item i.img-color { color: #8B5CF6; }
+
+/* Responsive Grid for 6-card ribbon */
+@media (max-width: 1500px) {
+  .kpi-grid.summary-hero-ribbon {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .kpi-grid.summary-hero-ribbon {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .kpi-grid.summary-hero-ribbon {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Dark mode adjustments */
+body.dark-mode .btn-section-export {
+  background: #1e293b;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+body.dark-mode .btn-section-export:hover {
+  background: #334155;
+  border-color: #34d399;
+}
+
+body.dark-mode .section-export-menu {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+}
+
+body.dark-mode .section-export-item {
+  color: #f1f5f9;
+}
+
+body.dark-mode .section-export-item:hover {
+  background: #334155;
+  color: #34d399;
+}
