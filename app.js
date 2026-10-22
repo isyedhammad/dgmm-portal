@@ -427,7 +427,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Financials
     financials: {
       subview: "subview-cadastre-fy27",
-      office: "ALL"
+      office: "ALL",
+      targetChartMode: "standard"
     },
 
     // Statutory Royalty & Dead Rent Calculator (Pursuant to Notification No. SOT(M&MD)5-3/2007(Vol-II))
@@ -546,6 +547,8 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(renderOverviewCharts, 50);
       } else if (state.activeTab === "tab-admin" && typeof renderAdminTab === "function") {
         setTimeout(renderAdminTab, 50);
+      } else if (state.activeTab === "tab-financials" && state.financials?.subview === "subview-yearwise-target-achieved" && typeof renderYearWiseTargetAchieved === "function") {
+        setTimeout(renderYearWiseTargetAchieved, 50);
       }
     }
     apply(saved);
@@ -3787,7 +3790,9 @@ document.addEventListener("DOMContentLoaded", () => {
     renderOfficeSummaryCard();
     renderCadastreLeaseFinance();
     renderHistoricalLeases();
-    if (state.financials && state.financials.subview === "subview-royalty-calculator") {
+    if (state.financials && state.financials.subview === "subview-yearwise-target-achieved") {
+      renderYearWiseTargetAchieved();
+    } else if (state.financials && state.financials.subview === "subview-royalty-calculator") {
       renderRoyaltyCalculator();
     }
   }
@@ -4212,6 +4217,168 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnPrev) btnPrev.disabled = state.histLeases.page <= 1;
     if (btnNext) btnNext.disabled = end >= total;
   }
+
+  // -------------------------------------------------------------
+  // MULTI-YEAR STATUTORY TARGET VS. ACHIEVED RECONCILIATION
+  // (FY 2021-22 TO FY 2026-27 CADASTRE)
+  // -------------------------------------------------------------
+  let yearlyTargetAchievedChart = null;
+
+  function renderYearWiseTargetAchieved() {
+    const canvas = document.getElementById("chartYearlyTargetAchieved");
+    if (!canvas) return;
+
+    if (yearlyTargetAchievedChart) {
+      yearlyTargetAchievedChart.destroy();
+      yearlyTargetAchievedChart = null;
+    }
+
+    const isDark = document.body.classList.contains("dark-mode");
+    const textColor = isDark ? "#E2E8F0" : "#1E293B";
+    const gridColor = isDark ? "rgba(255, 255, 255, 0.08)" : "rgba(0, 0, 0, 0.06)";
+    const mode = (state.financials && state.financials.targetChartMode) ? state.financials.targetChartMode : "standard";
+
+    const labels = ["FY 21-22", "FY 22-23", "FY 23-24", "FY 24-25", "FY 25-26", "FY 26-27 (Cadastre)"];
+
+    let datasets = [];
+
+    if (mode === "percent") {
+      datasets = [
+        {
+          label: "Target Achievement Ratio (%)",
+          data: [87.35, 88.35, 86.77, 90.36, 88.42, 29.36],
+          backgroundColor: [
+            "rgba(37, 99, 235, 0.75)",
+            "rgba(37, 99, 235, 0.75)",
+            "rgba(37, 99, 235, 0.75)",
+            "rgba(37, 99, 235, 0.75)",
+            "rgba(37, 99, 235, 0.75)",
+            "rgba(10, 98, 56, 0.85)"
+          ],
+          borderColor: [
+            "#2563EB",
+            "#2563EB",
+            "#2563EB",
+            "#2563EB",
+            "#2563EB",
+            "#0A6238"
+          ],
+          borderWidth: 1.5,
+          borderRadius: 6
+        },
+        {
+          label: "Net Due Collection Ratio (%)",
+          data: [87.35, 88.35, 86.77, 90.36, 88.42, 39.19],
+          backgroundColor: "rgba(16, 185, 129, 0.85)",
+          borderColor: "#10B981",
+          borderWidth: 1.5,
+          borderRadius: 6
+        }
+      ];
+    } else {
+      datasets = [
+        {
+          label: "Statutory Target (PKR Billion)",
+          data: [0.60, 0.70, 0.80, 1.60, 1.65, 115.05],
+          backgroundColor: isDark ? "rgba(245, 158, 11, 0.65)" : "rgba(217, 119, 6, 0.75)",
+          borderColor: "#D97706",
+          borderWidth: 1.5,
+          borderRadius: 6
+        },
+        {
+          label: "Achieved Realization (PKR Billion)",
+          data: [0.524, 0.618, 0.694, 1.446, 1.459, 33.785],
+          backgroundColor: isDark ? "rgba(16, 185, 129, 0.75)" : "rgba(10, 98, 56, 0.85)",
+          borderColor: "#0A6238",
+          borderWidth: 1.5,
+          borderRadius: 6
+        }
+      ];
+    }
+
+    const yAxisConfig = {
+      grid: { color: gridColor },
+      ticks: {
+        color: textColor,
+        font: { family: "'Inter', sans-serif", size: 11, weight: 600 },
+        callback: function(val) {
+          if (mode === "percent") return val + "%";
+          if (mode === "log") return val >= 1 ? val + "B" : (val * 1000) + "M";
+          return val + "B";
+        }
+      }
+    };
+
+    if (mode === "log") {
+      yAxisConfig.type = "logarithmic";
+      yAxisConfig.min = 0.2;
+    } else if (mode === "percent") {
+      yAxisConfig.type = "linear";
+      yAxisConfig.min = 0;
+      yAxisConfig.max = 100;
+    } else {
+      yAxisConfig.type = "linear";
+      yAxisConfig.beginAtZero = true;
+    }
+
+    yearlyTargetAchievedChart = new Chart(canvas, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: datasets
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            position: "top",
+            labels: {
+              color: textColor,
+              font: { family: "'Inter', sans-serif", size: 12, weight: 700 },
+              padding: 16
+            }
+          },
+          tooltip: {
+            backgroundColor: isDark ? "#1E293B" : "#0F172A",
+            titleColor: "#FFFFFF",
+            bodyColor: "#E2E8F0",
+            borderColor: "rgba(255, 255, 255, 0.1)",
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+              label: function(context) {
+                const val = context.parsed.y;
+                if (val === null || val === undefined) return "";
+                if (mode === "percent") {
+                  return context.dataset.label + ": " + val.toFixed(2) + "%";
+                }
+                if (context.dataIndex === 5) {
+                  if (context.datasetIndex === 0) {
+                    return "Statutory Annual Target: PKR 115.05 Billion (Rs 115,053,702,942)";
+                  } else {
+                    return "Achieved Realization: PKR 33.78 Billion (Rs 33,784,889,662) [39.19% of Net Due]";
+                  }
+                }
+                return context.dataset.label + ": PKR " + val.toFixed(3) + " Billion";
+              }
+            }
+          }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: {
+              color: textColor,
+              font: { family: "'Inter', sans-serif", size: 11, weight: 700 }
+            }
+          },
+          y: yAxisConfig
+        }
+      }
+    });
+  }
+  window.renderYearWiseTargetAchieved = renderYearWiseTargetAchieved;
 
   function renderEpa() {
     const tbody = document.getElementById("epaTableBody");
@@ -5071,6 +5238,7 @@ function renderInspections() {
       const subviewConfig = [
         { btn: "btnFinViewCadastre", pane: "subview-cadastre-fy27", action: renderCadastreLeaseFinance },
         { btn: "btnFinViewHistorical", pane: "subview-historical-5y", action: renderHistoricalLeases },
+        { btn: "btnFinViewYearlyTarget", pane: "subview-yearwise-target-achieved", action: renderYearWiseTargetAchieved },
         { btn: "btnFinViewCalculator", pane: "subview-royalty-calculator", action: renderRoyaltyCalculator }
       ];
 
@@ -5091,7 +5259,19 @@ function renderInspections() {
 
     document.getElementById("btnFinViewCadastre")?.addEventListener("click", () => switchFinancialSubview("subview-cadastre-fy27"));
     document.getElementById("btnFinViewHistorical")?.addEventListener("click", () => switchFinancialSubview("subview-historical-5y"));
+    document.getElementById("btnFinViewYearlyTarget")?.addEventListener("click", () => switchFinancialSubview("subview-yearwise-target-achieved"));
     document.getElementById("btnFinViewCalculator")?.addEventListener("click", () => switchFinancialSubview("subview-royalty-calculator"));
+
+    // Multi-Year Target vs Achieved Chart Mode Selector
+    document.querySelectorAll("#chartYearlyModeSelectorBar .sub-tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#chartYearlyModeSelectorBar .sub-tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        if (!state.financials) state.financials = {};
+        state.financials.targetChartMode = btn.getAttribute("data-chart-mode") || "standard";
+        renderYearWiseTargetAchieved();
+      });
+    });
 
     // Cadastre category pills
     document.querySelectorAll("#cadastreCategoryPills .cad-cat-btn").forEach(btn => {
@@ -5402,6 +5582,166 @@ function renderInspections() {
       case "historical-leases-ledger":
         reportCategory = "5-Year Historical Monitored Leases Ledger";
         rawData = getHistoricalLeasesFilteredRecords();
+        break;
+      case "historical-yearly-targets":
+        reportCategory = "5-Year Annual Statutory Targets vs. Achieved Receipts (FY 2021-26)";
+        rawData = [
+          {
+            "Fiscal Year": "FY 2021-22",
+            "Statutory Annual Target (PKR)": 600000000,
+            "Achieved Revenue Paid (PKR)": 524102140,
+            "Achievement Ratio": "87.35%",
+            "Variance / Gap (PKR)": -75897860,
+            "Production Output (Tons)": 3833442.92,
+            "Royalty Assessed (PKR)": 499880282.5,
+            "Audit Status": "Audited & Closed",
+            "Regulatory Era": "PMCR 2002 Framework"
+          },
+          {
+            "Fiscal Year": "FY 2022-23",
+            "Statutory Annual Target (PKR)": 700000000,
+            "Achieved Revenue Paid (PKR)": 618420950,
+            "Achievement Ratio": "88.35%",
+            "Variance / Gap (PKR)": -81579050,
+            "Production Output (Tons)": 4680239.04,
+            "Royalty Assessed (PKR)": 589605238.1,
+            "Audit Status": "Audited & Closed",
+            "Regulatory Era": "PMCR 2002 Framework"
+          },
+          {
+            "Fiscal Year": "FY 2023-24",
+            "Statutory Annual Target (PKR)": 800000000,
+            "Achieved Revenue Paid (PKR)": 694150300,
+            "Achievement Ratio": "86.77%",
+            "Variance / Gap (PKR)": -105849700,
+            "Production Output (Tons)": 5467613.43,
+            "Royalty Assessed (PKR)": 662879402.4,
+            "Audit Status": "Audited & Closed",
+            "Regulatory Era": "PMCR 2002 Framework"
+          },
+          {
+            "Fiscal Year": "FY 2024-25",
+            "Statutory Annual Target (PKR)": 1600000000,
+            "Achieved Revenue Paid (PKR)": 1445830110,
+            "Achievement Ratio": "90.36%",
+            "Variance / Gap (PKR)": -154169890,
+            "Production Output (Tons)": 4510566.30,
+            "Royalty Assessed (PKR)": 1420224627.0,
+            "Audit Status": "Audited & Closed",
+            "Regulatory Era": "Revised Royalty Gazette 01-07-2024"
+          },
+          {
+            "Fiscal Year": "FY 2025-26",
+            "Statutory Annual Target (PKR)": 1650000000,
+            "Achieved Revenue Paid (PKR)": 1458986558,
+            "Achievement Ratio": "88.42%",
+            "Variance / Gap (PKR)": -191013442,
+            "Production Output (Tons)": 4946787.07,
+            "Royalty Assessed (PKR)": 1405511152.0,
+            "Audit Status": "Audited & Closed",
+            "Regulatory Era": "Pre-Cadastre Consolidation"
+          },
+          {
+            "Fiscal Year": "5-Year Cumulative Baseline Total",
+            "Statutory Annual Target (PKR)": 5350000000,
+            "Achieved Revenue Paid (PKR)": 4741490058,
+            "Achievement Ratio": "88.62%",
+            "Variance / Gap (PKR)": -608509942,
+            "Production Output (Tons)": 23438648.76,
+            "Royalty Assessed (PKR)": 4578100702.0,
+            "Audit Status": "5-Year Baseline Total",
+            "Regulatory Era": "5-Year Cumulative Benchmark"
+          }
+        ];
+        break;
+      case "yearly-target-achieved-ledger":
+        reportCategory = "Provincial Multi-Year Statutory Target vs. Achieved Reconciliation";
+        rawData = [
+          {
+            "Fiscal Year": "FY 2021-22",
+            "Operational Framework": "Legacy PMCR Framework",
+            "Active / Monitored Leases": 1004,
+            "Annual Statutory Target (PKR)": 600000000,
+            "Net Due Assessed (PKR)": 524102140,
+            "Achieved Realization (PKR)": 524102140,
+            "Realization Ratio": "87.35%",
+            "Variance / Target Shortfall (PKR)": -75897860,
+            "Mineral Output (Tons)": 3833442.92,
+            "Milestone Status": "Audited & Closed"
+          },
+          {
+            "Fiscal Year": "FY 2022-23",
+            "Operational Framework": "Legacy PMCR Framework",
+            "Active / Monitored Leases": 1004,
+            "Annual Statutory Target (PKR)": 700000000,
+            "Net Due Assessed (PKR)": 618420950,
+            "Achieved Realization (PKR)": 618420950,
+            "Realization Ratio": "88.35%",
+            "Variance / Target Shortfall (PKR)": -81579050,
+            "Mineral Output (Tons)": 4680239.04,
+            "Milestone Status": "Audited & Closed (+18.0% YoY)"
+          },
+          {
+            "Fiscal Year": "FY 2023-24",
+            "Operational Framework": "Legacy PMCR Framework",
+            "Active / Monitored Leases": 1004,
+            "Annual Statutory Target (PKR)": 800000000,
+            "Net Due Assessed (PKR)": 694150300,
+            "Achieved Realization (PKR)": 694150300,
+            "Realization Ratio": "86.77%",
+            "Variance / Target Shortfall (PKR)": -105849700,
+            "Mineral Output (Tons)": 5467613.43,
+            "Milestone Status": "Audited & Closed (+12.2% YoY)"
+          },
+          {
+            "Fiscal Year": "FY 2024-25",
+            "Operational Framework": "Revised Royalty Gazette (01-07-2024)",
+            "Active / Monitored Leases": 1004,
+            "Annual Statutory Target (PKR)": 1600000000,
+            "Net Due Assessed (PKR)": 1445830110,
+            "Achieved Realization (PKR)": 1445830110,
+            "Realization Ratio": "90.36%",
+            "Variance / Target Shortfall (PKR)": -154169890,
+            "Mineral Output (Tons)": 4510566.30,
+            "Milestone Status": "Audited & Closed (+108.3% YoY)"
+          },
+          {
+            "Fiscal Year": "FY 2025-26",
+            "Operational Framework": "Pre-Cadastre Consolidation",
+            "Active / Monitored Leases": 1004,
+            "Annual Statutory Target (PKR)": 1650000000,
+            "Net Due Assessed (PKR)": 1458986558,
+            "Achieved Realization (PKR)": 1458986558,
+            "Realization Ratio": "88.42%",
+            "Variance / Target Shortfall (PKR)": -191013442,
+            "Mineral Output (Tons)": 4946787.07,
+            "Milestone Status": "Audited & Closed (+0.9% YoY)"
+          },
+          {
+            "Fiscal Year": "5-Year Baseline Total (FY 2021-26)",
+            "Operational Framework": "5-Year Cumulative Baseline",
+            "Active / Monitored Leases": 1004,
+            "Annual Statutory Target (PKR)": 5350000000,
+            "Net Due Assessed (PKR)": 4741490058,
+            "Achieved Realization (PKR)": 4741490058,
+            "Realization Ratio": "88.62%",
+            "Variance / Target Shortfall (PKR)": -608509942,
+            "Mineral Output (Tons)": 23438648.76,
+            "Milestone Status": "5-Year Baseline Benchmark"
+          },
+          {
+            "Fiscal Year": "FY 2026-27 (Current Fiscal Year)",
+            "Operational Framework": "Punjab Mining Cadastre (MCIS) Live Deployment",
+            "Active / Monitored Leases": 1808,
+            "Annual Statutory Target (PKR)": 115053702942,
+            "Net Due Assessed (PKR)": 86211496813,
+            "Achieved Realization (PKR)": 33784889662,
+            "Realization Ratio": "29.36% of Target (39.19% of Net Due)",
+            "Variance / Target Shortfall (PKR)": -81268813280,
+            "Mineral Output (Tons)": "Active Mining Operations",
+            "Milestone Status": "Active Fiscal Year • Verified Mid-Year Receipts"
+          }
+        ];
         break;
       case "financials-single-office": {
         reportCategory = "Field Office Summary";

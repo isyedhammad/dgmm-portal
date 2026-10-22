@@ -1397,18 +1397,23 @@
         <div class="fin-subview-nav">
           <button class="fin-subview-btn active" id="btnFinViewCadastre" data-target-subview="subview-cadastre-fy27" type="button">
             <i class="fa-solid fa-satellite-dish" style="color: #0A6238;"></i>
-            <span>FY 2026-27 Cadastre Fiscal Operations &amp; Lease-Wise Revenue</span>
-            <span class="badge-status-pill badge-granted">FY 26-27 • Live Cadastre</span>
+            <span>FY 2026-27 Operations &amp; Lease-Wise Revenue</span>
+            <span class="badge-status-pill badge-granted">Target: 115.05B • Realized: 33.78B</span>
           </button>
           <button class="fin-subview-btn" id="btnFinViewHistorical" data-target-subview="subview-historical-5y" type="button">
             <i class="fa-solid fa-clock-rotate-left" style="color: #2563EB;"></i>
-            <span>5-Year Historical Performance (FY 2021-22 to FY 2025-26)</span>
-            <span class="badge-status-pill" style="background: rgba(37, 99, 235, 0.12); color: #2563EB;">5-Year Baseline • 1,004 Leases</span>
+            <span>5-Year Historical Performance (FY 2021-26)</span>
+            <span class="badge-status-pill" style="background: rgba(37, 99, 235, 0.12); color: #2563EB;">5Y Target: 5.35B • Realized: 4.74B</span>
+          </button>
+          <button class="fin-subview-btn" id="btnFinViewYearlyTarget" data-target-subview="subview-yearwise-target-achieved" type="button">
+            <i class="fa-solid fa-chart-column" style="color: #7C3AED;"></i>
+            <span>Year-Wise Target vs. Achieved Reconciliation (FY 2021-27)</span>
+            <span class="badge-status-pill" style="background: rgba(124, 58, 237, 0.12); color: #7C3AED;">6-Year Statutory Trend &amp; Chart</span>
           </button>
           <button class="fin-subview-btn" id="btnGoToRoyaltyCalcTab" type="button" onclick="window.activateTab ? window.activateTab('tab-royalty-calculator') : document.getElementById('navBtnRoyaltyCalculator')?.click()">
             <i class="fa-solid fa-calculator" style="color: #D97706;"></i>
-            <span>Statutory Royalty Calculator</span>
-            <span class="badge-status-pill badge-vacant" style="background: rgba(217, 119, 6, 0.15); color: #D97706;">Open Dedicated Tab &rarr;</span>
+            <span>Royalty Calculator</span>
+            <span class="badge-status-pill badge-vacant" style="background: rgba(217, 119, 6, 0.15); color: #D97706;">Dedicated Tab &rarr;</span>
           </button>
         </div>
 
@@ -1666,87 +1671,7 @@
             </div>
           </div>
 
-          <!-- PROVINCIAL FISCAL TRAJECTORY COMPARISON (FY 2021-22 TO FY 2026-27 TARGET) -->
-          <div class="card-section" style="margin-bottom: 1.5rem;">
-            <div class="card-header-clean">
-              <div class="card-title-group">
-                <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color: #0A6238; margin-right: 0.4rem;"></i> Multi-Year Fiscal Trajectory Alignment (FY 2021-22 through FY 2026-27)</h3>
-                <span class="card-subtitle">Official benchmark comparison between 5-year historical realizations and the FY 2026-27 statutory Cadastre target</span>
-              </div>
-              <span class="badge-status-pill badge-granted">Statutory FY Comparison</span>
-            </div>
-            <div class="table-scroll-container">
-              <table class="table-clean">
-                <thead>
-                  <tr>
-                    <th>Fiscal Year (FY)</th>
-                    <th>Fiscal Classification</th>
-                    <th>Mineral Output (Tons)</th>
-                    <th>Assessed Target / Due</th>
-                    <th>Royalty Paid (PKR)</th>
-                    <th>Total Realized (PKR)</th>
-                    <th>Collection Performance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><strong>FY 2021-22</strong></td>
-                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
-                    <td>3,833,443 Tons</td>
-                    <td>-</td>
-                    <td>Rs 499,880,283</td>
-                    <td class="currency-grandtotal-val">Rs 524,102,140</td>
-                    <td>Baseline Year</td>
-                  </tr>
-                  <tr>
-                    <td><strong>FY 2022-23</strong></td>
-                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
-                    <td>4,680,239 Tons</td>
-                    <td>-</td>
-                    <td>Rs 589,605,238</td>
-                    <td class="currency-grandtotal-val">Rs 618,420,950</td>
-                    <td><span style="color: #059669; font-weight: 700;">+18.0% YoY</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong>FY 2023-24</strong></td>
-                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
-                    <td>5,467,613 Tons</td>
-                    <td>-</td>
-                    <td>Rs 662,879,402</td>
-                    <td class="currency-grandtotal-val">Rs 694,150,300</td>
-                    <td><span style="color: #059669; font-weight: 700;">+12.2% YoY</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong>FY 2024-25</strong></td>
-                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
-                    <td>4,510,566 Tons</td>
-                    <td>-</td>
-                    <td>Rs 1,420,224,627</td>
-                    <td class="currency-grandtotal-val">Rs 1,445,830,110</td>
-                    <td><span style="color: #059669; font-weight: 700;">+108.3% YoY</span></td>
-                  </tr>
-                  <tr>
-                    <td><strong>FY 2025-26</strong></td>
-                    <td><span class="badge-status-pill badge-process">Historical Actual</span></td>
-                    <td>4,946,787 Tons</td>
-                    <td>-</td>
-                    <td>Rs 1,405,511,152</td>
-                    <td class="currency-grandtotal-val">Rs 1,458,986,558</td>
-                    <td><span style="color: #059669; font-weight: 700;">+0.9% YoY</span></td>
-                  </tr>
-                  <tr style="background: rgba(10, 98, 56, 0.08); font-weight: 800; border-top: 2px solid #0A6238; border-bottom: 2px solid #0A6238;">
-                    <td style="color: #0A6238;"><strong>FY 2026-27</strong></td>
-                    <td><span class="badge-status-pill badge-granted">Current FY • Cadastre Target</span></td>
-                    <td>Active Mining Cycle</td>
-                    <td style="color: #0A6238;">Target: Rs 115.05B<br><small style="color: #64748B;">Net Due: Rs 86.21B</small></td>
-                    <td>Rs 7.30B (LSM) + Rs 5.06B (SSM)</td>
-                    <td class="currency-grandtotal-val" style="color: #0A6238; font-size: 1.05rem;">PKR 33.78 Billion</td>
-                    <td><span style="color: #0A6238; font-weight: 800;">39.19% Net Due<br><small>29.36% of 115B Target</small></span></td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          
 
           <!-- =========================================================
                OFFICIAL MINING CADASTRE LEASE-WISE REVENUE LEDGER (FY 2026-27)
@@ -1754,8 +1679,8 @@
           <div class="card-section" style="margin-bottom: 1.5rem;">
             <div class="card-header-clean">
               <div class="card-title-group">
-                <h3 class="card-title"><i class="fa-solid fa-file-invoice-dollar" style="color: #0A6238; margin-right: 0.4rem;"></i> Official Cadastre Lease-Wise Revenue Ledger (FY 2026-27)</h3>
-                <span class="card-subtitle">Authenticated concession-by-concession financial dues, realized payments, verified chalan receipts, auction installments, and bank guarantees directly from Punjab Mining Cadastre</span>
+                <h3 class="card-title"><i class="fa-solid fa-file-invoice-dollar" style="color: #0A6238; margin-right: 0.4rem;"></i> Official Cadastre Lease-Wise Revenue Generated Ledger (FY 2026-27)</h3>
+                <span class="card-subtitle">Authenticated concession-by-concession financial dues, realized payments, verified chalan receipts, auction installments, and bank guarantees for Current FY 2026-27</span>
               </div>
               
               <div class="section-export-wrap" data-export-source="cadastre-lease-ledger" data-export-table="tableCadastreLeaseFinance" data-export-title="Punjab_Cadastre_Lease_Wise_Revenue_Ledger_FY2026_27">
@@ -1896,8 +1821,158 @@
           <div class="kpi-grid">
             <div class="kpi-card">
               <div>
-                <div class="kpi-label">5-Year Royalty &amp; Revenue</div>
+                <div class="kpi-label">5-Year Statutory Target</div>
+                <div class="kpi-value" style="color: #2563EB;">PKR 5.350B</div>
+                <div class="kpi-subtext"><span>FY 2021-22 to FY 2025-26 cumulative</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-purple"><i class="fa-solid fa-bullseye"></i></div>
+            </div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">5-Year Realized Revenue</div>
                 <div class="kpi-value">PKR 4.741B</div>
+                <div class="kpi-subtext"><span style="color: #059669; font-weight: 700;">88.62% Cumulative Realization</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-gold"><i class="fa-solid fa-coins"></i></div>
+            </div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">5-Year Production Output</div>
+                <div class="kpi-value">23.44M Tons</div>
+                <div class="kpi-subtext"><span>Across 1,004 monitored leases</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-emerald"><i class="fa-solid fa-boxes-stacked"></i></div>
+            </div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">Annual Realization Benchmark</div>
+                <div class="kpi-value">PKR 948.3M</div>
+                <div class="kpi-subtext"><span>5-Year average annual collection</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-blue"><i class="fa-solid fa-chart-line"></i></div>
+            </div>
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">Securities &amp; Dead Rent Held</div>
+                <div class="kpi-value">PKR 190.77M</div>
+                <div class="kpi-subtext"><span>Statutory security reserves</span></div>
+              </div>
+              <div class="kpi-icon-wrap icon-amber"><i class="fa-solid fa-vault"></i></div>
+            </div>
+          </div>
+
+          <!-- =========================================================
+               5-YEAR ANNUAL PERFORMANCE BREAKDOWN: TARGET VS. ACHIEVED (FY 2021-22 TO FY 2025-26)
+               ========================================================= -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-calendar-check" style="color: #2563EB; margin-right: 0.4rem;"></i> 5-Year Annual Performance Breakdown: Target vs. Achieved (FY 2021-22 to FY 2025-26)</h3>
+                <span class="card-subtitle">Official audited year-by-year statutory targets, realized receipts, achievement ratios, and mineral production output across 1,004 historical monitored leases</span>
+              </div>
+              
+              <div class="section-export-wrap" data-export-source="historical-yearly-targets" data-export-table="tableHistoricalYearlyTargets" data-export-title="Punjab_5Year_Annual_Target_vs_Achieved_FY2021_26">
+                <button class="btn-section-export" type="button" title="Export 5-Year Annual Target vs. Achieved Dataset">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableHistoricalYearlyTargets">
+                <thead>
+                  <tr>
+                    <th>Fiscal Year (FY)</th>
+                    <th>Statutory Target (PKR)</th>
+                    <th>Achieved Realization (PKR)</th>
+                    <th>Target Achievement %</th>
+                    <th>Variance / Shortfall (PKR)</th>
+                    <th>Production Output (Tons)</th>
+                    <th>Royalty Assessed (PKR)</th>
+                    <th>Audit Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>FY 2021-22</strong></td>
+                    <td class="currency-bid-val">PKR 600,000,000</td>
+                    <td class="currency-grandtotal-val">PKR 524,102,140</td>
+                    <td><span class="badge-status-pill badge-granted">87.35%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 75,897,860</td>
+                    <td>3,833,443 Tons</td>
+                    <td>PKR 499,880,283</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited &amp; Closed</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2022-23</strong></td>
+                    <td class="currency-bid-val">PKR 700,000,000</td>
+                    <td class="currency-grandtotal-val">PKR 618,420,950</td>
+                    <td><span class="badge-status-pill badge-granted">88.35%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 81,579,050</td>
+                    <td>4,680,239 Tons</td>
+                    <td>PKR 589,605,238</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+18.0% YoY)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2023-24</strong></td>
+                    <td class="currency-bid-val">PKR 800,000,000</td>
+                    <td class="currency-grandtotal-val">PKR 694,150,300</td>
+                    <td><span class="badge-status-pill badge-granted">86.77%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 105,849,700</td>
+                    <td>5,467,613 Tons</td>
+                    <td>PKR 662,879,402</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+12.2% YoY)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2024-25</strong></td>
+                    <td class="currency-bid-val">PKR 1,600,000,000</td>
+                    <td class="currency-grandtotal-val">PKR 1,445,830,110</td>
+                    <td><span class="badge-status-pill badge-granted">90.36%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 154,169,890</td>
+                    <td>4,510,566 Tons</td>
+                    <td>PKR 1,420,224,627</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+108.3% YoY)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2025-26</strong></td>
+                    <td class="currency-bid-val">PKR 1,650,000,000</td>
+                    <td class="currency-grandtotal-val">PKR 1,458,986,558</td>
+                    <td><span class="badge-status-pill badge-granted">88.42%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 191,013,442</td>
+                    <td>4,946,787 Tons</td>
+                    <td>PKR 1,405,511,152</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+0.9% YoY)</span></td>
+                  </tr>
+                  <tr style="background: rgba(37, 99, 235, 0.08); font-weight: 800; border-top: 2px solid #2563EB; border-bottom: 2px solid #2563EB;">
+                    <td style="color: #2563EB;">5-YEAR HISTORICAL CUMULATIVE TOTAL</td>
+                    <td class="currency-bid-val" style="color: #2563EB;">PKR 5,350,000,000</td>
+                    <td class="currency-grandtotal-val" style="color: #2563EB;">PKR 4,741,490,058</td>
+                    <td><span class="badge-status-pill badge-granted" style="background: #2563EB; color: #FFF;">88.62% Avg</span></td>
+                    <td style="color: #DC2626; font-weight: 800;">-PKR 608,509,942</td>
+                    <td style="color: #2563EB;">23,438,649 Tons</td>
+                    <td style="color: #2563EB;">PKR 4,578,100,702</td>
+                    <td><span class="badge-status-pill" style="background: rgba(37, 99, 235, 0.15); color: #2563EB;">5-Year Baseline Benchmark</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
                 <div class="kpi-subtext"><span>FY 2021-22 to FY 2025-26 cumulative</span></div>
               </div>
               <div class="kpi-icon-wrap icon-gold"><i class="fa-solid fa-coins"></i></div>
@@ -1934,7 +2009,7 @@
           <div class="card-section" style="margin-bottom: 1.5rem;">
             <div class="card-header-clean">
               <div class="card-title-group">
-                <h3 class="card-title"><i class="fa-solid fa-table-list" style="color: #2563EB; margin-right: 0.4rem;"></i> 5-Year Historical Lease-by-Lease Audit Ledger (1,004 Leases)</h3>
+                <h3 class="card-title"><i class="fa-solid fa-table-list" style="color: #2563EB; margin-right: 0.4rem;"></i> 5-Year Lease-Wise Revenue Generated Audit Ledger (1,004 Leases — FY 2021-26)</h3>
                 <span class="card-subtitle">Complete historical inventory of all 1,004 monitored lease formations (FY 2021-22 to FY 2025-26), documenting company name, mineral, field office, acreage, 5-year production tonnage, and royalty yield</span>
               </div>
               
@@ -2209,9 +2284,231 @@
           </div>
 
 </div>
+        <!-- =========================================================
+             SUBVIEW 3: YEAR-WISE TARGET VS. ACHIEVED RECONCILIATION (FY 2021-22 TO FY 2026-27)
+             ========================================================= -->
+        <div class="fin-subview-pane" id="subview-yearwise-target-achieved">
 
+          <!-- Multi-Year Reconciliation Executive Banner -->
+          <div class="cadastre-fiscal-banner" style="background: linear-gradient(135deg, #4c1d95 0%, #6d28d9 60%, #7c3aed 100%); margin-bottom: 1.5rem;">
+            <div class="cadastre-banner-left">
+              <div class="cadastre-banner-emblem" style="background: rgba(255, 255, 255, 0.2);">
+                <i class="fa-solid fa-chart-column"></i>
+              </div>
+              <div>
+                <div class="cadastre-banner-badge-row">
+                  <span class="cadastre-badge-gov"><i class="fa-solid fa-shield-halved"></i> Govt of Punjab • Mines &amp; Minerals</span>
+                  <span class="cadastre-badge-live" style="background: rgba(255, 255, 255, 0.25); color: #FFFFFF;"><i class="fa-solid fa-scale-balanced"></i> Statutory Provincial Financial Audit • FY 2021-22 through FY 2026-27</span>
+                </div>
+                <h2 class="cadastre-banner-title">Year-Wise Target vs. Achieved Reconciliation (FY 2021-22 to FY 2026-27)</h2>
+                <p class="cadastre-banner-desc">Official comparative reconciliation tracking statutory revenue targets against actual realized collections across 6 fiscal years — documenting the transformative transition from 5-year historical manual monitoring (FY 2021-26) to the digital Punjab Mining Cadastre Information System (MCIS) in FY 2026-27.</p>
+              </div>
+            </div>
+            <div class="cadastre-banner-actions">
+              <button class="btn-cadastre-ext" type="button" onclick="window.switchFinancialSubview('subview-cadastre-fy27')" title="View Current FY 26-27 Lease Ledger" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; cursor: pointer;">
+                <i class="fa-solid fa-satellite-dish"></i>
+                <span>FY 26-27 Cadastre</span>
+              </button>
+              <button class="btn-cadastre-ext" type="button" onclick="window.switchFinancialSubview('subview-historical-5y')" title="View 5-Year Historical Ledger" style="background: rgba(255, 255, 255, 0.2); border: 1px solid rgba(255, 255, 255, 0.35); color: #FFFFFF; cursor: pointer;">
+                <i class="fa-solid fa-clock-rotate-left"></i>
+                <span>5Y Baseline (FY 21-26)</span>
+              </button>
+            </div>
+          </div>
 
-        
+          <!-- Multi-Year Comparative KPI Summary (4 Cards) -->
+          <div class="kpi-grid" style="margin-bottom: 1.5rem;">
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">5-Year Historical Realized</div>
+                <div class="kpi-value" style="color: #2563EB;">PKR 4.741B</div>
+                <div class="kpi-subtext"><span>Target: PKR 5.35B • 88.62% Realized (FY 21-26)</span></div>
+                <div class="cadastre-kpi-subval" style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">1,004 Leases • 23.44M Tons Output</div>
+              </div>
+              <div class="kpi-icon-wrap icon-blue"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            </div>
+
+            <div class="kpi-card cadastre-kpi-highlight">
+              <div>
+                <div class="kpi-label">Current FY 2026-27 Realized</div>
+                <div class="kpi-value cadastre-val-realized" style="color: #0A6238;">PKR 33.78B</div>
+                <div class="kpi-subtext"><span style="color: #0A6238; font-weight: 700;">Target: PKR 115.05B • Net Due: PKR 86.21B</span></div>
+                <div class="cadastre-kpi-subval" style="margin-top: 4px; font-size: 0.75rem; color: #0A6238; font-weight: 700;">39.19% of Net Due • 29.36% of Annual Target</div>
+              </div>
+              <div class="kpi-icon-wrap icon-emerald"><i class="fa-solid fa-satellite-dish"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">Combined Provincial Realization</div>
+                <div class="kpi-value" style="color: #7C3AED;">PKR 38.53B</div>
+                <div class="kpi-subtext"><span>Across all 6 fiscal years (FY 2021-27)</span></div>
+                <div class="cadastre-kpi-subval" style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">Rs 38,526,379,720 cumulative receipts</div>
+              </div>
+              <div class="kpi-icon-wrap icon-purple"><i class="fa-solid fa-vault"></i></div>
+            </div>
+
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">Cadastre Target Modernization</div>
+                <div class="kpi-value" style="color: #D97706;">21.5x Surge</div>
+                <div class="kpi-subtext"><span>Statutory target elevated from 1.65B to 115.05B</span></div>
+                <div class="cadastre-kpi-subval" style="margin-top: 4px; font-size: 0.75rem; color: var(--text-muted);">Digital assessment under MCIS live framework</div>
+              </div>
+              <div class="kpi-icon-wrap icon-gold"><i class="fa-solid fa-arrow-trend-up"></i></div>
+            </div>
+          </div>
+
+          <!-- Multi-Year Target vs. Achieved Chart Section -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color: #7C3AED; margin-right: 0.4rem;"></i> Multi-Year Target vs. Achieved Revenue Visualizer</h3>
+                <span class="card-subtitle">Comparative bar chart depicting statutory annual targets versus verified realized revenues from FY 2021-22 to FY 2026-27</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.75rem;">
+                <div class="sub-tabs-bar primary-segment-bar" id="chartYearlyModeSelectorBar">
+                  <button class="sub-tab-btn active" data-chart-mode="standard" type="button"><i class="fa-solid fa-coins"></i> Standard (PKR Billions)</button>
+                  <button class="sub-tab-btn" data-chart-mode="percent" type="button"><i class="fa-solid fa-percent"></i> Achievement Ratio (%)</button>
+                  <button class="sub-tab-btn" data-chart-mode="log" type="button"><i class="fa-solid fa-chart-line"></i> Log Scale</button>
+                </div>
+              </div>
+            </div>
+            <div style="height: 380px; position: relative; padding: 1rem 0;">
+              <canvas id="chartYearlyTargetAchieved"></canvas>
+            </div>
+          </div>
+
+          <!-- Multi-Year Statutory Target vs. Achieved Comprehensive Ledger -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-table-list" style="color: #7C3AED; margin-right: 0.4rem;"></i> Provincial Year-Wise Statutory Target vs. Achieved Ledger (FY 2021-22 through FY 2026-27)</h3>
+                <span class="card-subtitle">Official audited year-by-year reconciliation documenting statutory annual targets, assessed net dues, realized collections, target realization ratios, variance, and active concession formations</span>
+              </div>
+              
+              <div class="section-export-wrap" data-export-source="yearly-target-achieved-ledger" data-export-table="tableYearlyTargetAchieved" data-export-title="Punjab_Yearly_Target_vs_Achieved_Reconciliation_FY2021_2027">
+                <button class="btn-section-export" type="button" title="Export Year-Wise Target vs. Achieved Ledger">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableYearlyTargetAchieved">
+                <thead>
+                  <tr>
+                    <th>Fiscal Year (FY)</th>
+                    <th>Regulatory / Operational Framework</th>
+                    <th>Monitored Leases</th>
+                    <th>Statutory Target (PKR)</th>
+                    <th>Net Due Assessed (PKR)</th>
+                    <th>Achieved Realization (PKR)</th>
+                    <th>Target Achievement %</th>
+                    <th>Variance / Shortfall (PKR)</th>
+                    <th>Strategic Milestone / Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>FY 2021-22</strong></td>
+                    <td><span class="badge-status-pill badge-process">Legacy PMCR Framework</span></td>
+                    <td>1,004 Leases</td>
+                    <td class="currency-bid-val">PKR 600,000,000</td>
+                    <td>Rs 524,102,140</td>
+                    <td class="currency-grandtotal-val">PKR 524,102,140</td>
+                    <td><span class="badge-status-pill badge-granted">87.35%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 75,897,860</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited &amp; Closed</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2022-23</strong></td>
+                    <td><span class="badge-status-pill badge-process">Legacy PMCR Framework</span></td>
+                    <td>1,004 Leases</td>
+                    <td class="currency-bid-val">PKR 700,000,000</td>
+                    <td>Rs 618,420,950</td>
+                    <td class="currency-grandtotal-val">PKR 618,420,950</td>
+                    <td><span class="badge-status-pill badge-granted">88.35%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 81,579,050</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+18.0% YoY)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2023-24</strong></td>
+                    <td><span class="badge-status-pill badge-process">Legacy PMCR Framework</span></td>
+                    <td>1,004 Leases</td>
+                    <td class="currency-bid-val">PKR 800,000,000</td>
+                    <td>Rs 694,150,300</td>
+                    <td class="currency-grandtotal-val">PKR 694,150,300</td>
+                    <td><span class="badge-status-pill badge-granted">86.77%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 105,849,700</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+12.2% YoY)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2024-25</strong></td>
+                    <td><span class="badge-status-pill badge-process">Revised Royalty Gazette (01-07-2024)</span></td>
+                    <td>1,004 Leases</td>
+                    <td class="currency-bid-val">PKR 1,600,000,000</td>
+                    <td>Rs 1,445,830,110</td>
+                    <td class="currency-grandtotal-val">PKR 1,445,830,110</td>
+                    <td><span class="badge-status-pill badge-granted">90.36%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 154,169,890</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+108.3% YoY)</span></td>
+                  </tr>
+                  <tr>
+                    <td><strong>FY 2025-26</strong></td>
+                    <td><span class="badge-status-pill badge-process">Pre-Cadastre Consolidation</span></td>
+                    <td>1,004 Leases</td>
+                    <td class="currency-bid-val">PKR 1,650,000,000</td>
+                    <td>Rs 1,458,986,558</td>
+                    <td class="currency-grandtotal-val">PKR 1,458,986,558</td>
+                    <td><span class="badge-status-pill badge-granted">88.42%</span></td>
+                    <td style="color: #DC2626; font-weight: 600;">-PKR 191,013,442</td>
+                    <td><span class="badge-status-pill badge-process"><i class="fa-solid fa-check"></i> Audited (+0.9% YoY)</span></td>
+                  </tr>
+                  <tr style="background: rgba(37, 99, 235, 0.08); font-weight: 800; border-top: 2px solid #2563EB; border-bottom: 2px solid #2563EB;">
+                    <td style="color: #2563EB;"><strong>5-Year Historical Baseline (FY 2021-26)</strong></td>
+                    <td style="color: #2563EB;">5-Year Cumulative Pre-Cadastre Operations</td>
+                    <td style="color: #2563EB;">1,004 Leases Tracked</td>
+                    <td class="currency-bid-val" style="color: #2563EB;">PKR 5,350,000,000</td>
+                    <td style="color: #2563EB;">Rs 4,741,490,058</td>
+                    <td class="currency-grandtotal-val" style="color: #2563EB;">PKR 4,741,490,058</td>
+                    <td><span class="badge-status-pill badge-granted" style="background: #2563EB; color: #FFF;">88.62% Avg</span></td>
+                    <td style="color: #DC2626; font-weight: 800;">-PKR 608,509,942</td>
+                    <td><span class="badge-status-pill" style="background: rgba(37, 99, 235, 0.15); color: #2563EB;">5-Year Baseline Benchmark</span></td>
+                  </tr>
+                  <tr style="background: rgba(10, 98, 56, 0.09); font-weight: 800; border-top: 2px solid #0A6238; border-bottom: 2px solid #0A6238;">
+                    <td style="color: #0A6238;"><strong>FY 2026-27 (Current Fiscal Year)</strong></td>
+                    <td style="color: #0A6238;"><span class="badge-status-pill badge-granted">Live Punjab Mining Cadastre (MCIS)</span></td>
+                    <td style="color: #0A6238;">1,808 Active Titles</td>
+                    <td class="currency-bid-val" style="color: #0A6238; font-size: 1.05rem;">PKR 115,053,702,942<br><small style="font-weight: 600; color: #64748B;">(PKR 115.05 Billion)</small></td>
+                    <td style="color: #0A6238; font-weight: 800;">PKR 86,211,496,813<br><small style="font-weight: 600; color: #64748B;">(PKR 86.21B Net Due)</small></td>
+                    <td class="currency-grandtotal-val" style="color: #0A6238; font-size: 1.1rem;">PKR 33,784,889,662<br><small style="font-weight: 600; color: #0A6238;">(PKR 33.78B Realized)</small></td>
+                    <td><span class="badge-status-pill badge-granted" style="background: #0A6238; color: #FFF; font-size: 0.85rem;">39.19% of Net Due<br><small style="font-size: 0.72rem; color: #E2E8F0;">29.36% of 115B Target</small></span></td>
+                    <td style="color: #D97706; font-weight: 800;">-PKR 81,268,813,280<br><small style="font-weight: 600; color: #0A6238;">(PKR 53.45B Recoverable)</small></td>
+                    <td><span class="badge-status-pill badge-granted" style="background: #0A6238; color: #FFF;"><i class="fa-solid fa-satellite-dish"></i> Current Fiscal Year In-Progress</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <!-- =====================================================

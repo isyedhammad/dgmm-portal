@@ -176,18 +176,46 @@ async function runLocalQA() {
     `);
     console.log('[PASS] Absence of redundant link cues:', absentCheck);
 
-    // TEST 3: Check Revenue & Royalties Subviews
-    console.log('\n--- TEST 3: Revenue & Royalties Dual Subviews Integrity ---');
+    // TEST 3: Check Revenue & Royalties 3 Distinct Subviews Integrity
+    console.log('\n--- TEST 3: Revenue & Royalties 3 Distinct Subviews Integrity ---');
     const finCheck = await evalInPage(`
       (() => {
-        const cadastreRows = document.querySelectorAll('#cadastreLeaseFinanceTableBody tr').length;
+        const results = {};
+        
+        // 1. Subview 1: FY 2026-27 Cadastre Operations & Lease Ledger
+        const cadBtn = document.getElementById('btnFinViewCadastre');
+        if (cadBtn) cadBtn.click();
+        results.cadastrePaneActive = document.getElementById('subview-cadastre-fy27')?.classList.contains('active');
+        results.cadastreRows = document.querySelectorAll('#cadastreLeaseFinanceTableBody tr').length;
+        results.trajectoryTableInFy27Absent = !document.querySelector('#subview-cadastre-fy27 table')?.innerText.includes('Baseline Year');
+
+        // 2. Subview 2: 5-Year Historical Performance (FY 2021-26)
         const histBtn = document.getElementById('btnFinViewHistorical');
         if (histBtn) histBtn.click();
-        const histRows = document.querySelectorAll('#historicalLeasesTableBody tr').length;
-        return { cadastreRows, histRows };
+        results.histPaneActive = document.getElementById('subview-historical-5y')?.classList.contains('active');
+        results.histYearlyTargetRows = document.querySelectorAll('#tableHistoricalYearlyTargets tbody tr').length;
+        results.histLeaseRows = document.querySelectorAll('#historicalLeasesTableBody tr').length;
+
+        // 3. Subview 3: Year-Wise Target vs. Achieved Reconciliation (FY 2021-27)
+        const yearlyBtn = document.getElementById('btnFinViewYearlyTarget');
+        if (yearlyBtn) yearlyBtn.click();
+        results.yearlyPaneActive = document.getElementById('subview-yearwise-target-achieved')?.classList.contains('active');
+        results.yearlyReconciliationRows = document.querySelectorAll('#tableYearlyTargetAchieved tbody tr').length;
+        results.yearlyCanvasExists = !!document.getElementById('chartYearlyTargetAchieved');
+
+        // Test mode buttons
+        const percentBtn = document.querySelector('#chartYearlyModeSelectorBar button[data-chart-mode="percent"]');
+        if (percentBtn) percentBtn.click();
+        results.modePercentSelected = percentBtn?.classList.contains('active');
+
+        const standardBtn = document.querySelector('#chartYearlyModeSelectorBar button[data-chart-mode="standard"]');
+        if (standardBtn) standardBtn.click();
+        results.modeStandardSelected = standardBtn?.classList.contains('active');
+
+        return results;
       })()
     `);
-    console.log('[PASS] Financial tables rendering:', finCheck);
+    console.log('[PASS] Revenue & Royalties 3 Subviews Rendering:', finCheck);
 
     // TEST 4: Statutory Royalty & Dead Rent Calculator Dedicated Tab Verification
     console.log('\n--- TEST 4: Statutory Royalty & Dead Rent Calculator Dedicated Tab Verification ---');
