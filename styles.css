@@ -6057,3 +6057,582 @@ body.dark-mode .cad-cat-btn.active {
   border-color: #059669;
   color: #ffffff;
 }
+
+
+/* ===================================================================
+   SEAMLESS EXECUTIVE GOVERNMENT UI/UX & STYLING OVERHAUL
+   Enterprise-grade visual polish across shell, cards, tables & views
+   =================================================================== */
+
+/* Smooth Global Font Rendering */
+body {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
+  letter-spacing: -0.01em;
+  background-color: #F8FAFC !important;
+}
+
+/* Polished Executive Topbar */
+.topbar {
+  height: 70px !important;
+  min-height: 70px !important;
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  padding: 0 2rem !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.03), 0 4px 12px rgba(15, 23, 42, 0.02) !important;
+}
+
+.topbar-punjab-logo, .topbar-dgmm-logo {
+  height: 40px !important;
+  width: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+}
+
+.breadcrumb-path {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.07em !important;
+  color: #059669 !important;
+}
+
+.breadcrumb-title {
+  font-size: 1.12rem !important;
+  font-weight: 800 !important;
+  color: #0F172A !important;
+  letter-spacing: -0.02em !important;
+}
+
+.search-input-top {
+  height: 38px !important;
+  font-size: 0.82rem !important;
+  border: 1px solid #CBD5E1 !important;
+  background: #F1F5F9 !important;
+  border-radius: 9999px !important;
+}
+
+.search-input-top:focus {
+  background: #FFFFFF !important;
+  border-color: #10B981 !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+}
+
+/* Content Area Spacing */
+.content-scroll {
+  padding: 1.5rem 2rem 3rem 2rem !important;
+}
+
+/* 6-Card Clickable Hero Ribbon (Clean & Seamless) */
+.summary-hero-ribbon {
+  display: grid !important;
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 1rem !important;
+  margin-bottom: 1.75rem !important;
+}
+
+.summary-hero-ribbon .kpi-card {
+  min-height: 136px !important;
+  padding: 1.15rem 1.25rem !important;
+  border-radius: 12px !important;
+  border: 1px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 3px 8px rgba(15, 23, 42, 0.02) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
+}
+
+.summary-hero-ribbon .kpi-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 12px 24px -4px rgba(15, 23, 42, 0.08), 0 4px 8px -2px rgba(15, 23, 42, 0.04) !important;
+  border-color: #10B981 !important;
+}
+
+.summary-hero-ribbon .kpi-label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+  color: #64748B !important;
+  text-transform: uppercase !important;
+}
+
+.summary-hero-ribbon .kpi-value {
+  font-size: 1.65rem !important;
+  font-weight: 800 !important;
+  color: #0F172A !important;
+  letter-spacing: -0.025em !important;
+  margin: 0.35rem 0 0.45rem !important;
+  line-height: 1.15 !important;
+}
+
+.summary-hero-ribbon .kpi-subtext {
+  font-size: 0.72rem !important;
+  font-weight: 500 !important;
+  color: #64748B !important;
+  display: flex !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.35rem !important;
+}
+
+.summary-hero-ribbon .kpi-icon-wrap {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 9px !important;
+  font-size: 1rem !important;
+}
+
+.card-nav-cue {
+  display: flex !important;
+  align-items: center !important;
+  gap: 5px !important;
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  color: #94A3B8 !important;
+  margin-top: 0.5rem !important;
+  padding-top: 0.45rem !important;
+  border-top: 1px dashed #E2E8F0 !important;
+  transition: color 0.2s ease, gap 0.2s ease !important;
+}
+
+.clickable-card:hover .card-nav-cue {
+  color: #059669 !important;
+  gap: 8px !important;
+}
+
+/* Pillar Cards (Tri-Division & Oversight Grids) */
+.pillar-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  padding: 1.35rem 1.5rem !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 3px 8px rgba(15, 23, 42, 0.02) !important;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease !important;
+}
+
+.pillar-card:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 14px 28px -4px rgba(15, 23, 42, 0.09) !important;
+}
+
+.pillar-title {
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+  color: #0F172A !important;
+  margin-bottom: 0.45rem !important;
+  letter-spacing: -0.015em !important;
+}
+
+.pillar-desc {
+  font-size: 0.82rem !important;
+  color: #475569 !important;
+  line-height: 1.5 !important;
+  margin-bottom: 1rem !important;
+}
+
+.pillar-stats {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0.45rem !important;
+}
+
+.pillar-stat-row {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 0.45rem 0.65rem !important;
+  border-radius: 6px !important;
+  background: #F8FAFC !important;
+  font-size: 0.78rem !important;
+}
+
+.pillar-stat-row span {
+  color: #64748B !important;
+  font-weight: 500 !important;
+}
+
+.pillar-stat-row strong {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+/* Card Sections & Clean Card Headers */
+.card-section {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 2px 6px rgba(15, 23, 42, 0.02) !important;
+  margin-bottom: 1.75rem !important;
+  overflow: hidden !important;
+}
+
+.card-header-clean {
+  padding: 1.1rem 1.5rem !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  background: #FFFFFF !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+.card-title {
+  font-size: 1.05rem !important;
+  font-weight: 800 !important;
+  color: #0F172A !important;
+  letter-spacing: -0.015em !important;
+}
+
+.card-subtitle {
+  font-size: 0.78rem !important;
+  color: #64748B !important;
+  margin-top: 2px !important;
+}
+
+/* Seamless Modern Tables Across Website */
+.table-scroll-container {
+  overflow-x: auto !important;
+  width: 100% !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+.table-clean {
+  width: 100% !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  font-size: 0.82rem !important;
+  text-align: left !important;
+}
+
+.table-clean th {
+  background: #F8FAFC !important;
+  padding: 0.75rem 1rem !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 2px solid #E2E8F0 !important;
+  white-space: nowrap !important;
+}
+
+.table-clean td {
+  padding: 0.75rem 1rem !important;
+  border-bottom: 1px solid #F1F5F9 !important;
+  color: #1E293B !important;
+  vertical-align: middle !important;
+  font-variant-numeric: tabular-nums !important;
+}
+
+.table-clean tbody tr {
+  transition: background-color 0.15s ease !important;
+}
+
+.table-clean tbody tr:hover {
+  background-color: rgba(16, 185, 129, 0.035) !important;
+}
+
+.table-clean tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* Status Pill Badges */
+.badge-status-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.35rem !important;
+  padding: 0.22rem 0.65rem !important;
+  border-radius: 9999px !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+
+.badge-granted {
+  background: #ECFDF5 !important;
+  color: #065F46 !important;
+  border: 1px solid #A7F3D0 !important;
+}
+
+.badge-process {
+  background: #EFF6FF !important;
+  color: #1E40AF !important;
+  border: 1px solid #BFDBFE !important;
+}
+
+.badge-vacant {
+  background: #FFFBEB !important;
+  color: #92400E !important;
+  border: 1px solid #FDE68A !important;
+}
+
+/* Smart Filter Panels */
+.smart-filter-panel {
+  background: #FFFFFF !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+  padding: 1rem 1.5rem !important;
+}
+
+.filter-label {
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  color: #475569 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 0.35rem !important;
+}
+
+.smart-input, .smart-select {
+  height: 38px !important;
+  font-size: 0.82rem !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 8px !important;
+  background: #F8FAFC !important;
+  color: #0F172A !important;
+  padding: 0 0.85rem !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+
+.smart-input:focus, .smart-select:focus {
+  border-color: #10B981 !important;
+  background: #FFFFFF !important;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15) !important;
+  outline: none !important;
+}
+
+/* Pagination Bar */
+.pagination-bar {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.85rem 1.5rem !important;
+  background: #F8FAFC !important;
+  border-top: 1px solid #E2E8F0 !important;
+  font-size: 0.78rem !important;
+  color: #64748B !important;
+}
+
+.btn-page {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.4rem !important;
+  padding: 0.4rem 0.85rem !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
+  border: 1px solid #CBD5E1 !important;
+  background: #FFFFFF !important;
+  color: #334155 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+}
+
+.btn-page:hover:not(:disabled) {
+  border-color: #10B981 !important;
+  color: #059669 !important;
+  background: #F0FDF4 !important;
+}
+
+.btn-page:disabled {
+  opacity: 0.45 !important;
+  cursor: not-allowed !important;
+}
+
+/* Charts Grid */
+.overview-charts-grid {
+  display: grid !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 1.25rem !important;
+  margin-bottom: 1.75rem !important;
+}
+
+.chart-card {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  padding: 1.25rem 1.5rem !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04) !important;
+}
+
+.chart-card-title {
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
+  color: #0F172A !important;
+}
+
+.chart-card-subtitle {
+  font-size: 0.75rem !important;
+  color: #64748B !important;
+}
+
+/* Preserved Section Export Dropdown Button Look (Exact & Consistent) */
+.section-export-wrap {
+  position: relative !important;
+  display: inline-block !important;
+  margin-left: auto !important;
+}
+
+.btn-section-export {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.45rem !important;
+  padding: 0.38rem 0.85rem !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  border-radius: 6px !important;
+  background: #FFFFFF !important;
+  color: #334155 !important;
+  border: 1px solid #CBD5E1 !important;
+  cursor: pointer !important;
+  transition: all 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) !important;
+}
+
+.btn-section-export i.fa-download {
+  color: #10B981 !important;
+}
+
+.btn-section-export:hover {
+  background: #F8FAFC !important;
+  border-color: #10B981 !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.15) !important;
+}
+
+.section-export-menu {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  right: 0 !important;
+  min-width: 200px !important;
+  background: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12) !important;
+  padding: 0.35rem 0 !important;
+  z-index: 1050 !important;
+}
+
+/* Dark Mode Deep Cohesion */
+body.dark-mode {
+  background-color: #090E17 !important;
+  color: #F1F5F9 !important;
+}
+
+body.dark-mode .topbar {
+  background: rgba(15, 23, 42, 0.92) !important;
+  border-bottom-color: #1E293B !important;
+}
+
+body.dark-mode .breadcrumb-title {
+  color: #F8FAFC !important;
+}
+
+body.dark-mode .search-input-top {
+  background: #0F172A !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
+}
+
+body.dark-mode .kpi-card,
+body.dark-mode .pillar-card,
+body.dark-mode .card-section,
+body.dark-mode .chart-card {
+  background: #0F172A !important;
+  border-color: #1E293B !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .kpi-value,
+body.dark-mode .pillar-title,
+body.dark-mode .card-title,
+body.dark-mode .chart-card-title {
+  color: #F8FAFC !important;
+}
+
+body.dark-mode .card-header-clean {
+  background: #0F172A !important;
+  border-bottom-color: #1E293B !important;
+}
+
+body.dark-mode .pillar-stat-row {
+  background: #1E293B !important;
+}
+
+body.dark-mode .pillar-stat-row strong {
+  color: #F8FAFC !important;
+}
+
+body.dark-mode .table-clean th {
+  background: #0B1120 !important;
+  color: #94A3B8 !important;
+  border-bottom-color: #1E293B !important;
+}
+
+body.dark-mode .table-clean td {
+  border-bottom-color: #1E293B !important;
+  color: #CBD5E1 !important;
+}
+
+body.dark-mode .table-clean tbody tr:hover {
+  background-color: rgba(255, 255, 255, 0.035) !important;
+}
+
+body.dark-mode .smart-filter-panel {
+  background: #0F172A !important;
+  border-bottom-color: #1E293B !important;
+}
+
+body.dark-mode .smart-input,
+body.dark-mode .smart-select {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
+}
+
+body.dark-mode .pagination-bar {
+  background: #0B1120 !important;
+  border-top-color: #1E293B !important;
+}
+
+body.dark-mode .btn-page {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
+}
+
+body.dark-mode .btn-section-export {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  color: #F1F5F9 !important;
+}
+
+body.dark-mode .section-export-menu {
+  background: #1E293B !important;
+  border-color: #334155 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* Responsive Fallbacks */
+@media (max-width: 1400px) {
+  .summary-hero-ribbon {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+@media (max-width: 800px) {
+  .summary-hero-ribbon {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+  .overview-charts-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 500px) {
+  .summary-hero-ribbon {
+    grid-template-columns: 1fr !important;
+  }
+}
