@@ -4113,8 +4113,20 @@ body.dark-mode .concession-kpi-clickable:hover {
    PORTAL MAIN BOTTOM FOOTER
    ============================================================= */
 .portal-main-footer {
-  height: 34px;
-  min-height: 34px;
+  height: 42px;
+  min-height: 42px;
+  background: var(--card-bg);
+  border-top: 1px solid var(--card-border);
+  border-radius: var(--radius-sm);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  padding: 0 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  position: static;
   background: #FFFFFF;
   border-top: 1px solid var(--card-border);
   padding: 0 1.25rem;

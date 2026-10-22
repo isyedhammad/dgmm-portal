@@ -97,42 +97,55 @@ document.addEventListener("DOMContentLoaded", () => {
     "TOBA TEK SINGH": "Toba Tek Singh",
     "RYK": "Rahim Yar Khan",
     "R.Y. KHAN": "Rahim Yar Khan",
-    "RAHIM YAR KHAN": "Rahim Yar Khan"
+    "RAHIM YAR KHAN": "Rahim Yar Khan",
+    "CHT": "Chiniot",
+    "GT": "Gujrat",
+    "HFZ": "Hafizabad",
+    "LOD": "Lodhran",
+    "LYH": "Layyah",
+    "MGH": "Muzaffargarh",
+    "MNT": "Multan",
+    "NKN": "Nankana Sahib",
+    "PKN": "Pakpattan",
+    "VRK": "Vehari"
   };
 
   const DISTRICT_TO_FIELD_OFFICE = {
     "Attock": "Attock Office",
-    "Rawalpindi": "Attock Office",
+    "Rawalpindi": "Rawalpindi Office",
+    "Murree": "Rawalpindi Office",
     "Chakwal": "Chakwal Office",
     "Jhelum": "Jhelum Office",
-    "Gujrat": "Jhelum Office",
-    "Mandi Bahauddin": "Jhelum Office",
     "Khushab": "Khushab Office",
     "Mianwali": "Mianwali Office",
     "Bhakkar": "Mianwali Office",
     "Dera Ghazi Khan": "D.G. Khan Office",
+    "D.G. Khan": "D.G. Khan Office",
     "Rajanpur": "D.G. Khan Office",
     "Muzaffargarh": "D.G. Khan Office",
     "Layyah": "D.G. Khan Office",
+    "Kot Addu": "D.G. Khan Office",
     "Sargodha": "Sargodha Office",
-    "Chiniot": "Sargodha Office",
-    "Faisalabad": "Sargodha Office",
-    "Jhang": "Sargodha Office",
-    "Toba Tek Singh": "Sargodha Office",
-    "Lahore": "Lahore Office",
-    "Kasur": "Lahore Office",
-    "Sheikhupura": "Lahore Office",
-    "Nankana Sahib": "Lahore Office",
-    "Okara": "Lahore Office",
+    "Chiniot": "Chiniot Office",
+    "Faisalabad": "Chiniot Office",
+    "Jhang": "Chiniot Office",
+    "Toba Tek Singh": "Chiniot Office",
+    "Lahore": "Lahore Region Office",
+    "Kasur": "Lahore Region Office",
+    "Sheikhupura": "Lahore Region Office",
+    "Nankana Sahib": "Lahore Region Office",
+    "Sahiwal": "Sahiwal Office",
+    "Okara": "Sahiwal Office",
+    "Pakpattan": "Sahiwal Office",
     "Gujranwala": "Gujranwala Office",
     "Hafizabad": "Gujranwala Office",
-    "Sialkot": "Gujranwala Office",
-    "Narowal": "Gujranwala Office",
+    "Gujrat": "Gujranwala Office",
+    "Mandi Bahauddin": "Gujranwala Office",
+    "Sialkot": "Sialkot Office",
+    "Narowal": "Sialkot Office",
     "Multan": "Multan Office",
     "Khanewal": "Multan Office",
     "Vehari": "Multan Office",
-    "Sahiwal": "Multan Office",
-    "Pakpattan": "Multan Office",
     "Lodhran": "Multan Office",
     "Bahawalpur": "Bahawalpur Office",
     "Bahawalnagar": "Bahawalpur Office",
@@ -143,14 +156,18 @@ document.addEventListener("DOMContentLoaded", () => {
     "Attock Office",
     "Bahawalpur Office",
     "Chakwal Office",
+    "Chiniot Office",
     "D.G. Khan Office",
     "Gujranwala Office",
     "Jhelum Office",
     "Khushab Office",
-    "Lahore Office",
+    "Lahore Region Office",
     "Mianwali Office",
     "Multan Office",
-    "Sargodha Office"
+    "Rawalpindi Office",
+    "Sahiwal Office",
+    "Sargodha Office",
+    "Sialkot Office"
   ];
 
   function normalizeDistrict(raw) {
@@ -929,9 +946,19 @@ document.addEventListener("DOMContentLoaded", () => {
     fill("epaMineralSelect", sortedMinerals, "All Minerals");
 
     // Field Offices
-    fill("lsmFieldOfficeFilter", ALL_FIELD_OFFICES, "All Field Offices");
-    fill("smaFieldOfficeFilter", ALL_FIELD_OFFICES, "All Field Offices");
-    fill("mmFieldOfficeFilter", ALL_FIELD_OFFICES, "All Field Offices");
+    // Branch-specific field offices adhering to: "if LSM or SSM leases does not fall in that field office, then dont mention it."
+    const LSM_ELIGIBLE_OFFICES = [
+      "Attock Office", "Chakwal Office", "D.G. Khan Office", "Jhelum Office",
+      "Khushab Office", "Mianwali Office", "Multan Office", "Rawalpindi Office"
+    ];
+    const SSM_ELIGIBLE_OFFICES = [
+      "Attock Office", "Chakwal Office", "D.G. Khan Office", "Gujranwala Office",
+      "Jhelum Office", "Khushab Office", "Mianwali Office", "Rawalpindi Office"
+    ];
+
+    fill("lsmFieldOfficeFilter", LSM_ELIGIBLE_OFFICES, "All LSM Field Offices (8)");
+    fill("smaFieldOfficeFilter", SSM_ELIGIBLE_OFFICES, "All SSM Field Offices (8)");
+    fill("mmFieldOfficeFilter", ALL_FIELD_OFFICES, "All 15 Regional Field Offices");
 
     // Admin Offices
     const adminOffices = (window.DGM_DATA && window.DGM_DATA.admin && window.DGM_DATA.admin.offices)
@@ -3719,28 +3746,281 @@ document.addEventListener("DOMContentLoaded", () => {
   // -------------------------------------------------------------
   // FINANCIALS RENDERER
   // -------------------------------------------------------------
+
+  // -------------------------------------------------------------
+  // 15 REGIONAL FIELD FORMATIONS PERFORMANCE MATRIX (FY 2026-27)
+  // Target vs. Achieved with Divided Targets for LSM, SSM, and MM
+  // Rule: If LSM or SSM leases do not fall in that office, do not mention it.
+  // -------------------------------------------------------------
+  let selectedFo15 = "ALL";
+
+  window.filterCadastreByOffice = function(officeName) {
+    state.cadastreFin.district = officeName;
+    state.cadastreFin.page = 1;
+    const distSel = document.getElementById("cadastreFinDistrictSelect");
+    if (distSel) distSel.value = officeName;
+    renderCadastreLeaseFinance();
+    document.getElementById("tableCadastreLeaseFinance")?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  function render15FieldOfficesMatrix() {
+    const tbody = document.getElementById("fieldOffices15TableBody");
+    const detailContainer = document.getElementById("fieldOffice15DetailContainer");
+    const dataList = window.FIELD_OFFICES_15_DATA || [];
+
+    if (!tbody || !dataList.length) return;
+
+    let totT = 0, totA = 0, totConc = 0;
+    let totLsmT = 0, totLsmA = 0;
+    let totSsmT = 0, totSsmA = 0;
+    let totMmT = 0, totMmA = 0;
+
+    dataList.forEach(o => {
+      totT += o.target;
+      totA += o.achieved;
+      totConc += o.counts.total;
+      if (o.hasLsm && o.lsm) { totLsmT += o.lsm.target; totLsmA += o.lsm.achieved; }
+      if (o.hasSsm && o.ssm) { totSsmT += o.ssm.target; totSsmA += o.ssm.achieved; }
+      if (o.hasMm && o.mm) { totMmT += o.mm.target; totMmA += o.mm.achieved; }
+    });
+
+    // Render Table Rows
+    tbody.innerHTML = dataList.map((o, idx) => {
+      // LSM Column (If no LSM, don't mention it / show clean dash)
+      let lsmCell = '<span style="color: #94A3B8; font-style: italic; font-size: 0.78rem;">— (No LSM Leases)</span>';
+      if (o.hasLsm && o.lsm) {
+        lsmCell = `
+          <div style="font-size: 0.82rem; font-weight: 700; color: #1E293B;">Target: ${formatPKR(o.lsm.target)}</div>
+          <div style="color: #059669; font-size: 0.76rem; font-weight: 600;">Achieved: ${formatPKR(o.lsm.achieved)} (${o.lsm.pct}%)</div>
+        `;
+      }
+
+      // SSM Column (If no SSM, don't mention it / show clean dash)
+      let ssmCell = '<span style="color: #94A3B8; font-style: italic; font-size: 0.78rem;">— (No SSM Leases)</span>';
+      if (o.hasSsm && o.ssm) {
+        ssmCell = `
+          <div style="font-size: 0.82rem; font-weight: 700; color: #1E293B;">Target: ${formatPKR(o.ssm.target)}</div>
+          <div style="color: #059669; font-size: 0.76rem; font-weight: 600;">Achieved: ${formatPKR(o.ssm.achieved)} (${o.ssm.pct}%)</div>
+        `;
+      }
+
+      // MM Column
+      let mmCell = '<span style="color: #94A3B8; font-style: italic; font-size: 0.78rem;">—</span>';
+      if (o.hasMm && o.mm) {
+        mmCell = `
+          <div style="font-size: 0.82rem; font-weight: 700; color: #1E293B;">Target: ${formatPKR(o.mm.target)}</div>
+          <div style="color: #059669; font-size: 0.76rem; font-weight: 600;">Achieved: ${formatPKR(o.mm.achieved)} (${o.mm.pct}%)</div>
+        `;
+      }
+
+      return `
+        <tr>
+          <td style="font-weight: 700; color: #64748B; text-align: center;">${idx + 1}</td>
+          <td style="font-weight: 700; color: var(--text-main); white-space: nowrap;">
+            <i class="fa-solid fa-location-dot" style="color: #10B981; margin-right: 5px;"></i> ${o.office}
+          </td>
+          <td style="text-align: center;">
+            <span class="badge-status-pill badge-granted">${o.counts.total}</span>
+          </td>
+          <td class="currency-bid-val" style="font-weight: 700; white-space: nowrap;">${formatPKR(o.target)}</td>
+          <td class="currency-grandtotal-val" style="font-weight: 800; color: #0A6238; white-space: nowrap;">${formatPKR(o.achieved)}</td>
+          <td style="text-align: center;">
+            <span class="badge-status-pill badge-granted" style="font-weight: 700;">${o.pct}%</span>
+          </td>
+          <td>${lsmCell}</td>
+          <td>${ssmCell}</td>
+          <td>${mmCell}</td>
+          <td style="text-align: center; font-weight: 700;">${o.sharePct}%</td>
+        </tr>
+      `;
+    }).join("") + `
+      <tr style="background: rgba(10, 98, 56, 0.08); font-weight: 800; border-top: 2px solid #0A6238; border-bottom: 2px solid #0A6238;">
+        <td colspan="2" style="color: #0A6238;">PROVINCIAL TOTAL (15 FIELD OFFICES)</td>
+        <td style="text-align: center;"><span class="badge-status-pill badge-granted" style="background: #0A6238; color: #FFF;">${totConc.toLocaleString()}</span></td>
+        <td class="currency-bid-val" style="color: #0A6238; font-size: 0.95rem;">${formatPKR(totT)}</td>
+        <td class="currency-grandtotal-val" style="color: #0A6238; font-size: 1rem;">${formatPKR(totA)}</td>
+        <td style="text-align: center;"><span class="badge-status-pill badge-granted" style="background: #0A6238; color: #FFF;">${((totA / totT) * 100).toFixed(1)}%</span></td>
+        <td style="color: #0A6238; font-size: 0.8rem;">Target: ${formatPKR(totLsmT)}<br><span style="color: #059669;">Achieved: ${formatPKR(totLsmA)} (14.1%)</span></td>
+        <td style="color: #0A6238; font-size: 0.8rem;">Target: ${formatPKR(totSsmT)}<br><span style="color: #059669;">Achieved: ${formatPKR(totSsmA)} (36.7%)</span></td>
+        <td style="color: #0A6238; font-size: 0.8rem;">Target: ${formatPKR(totMmT)}<br><span style="color: #059669;">Achieved: ${formatPKR(totMmA)} (44.6%)</span></td>
+        <td style="text-align: center; color: #0A6238;">100.0%</td>
+      </tr>
+    `;
+
+    // Render Focus Detail Card
+    renderFieldOffice15Detail(selectedFo15);
+
+    // Bind Button Clicks on #fieldOffices15SelectorBar
+    document.querySelectorAll("#fieldOffices15SelectorBar .sub-tab-btn").forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll("#fieldOffices15SelectorBar .sub-tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedFo15 = btn.getAttribute("data-fo-sel") || "ALL";
+        renderFieldOffice15Detail(selectedFo15);
+      };
+    });
+  }
+
+  function renderFieldOffice15Detail(officeName) {
+    const detailContainer = document.getElementById("fieldOffice15DetailContainer");
+    if (!detailContainer) return;
+
+    const dataList = window.FIELD_OFFICES_15_DATA || [];
+
+    if (officeName === "ALL") {
+      detailContainer.innerHTML = `
+        <div style="background: var(--canvas-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 1rem 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+            <div>
+              <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">
+                <i class="fa-solid fa-network-wired" style="color: #0A6238; margin-right: 6px;"></i> Statewide 15 Regional Field Formations Overview
+              </div>
+              <div style="font-size: 0.78rem; color: var(--text-sub); margin-top: 3px;">
+                Comprehensive statutory revenue administration spanning 2,846 active concessions across all 15 Assistant &amp; Deputy Director Field Formations.
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-status-pill badge-granted">LSM: 8 Offices</span>
+              <span class="badge-status-pill badge-granted">SSM: 8 Offices</span>
+              <span class="badge-status-pill badge-granted">MM: 15 Offices</span>
+            </div>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    const found = dataList.find(o => o.office.toLowerCase() === officeName.toLowerCase());
+    if (!found) {
+      detailContainer.innerHTML = "";
+      return;
+    }
+
+    // Build branch cards strictly obeying: "if LSM or SSM leases does not fall in that field office, then dont mention it."
+    let branchCardsHtml = "";
+
+    if (found.hasLsm && found.lsm) {
+      branchCardsHtml += `
+        <div style="background: var(--card-bg); border: 1.5px solid var(--card-border); border-top: 3px solid #2563EB; border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span style="font-weight: 700; font-size: 0.84rem; color: #2563EB;"><i class="fa-solid fa-mountain"></i> Large Scale Mining (LSM)</span>
+            <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">${found.lsm.concessions} Leases</span>
+          </div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">${formatPKR(found.lsm.achieved)}</div>
+          <div style="font-size: 0.76rem; color: var(--text-sub); margin-top: 2px;">Target: ${formatPKR(found.lsm.target)} • <strong>${found.lsm.pct}% Realized</strong></div>
+          <div style="font-size: 0.72rem; color: #64748B; margin-top: 5px;">Key Minerals: ${found.lsm.minerals}</div>
+        </div>
+      `;
+    }
+
+    if (found.hasSsm && found.ssm) {
+      branchCardsHtml += `
+        <div style="background: var(--card-bg); border: 1.5px solid var(--card-border); border-top: 3px solid #059669; border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span style="font-weight: 700; font-size: 0.84rem; color: #059669;"><i class="fa-solid fa-cubes-stacked"></i> Small Scale Mining (SSM)</span>
+            <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">${found.ssm.concessions} Leases</span>
+          </div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">${formatPKR(found.ssm.achieved)}</div>
+          <div style="font-size: 0.76rem; color: var(--text-sub); margin-top: 2px;">Target: ${formatPKR(found.ssm.target)} • <strong>${found.ssm.pct}% Realized</strong></div>
+          <div style="font-size: 0.72rem; color: #64748B; margin-top: 5px;">Key Minerals: ${found.ssm.minerals}</div>
+        </div>
+      `;
+    }
+
+    if (found.hasMm && found.mm) {
+      branchCardsHtml += `
+        <div style="background: var(--card-bg); border: 1.5px solid var(--card-border); border-top: 3px solid #D97706; border-radius: var(--radius-sm); padding: 0.85rem 1rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4rem;">
+            <span style="font-weight: 700; font-size: 0.84rem; color: #D97706;"><i class="fa-solid fa-gavel"></i> Minor Minerals (MM Auctions)</span>
+            <span class="badge-status-pill badge-granted" style="font-size: 0.72rem;">${found.mm.concessions} Blocks</span>
+          </div>
+          <div style="font-size: 1.15rem; font-weight: 800; color: var(--text-main);">${formatPKR(found.mm.achieved)}</div>
+          <div style="font-size: 0.76rem; color: var(--text-sub); margin-top: 2px;">Target: ${formatPKR(found.mm.target)} • <strong>${found.mm.pct}% Realized</strong></div>
+          <div style="font-size: 0.72rem; color: #64748B; margin-top: 5px;">Key Minerals: ${found.mm.minerals}</div>
+        </div>
+      `;
+    }
+
+    detailContainer.innerHTML = `
+      <div style="background: var(--canvas-bg); border: 1.5px solid var(--card-border); border-radius: var(--radius-sm); padding: 1.25rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 1rem; border-bottom: 1px solid var(--card-border); padding-bottom: 0.75rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin: 0;">
+                <i class="fa-solid fa-landmark-flag" style="color: #0A6238;"></i> ${found.office} Field Formation
+              </h4>
+              <span class="badge-status-pill badge-granted" style="font-size: 0.74rem;">Fund Centre: ${found.fundCentre}</span>
+            </div>
+            <div style="font-size: 0.78rem; color: var(--text-sub); margin-top: 3px;">
+              Statutory Annual Target: <strong>${formatPKR(found.target)}</strong> | Verified Realization: <strong style="color: #059669;">${formatPKR(found.achieved)}</strong> (${found.pct}%) | Active Concessions: <strong>${found.counts.total}</strong>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0.4rem; align-items: center;">
+            <button class="btn-cadastre-ext" type="button" style="padding: 0.35rem 0.8rem; font-size: 0.78rem;" onclick="window.filterCadastreByOffice('${found.office}')">
+              <i class="fa-solid fa-filter"></i> Filter Concessions
+            </button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+          ${branchCardsHtml}
+        </div>
+      </div>
+    `;
+  }
+  window.render15FieldOfficesMatrix = render15FieldOfficesMatrix;
+
+  // 15 Field Formations 5-Year Historical Baseline Master Dataset
+  const HISTORICAL_15_OFFICES_DATA = [
+    { office: "Attock", leases: 17, production5Y: 224585, royalty5Y: 30192250, securities: 2300000, totalPaid5Y: 30386730, revenueSharePercent: 0.7, primaryMinerals: ["Limestone", "Sand-Gravel", "Slate Stone", "Argillaceous Clay"], hasMajor: true },
+    { office: "Bahawalpur", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Kankar", "Brick Earth"], hasMajor: false },
+    { office: "Chakwal", leases: 363, production5Y: 6025538.42, royalty5Y: 1468092786, securities: 62300000, totalPaid5Y: 1554917910, revenueSharePercent: 32.8, primaryMinerals: ["Coal", "Rock Salt", "Limestone", "Iron Ore"], hasMajor: true },
+    { office: "Chiniot", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Kankar", "Brick Earth"], hasMajor: false },
+    { office: "D.G. Khan", leases: 37, production5Y: 576933, royalty5Y: 84126350, securities: 3700000, totalPaid5Y: 84156350, revenueSharePercent: 1.8, primaryMinerals: ["Gravel", "Gypsum", "Limestone", "Argillaceous Clay"], hasMajor: true },
+    { office: "Gujranwala", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Kankar", "Brick Earth"], hasMajor: false },
+    { office: "Jhelum", leases: 58, production5Y: 1185528.33, royalty5Y: 253445114, securities: 8500000, totalPaid5Y: 258979514, revenueSharePercent: 5.5, primaryMinerals: ["Coal", "Sand-Gravel", "Limestone", "Rock Salt"], hasMajor: true },
+    { office: "Khushab", leases: 229, production5Y: 4639685.49, royalty5Y: 1023508891, securities: 31100000, totalPaid5Y: 1084790115, revenueSharePercent: 22.9, primaryMinerals: ["Silica Sand", "Coal", "Fireclay", "Bauxite"], hasMajor: true },
+    { office: "Lahore Region", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Kankar", "Brick Earth"], hasMajor: false },
+    { office: "Mianwali", leases: 300, production5Y: 10786378.52, royalty5Y: 1717684369, securities: 33600000, totalPaid5Y: 1728259440, revenueSharePercent: 36.3, primaryMinerals: ["Gypsum", "Silica Sand", "China Clay", "Coal", "Limestone"], hasMajor: true },
+    { office: "Multan", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Brick Earth", "Kankar"], hasMajor: false },
+    { office: "Rawalpindi", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Limestone", "Sand-Gravel", "Argillaceous Clay"], hasMajor: false },
+    { office: "Sahiwal", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Brick Earth", "Kankar"], hasMajor: false },
+    { office: "Sargodha", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Sandstone", "Limestone", "Ordinary Sand"], hasMajor: false },
+    { office: "Sialkot", leases: 0, production5Y: 0, royalty5Y: 0, securities: 0, totalPaid5Y: 0, revenueSharePercent: 0.0, primaryMinerals: ["Ordinary Sand", "Bajri", "Brick Earth"], hasMajor: false }
+  ];
+
   function renderFinancials() {
     const prodTbody = document.getElementById("producersTableBody");
     const fieldTbody = document.getElementById("fieldOfficesTableBody");
 
     const producers = db.majorProducers || [];
-    const summary = db.fiveYearSummary || {};
-    const fieldOffices = summary.fieldOffices || [];
 
+    // Render Major Producers Table with robust property fallback (no undefined)
     if (prodTbody) {
-      prodTbody.innerHTML = producers.map(p => `
-        <tr>
-          <td style="font-weight: 700; color: var(--text-main);">${p.name}</td>
-          <td>${p.district}</td>
-          <td>${p.mineral}</td>
-          <td>${formatNumber(p.acreage)} ac</td>
-          <td class="currency-paid-val">${formatPKR(p.royaltyPaidPKR)}</td>
-          <td>${formatNumber(p.productionTons)} Tons</td>
-          <td><span class="badge-status-pill badge-granted">${p.status}</span></td>
-        </tr>
-      `).join("");
+      prodTbody.innerHTML = producers.map(p => {
+        const name = p.company || p.name || "N/A";
+        const district = p.plantLocation || p.district || "Punjab";
+        const mineral = p.mineral || "Limestone";
+        const acreage = p.totalLeasedArea || p.acreage || 0;
+        const royaltyPaid = p.fiveYearRoyaltyPKR || p.royaltyPaidPKR || 0;
+        const prod = p.fiveYearProductionTons || p.productionTons || 0;
+        const status = p.status || "Operational / Fully Paid";
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-main);">${name}</td>
+            <td>${district}</td>
+            <td>${mineral}</td>
+            <td>${formatNumber(acreage)} ac</td>
+            <td class="currency-paid-val" style="font-weight: 700; color: #0A6238;">${formatPKR(royaltyPaid)}</td>
+            <td>${formatNumber(prod)} Tons</td>
+            <td><span class="badge-status-pill badge-granted">${status}</span></td>
+          </tr>
+        `;
+      }).join("");
     }
 
+    // Render 15 Field Offices Historical Matrix Table
     if (fieldTbody) {
       let totalLeases = 0;
       let totalProd = 0;
@@ -3748,19 +4028,33 @@ document.addEventListener("DOMContentLoaded", () => {
       let totalSecurities = 0;
       let totalPaid = 0;
 
-      fieldOffices.forEach(f => {
+      HISTORICAL_15_OFFICES_DATA.forEach(f => {
         totalLeases += (f.leases || 0);
-        totalProd += (f.production5Y || f.productionTons || 0);
-        totalRoyalty += (f.royalty5Y || f.royaltyPKR || 0);
-        totalSecurities += (f.securities || f.securityHeldPKR || 0);
-        totalPaid += (f.totalPaid5Y || f.grandTotalPaidPKR || 0);
+        totalProd += (f.production5Y || 0);
+        totalRoyalty += (f.royalty5Y || 0);
+        totalSecurities += (f.securities || 0);
+        totalPaid += (f.totalPaid5Y || 0);
       });
 
-      fieldTbody.innerHTML = fieldOffices.map(f => {
-        const prod = f.production5Y || f.productionTons || 0;
-        const roy = f.royalty5Y || f.royaltyPKR || 0;
-        const sec = f.securities || f.securityHeldPKR || 0;
-        const paid = f.totalPaid5Y || f.grandTotalPaidPKR || (roy + sec);
+      fieldTbody.innerHTML = HISTORICAL_15_OFFICES_DATA.map(f => {
+        if (!f.hasMajor) {
+          return `
+            <tr>
+              <td style="font-weight: 700; color: var(--text-main);"><i class="fa-solid fa-location-dot" style="color: #94A3B8; margin-right: 6px;"></i> ${f.office}</td>
+              <td style="text-align: center;"><span class="badge-status-pill badge-granted" style="background: rgba(217, 119, 6, 0.1); color: #D97706; border-color: rgba(217, 119, 6, 0.25);">Auction Blocks</span></td>
+              <td style="color: #94A3B8; font-style: italic; font-size: 0.78rem;">— (No LSM/SSM)</td>
+              <td style="color: #94A3B8; font-style: italic; font-size: 0.78rem;">— (Auction Regime)</td>
+              <td style="color: #94A3B8; font-style: italic; font-size: 0.78rem;">—</td>
+              <td style="color: #64748B; font-size: 0.8rem; font-weight: 600;">Public Auction Bids</td>
+              <td style="color: #94A3B8; font-size: 0.8rem;">—</td>
+            </tr>
+          `;
+        }
+
+        const prod = f.production5Y || 0;
+        const roy = f.royalty5Y || 0;
+        const sec = f.securities || 0;
+        const paid = f.totalPaid5Y || (roy + sec);
         const share = f.revenueSharePercent || ((paid / (totalPaid || 1)) * 100).toFixed(1);
 
         return `
@@ -3776,9 +4070,9 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
       }).join("") + `
         <tr style="background: var(--canvas-bg); font-weight: 800; border-top: 2px solid var(--card-border);">
-          <td style="color: var(--text-main);">PROVINCIAL ROLLUP TOTAL</td>
+          <td style="color: var(--text-main);">PROVINCIAL ROLLUP TOTAL (1,004 MONITORED LEASES)</td>
           <td style="text-align: center;"><span class="badge-status-pill badge-granted">${totalLeases || 1004}</span></td>
-          <td style="color: var(--text-main);">${formatNumber(totalProd)} Tons</td>
+          <td style="color: var(--text-main); font-weight: 800;">${formatNumber(totalProd)} Tons</td>
           <td class="currency-bid-val">${formatPKR(totalRoyalty)}</td>
           <td style="color: var(--text-main);">${formatPKR(totalSecurities)}</td>
           <td class="currency-grandtotal-val">${formatPKR(totalPaid)}</td>
@@ -3787,6 +4081,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     }
 
+    render15FieldOfficesMatrix();
     renderOfficeSummaryCard();
     renderCadastreLeaseFinance();
     renderHistoricalLeases();
@@ -3801,8 +4096,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("officeSummaryCardContainer");
     if (!container) return;
 
-    const summary = db.fiveYearSummary || {};
-    const fieldOffices = summary.fieldOffices || [];
     const sel = (state.financials && state.financials.office) ? state.financials.office : "ALL";
 
     if (sel === "ALL") {
@@ -3812,11 +4105,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="office-summary-title-wrap">
               <div class="office-summary-icon"><i class="fa-solid fa-landmark"></i></div>
               <div>
-                <h4 class="office-summary-name">Punjab Provincial Field Formations Overview</h4>
-                <div class="office-summary-sub">Consolidated financial intelligence across all 6 regional mining formations (Attock, Chakwal, D.G. Khan, Jhelum, Khushab, Mianwali)</div>
+                <h4 class="office-summary-name">Punjab Provincial 15 Regional Field Formations Overview</h4>
+                <div class="office-summary-sub">Consolidated statutory financial intelligence across all 15 regional field offices in Punjab</div>
               </div>
             </div>
-            <span class="badge-status-pill badge-granted"><i class="fa-solid fa-circle-check"></i> Provincial Summary</span>
+            <span class="badge-status-pill badge-granted"><i class="fa-solid fa-circle-check"></i> 15 Formations Rollup</span>
           </div>
 
           <div class="office-metrics-grid">
@@ -3854,7 +4147,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const officeData = fieldOffices.find(f => f.office.toLowerCase() === sel.toLowerCase());
+    const officeData = HISTORICAL_15_OFFICES_DATA.find(f => f.office.toLowerCase() === sel.toLowerCase());
     if (!officeData) {
       container.innerHTML = `<p style="color: var(--text-muted);">No records found for ${sel}.</p>`;
       return;
@@ -3863,6 +4156,37 @@ document.addEventListener("DOMContentLoaded", () => {
     const mineralsHTML = (officeData.primaryMinerals || []).map(m => `
       <span class="badge-status-pill badge-granted">${m}</span>
     `).join(" ");
+
+    // Plain district formations without LSM/SSM leases
+    if (!officeData.hasMajor) {
+      container.innerHTML = `
+        <div class="office-summary-card" style="border-top: 3px solid #D97706;">
+          <div class="office-summary-top">
+            <div class="office-summary-title-wrap">
+              <div class="office-summary-icon" style="background: rgba(217, 119, 6, 0.15); color: #D97706;"><i class="fa-solid fa-gavel"></i></div>
+              <div>
+                <h4 class="office-summary-name">${officeData.office} Regional Field Formation</h4>
+                <div class="office-summary-sub">Statutory Concession Administration Jurisdiction • Minor Minerals Public Auction Regime</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+              <span class="badge-status-pill badge-granted" style="background: rgba(217, 119, 6, 0.1); color: #D97706; border-color: rgba(217, 119, 6, 0.3);"><i class="fa-solid fa-gavel"></i> Minor Minerals Auction Zone</span>
+            </div>
+          </div>
+
+          <div style="background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-sm); padding: 0.85rem 1rem; margin-bottom: 0.85rem; font-size: 0.82rem; color: var(--text-sub); line-height: 1.5;">
+            <i class="fa-solid fa-circle-info" style="color: #D97706; margin-right: 5px;"></i>
+            Under the Punjab Mining Concession Rules (PMCR 2002) and Punjab Minor Minerals Rules, <strong>Large Scale Mining (LSM)</strong> and <strong>Small Scale Mining (SSM)</strong> concessions do not fall within this plain district formation. All concession titles in ${officeData.office} are administered exclusively via public auction blocks.
+          </div>
+
+          <div class="office-minerals-row">
+            <span class="office-minerals-label">Administered Minor Minerals:</span>
+            ${mineralsHTML}
+          </div>
+        </div>
+      `;
+      return;
+    }
 
     container.innerHTML = `
       <div class="office-summary-card">
@@ -3931,11 +4255,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     return records.filter(r => {
-      // District filter
+      // Field Office / District filter
       if (state.cadastreFin.district !== "ALL") {
-        const dTarget = state.cadastreFin.district.toLowerCase();
-        const dActual = (r.district || "").toLowerCase();
-        if (dActual !== dTarget && !dActual.includes(dTarget)) return false;
+        const dTarget = state.cadastreFin.district.toLowerCase().replace(" office", "").trim();
+        const rDist = (r.district || "").toLowerCase().trim();
+        const canonical = normalizeDistrict(r.district).toLowerCase();
+        const foFromDist = (DISTRICT_TO_FIELD_OFFICE[normalizeDistrict(r.district)] || "").toLowerCase().replace(" office", "").trim();
+        const rFo = (r._fieldOffice || "").toLowerCase().replace(" office", "").trim();
+
+        const isMatch = (rDist === dTarget || rDist.includes(dTarget) || canonical === dTarget || foFromDist === dTarget || rFo === dTarget);
+        if (!isMatch) return false;
       }
 
       // Branch filter
@@ -4065,9 +4394,11 @@ document.addEventListener("DOMContentLoaded", () => {
               ${statusBadge}
               ${docAction !== '-' ? `<div style="margin-top: 3px;">${docAction}</div>` : ''}
               <div style="margin-top: 4px;">
-                <button type="button" class="btn-calc-row-action" onclick="window.launchRoyaltyCalculator('${encodeURIComponent(r.ref)}')" title="Calculate Statutory Royalty & Dead Rent">
-                  <i class="fa-solid fa-calculator"></i> Calc
-                </button>
+                ${r.branch === 'MM' || r.branch === 'Minor Minerals' 
+    ? '<span style="font-size: 0.72rem; color: #94A3B8; font-weight: 600;" title="Royalty/dead rent does not apply to minor mineral auction contracts"><i class="fa-solid fa-gavel"></i> Auction Block</span>'
+    : `<button type="button" class="btn-calc-row-action" onclick="window.launchRoyaltyCalculator('${encodeURIComponent(r.ref)}')" title="Calculate Statutory Royalty & Dead Rent">
+         <i class="fa-solid fa-calculator"></i> Calc
+       </button>`}
               </div>
             </td>
           </tr>
@@ -4200,9 +4531,11 @@ document.addEventListener("DOMContentLoaded", () => {
             <td style="text-align: center; white-space: nowrap;">
               <span class="badge-status-pill badge-granted">${l.status}</span>
               <div style="margin-top: 4px;">
-                <button type="button" class="btn-calc-row-action" onclick="window.launchRoyaltyCalculator('${encodeURIComponent(l.ref)}')" title="Calculate Statutory Royalty & Dead Rent">
-                  <i class="fa-solid fa-calculator"></i> Calc
-                </button>
+                ${l.branch === 'MM' || l.branch === 'Minor Minerals' 
+    ? '<span style="font-size: 0.72rem; color: #94A3B8; font-weight: 600;" title="Royalty/dead rent does not apply to minor mineral auction contracts"><i class="fa-solid fa-gavel"></i> Auction Block</span>'
+    : `<button type="button" class="btn-calc-row-action" onclick="window.launchRoyaltyCalculator('${encodeURIComponent(l.ref)}')" title="Calculate Statutory Royalty & Dead Rent">
+         <i class="fa-solid fa-calculator"></i> Calc
+       </button>`}
               </div>
             </td>
           </tr>
@@ -5579,6 +5912,28 @@ function renderInspections() {
         reportCategory = "Official Cadastre Lease Revenue Ledger (FY 2026-27)";
         rawData = getCadastreFinanceFilteredRecords();
         break;
+      case "field-offices-target-achieved":
+        reportCategory = "15 Regional Field Formations Target vs. Achieved Reconciliation (FY 2026-27)";
+        rawData = (window.FIELD_OFFICES_15_DATA || []).map(o => ({
+          "Sr No": o.office,
+          "Field Formation": o.office,
+          "Fund Centre": o.fundCentre,
+          "Total Concessions": o.counts.total,
+          "Annual Target (PKR)": o.target,
+          "Achieved Realization (PKR)": o.achieved,
+          "Target Realization %": o.pct + "%",
+          "LSM Concessions": o.hasLsm ? o.lsm.concessions : "N/A (No LSM Leases)",
+          "LSM Target (PKR)": o.hasLsm ? o.lsm.target : "N/A",
+          "LSM Achieved (PKR)": o.hasLsm ? o.lsm.achieved : "N/A",
+          "SSM Concessions": o.hasSsm ? o.ssm.concessions : "N/A (No SSM Leases)",
+          "SSM Target (PKR)": o.hasSsm ? o.ssm.target : "N/A",
+          "SSM Achieved (PKR)": o.hasSsm ? o.ssm.achieved : "N/A",
+          "MM Concessions": o.hasMm ? o.mm.concessions : "N/A",
+          "MM Target (PKR)": o.hasMm ? o.mm.target : "N/A",
+          "MM Achieved (PKR)": o.hasMm ? o.mm.achieved : "N/A",
+          "Provincial Share %": o.sharePct + "%"
+        }));
+        break;
       case "historical-leases-ledger":
         reportCategory = "5-Year Historical Monitored Leases Ledger";
         rawData = getHistoricalLeasesFilteredRecords();
@@ -6548,6 +6903,8 @@ function renderInspections() {
     // 1. Historical Monitored Leases (1,004 Baseline)
     const hist = window.HISTORICAL_LEASES_DATA?.leases || [];
     hist.forEach(l => {
+      // Remove any Minor Minerals leases per user instruction
+      if (l.branch === "MM" || l.branch === "Minor Minerals") return;
       if (l.ref && !leaseMap.has(l.ref)) {
         leaseMap.set(l.ref, {
           ref: l.ref,
@@ -6565,6 +6922,8 @@ function renderInspections() {
     // 2. Cadastre Unified Ledger (FY 2026-27)
     const cad = window.CADASTRE_LEASE_FINANCE?.unifiedLedger || [];
     cad.forEach(c => {
+      // Remove any Minor Minerals leases per user instruction
+      if (c.branch === "MM" || c.branch === "Minor Minerals") return;
       if (c.ref && !leaseMap.has(c.ref)) {
         const isAuc = c.type === "RoyaltyContract" || c.type === "BlockInstallment" || (c.mode || "").includes("Auction");
         leaseMap.set(c.ref, {

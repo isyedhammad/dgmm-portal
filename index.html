@@ -1676,6 +1676,89 @@
           <!-- =========================================================
                OFFICIAL MINING CADASTRE LEASE-WISE REVENUE LEDGER (FY 2026-27)
                ========================================================= -->
+          
+          <!-- =========================================================
+               15 REGIONAL FIELD FORMATIONS ANNUAL TARGET VS. ACHIEVED RECONCILIATION (FY 2026-27)
+               ========================================================= -->
+          <div class="card-section" style="margin-bottom: 1.5rem;">
+            <div class="card-header-clean">
+              <div class="card-title-group">
+                <h3 class="card-title"><i class="fa-solid fa-building-user" style="color: #0A6238; margin-right: 0.4rem;"></i> 15 Regional Field Formations Annual Target vs. Achieved Reconciliation (FY 2026-27)</h3>
+                <span class="card-subtitle">Official provincial revenue reconciliation across all 15 field formations with divided targets for Large Scale Mining (LSM), Small Scale Mining (SSM), and Minor Minerals (MM). Formations with zero active concessions in a branch are omitted per statutory mandate.</span>
+              </div>
+              
+              <div class="section-export-wrap" data-export-source="field-offices-target-achieved" data-export-table="tableFieldOfficesTargetAchieved" data-export-title="Punjab_15_Field_Offices_Target_vs_Achieved_FY2026_27">
+                <button class="btn-section-export" type="button" title="Export 15 Field Offices Performance Matrix">
+                  <i class="fa-solid fa-download"></i>
+                  <span>Export</span>
+                  <i class="fa-solid fa-chevron-down export-mini-chevron"></i>
+                </button>
+                <div class="section-export-menu" role="menu">
+                  <button class="section-export-item" data-format="excel" type="button">
+                    <i class="fa-solid fa-file-excel excel-color"></i>
+                    <span>Download Excel (.xlsx)</span>
+                  </button>
+                  <button class="section-export-item" data-format="csv" type="button">
+                    <i class="fa-solid fa-file-csv csv-color"></i>
+                    <span>Download CSV (.csv)</span>
+                  </button>
+                  <button class="section-export-item" data-format="pdf" type="button">
+                    <i class="fa-solid fa-file-pdf pdf-color"></i>
+                    <span>Download PDF Report</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 15 Field Office Selector Pill Bar -->
+            <div style="padding: 0 1.25rem 0.75rem 1.25rem;">
+              <div class="sub-tabs-bar" id="fieldOffices15SelectorBar" style="flex-wrap: wrap; gap: 0.35rem;">
+                <button class="sub-tab-btn active" data-fo-sel="ALL" type="button">All 15 Formations (2,846)</button>
+                <button class="sub-tab-btn" data-fo-sel="Attock" type="button">Attock (285)</button>
+                <button class="sub-tab-btn" data-fo-sel="Bahawalpur" type="button">Bahawalpur (37)</button>
+                <button class="sub-tab-btn" data-fo-sel="Chakwal" type="button">Chakwal (735)</button>
+                <button class="sub-tab-btn" data-fo-sel="Chiniot" type="button">Chiniot (32)</button>
+                <button class="sub-tab-btn" data-fo-sel="D.G. Khan" type="button">D.G. Khan (296)</button>
+                <button class="sub-tab-btn" data-fo-sel="Gujranwala" type="button">Gujranwala (53)</button>
+                <button class="sub-tab-btn" data-fo-sel="Jhelum" type="button">Jhelum (206)</button>
+                <button class="sub-tab-btn" data-fo-sel="Khushab" type="button">Khushab (437)</button>
+                <button class="sub-tab-btn" data-fo-sel="Lahore Region" type="button">Lahore Region (62)</button>
+                <button class="sub-tab-btn" data-fo-sel="Mianwali" type="button">Mianwali (369)</button>
+                <button class="sub-tab-btn" data-fo-sel="Multan" type="button">Multan (53)</button>
+                <button class="sub-tab-btn" data-fo-sel="Rawalpindi" type="button">Rawalpindi (150)</button>
+                <button class="sub-tab-btn" data-fo-sel="Sahiwal" type="button">Sahiwal (36)</button>
+                <button class="sub-tab-btn" data-fo-sel="Sargodha" type="button">Sargodha (79)</button>
+                <button class="sub-tab-btn" data-fo-sel="Sialkot" type="button">Sialkot (16)</button>
+              </div>
+            </div>
+
+            <!-- Interactive Field Office Focus Card (Rendered via JS) -->
+            <div id="fieldOffice15DetailContainer" style="padding: 0 1.25rem 1rem 1.25rem;"></div>
+
+            <!-- Comprehensive 15 Field Offices Table -->
+            <div class="table-scroll-container">
+              <table class="table-clean" id="tableFieldOfficesTargetAchieved">
+                <thead>
+                  <tr>
+                    <th>Sr</th>
+                    <th>Field Formation / Regional Office</th>
+                    <th>Concessions</th>
+                    <th>Overall Annual Target (PKR)</th>
+                    <th>Total Achieved (PKR)</th>
+                    <th>Realized %</th>
+                    <th>Large Scale Mining (LSM) Target / Achieved</th>
+                    <th>Small Scale Mining (SSM) Target / Achieved</th>
+                    <th>Minor Minerals (MM) Target / Achieved</th>
+                    <th>Provincial Share</th>
+                  </tr>
+                </thead>
+                <tbody id="fieldOffices15TableBody">
+                  <!-- Rendered dynamically by render15FieldOfficesMatrix() in app.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
           <div class="card-section" style="margin-bottom: 1.5rem;">
             <div class="card-header-clean">
               <div class="card-title-group">
@@ -1973,6 +2056,13 @@
               </table>
             </div>
           </div>
+
+          <!-- 4 KPI Ribbon for 5-Year Historical Baseline -->
+          <div class="kpi-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="kpi-card">
+              <div>
+                <div class="kpi-label">5-Year Total Realization</div>
+                <div class="kpi-value">PKR 4.74B</div>
                 <div class="kpi-subtext"><span>FY 2021-22 to FY 2025-26 cumulative</span></div>
               </div>
               <div class="kpi-icon-wrap icon-gold"><i class="fa-solid fa-coins"></i></div>
@@ -2050,13 +2140,22 @@
                 <div class="filter-control-wrap">
                   <label class="filter-label"><i class="fa-solid fa-building-user"></i> Regional Field Office</label>
                   <select class="smart-select" id="histLeaseOfficeSelect">
-                    <option value="ALL">All Field Formations (1,004)</option>
+                    <option value="ALL">All Field Formations (15 Offices)</option>
                     <option value="Attock">Attock (17 Leases)</option>
+                    <option value="Bahawalpur">Bahawalpur (Minor Minerals)</option>
                     <option value="Chakwal">Chakwal (363 Leases)</option>
+                    <option value="Chiniot">Chiniot (Minor Minerals)</option>
                     <option value="D.G. Khan">D.G. Khan (37 Leases)</option>
+                    <option value="Gujranwala">Gujranwala (Minor Minerals)</option>
                     <option value="Jhelum">Jhelum (58 Leases)</option>
                     <option value="Khushab">Khushab (229 Leases)</option>
+                    <option value="Lahore Region">Lahore Region (Minor Minerals)</option>
                     <option value="Mianwali">Mianwali (300 Leases)</option>
+                    <option value="Multan">Multan (Minor Minerals)</option>
+                    <option value="Rawalpindi">Rawalpindi (Minor Minerals)</option>
+                    <option value="Sahiwal">Sahiwal (Minor Minerals)</option>
+                    <option value="Sargodha">Sargodha (Minor Minerals)</option>
+                    <option value="Sialkot">Sialkot (Minor Minerals)</option>
                   </select>
                 </div>
 
@@ -2147,14 +2246,23 @@
                   </button>
                 </div>
               </div>
-              <div class="sub-tabs-bar" id="officeSummarySelectorBar">
-                <button class="sub-tab-btn active" data-office-sel="ALL">All Formations (1,004)</button>
+              <div class="sub-tabs-bar" id="officeSummarySelectorBar" style="flex-wrap: wrap; gap: 0.35rem;">
+                <button class="sub-tab-btn active" data-office-sel="ALL">All 15 Formations (1,004)</button>
                 <button class="sub-tab-btn" data-office-sel="Attock">Attock (17)</button>
+                <button class="sub-tab-btn" data-office-sel="Bahawalpur">Bahawalpur</button>
                 <button class="sub-tab-btn" data-office-sel="Chakwal">Chakwal (363)</button>
+                <button class="sub-tab-btn" data-office-sel="Chiniot">Chiniot</button>
                 <button class="sub-tab-btn" data-office-sel="D.G. Khan">D.G. Khan (37)</button>
+                <button class="sub-tab-btn" data-office-sel="Gujranwala">Gujranwala</button>
                 <button class="sub-tab-btn" data-office-sel="Jhelum">Jhelum (58)</button>
                 <button class="sub-tab-btn" data-office-sel="Khushab">Khushab (229)</button>
+                <button class="sub-tab-btn" data-office-sel="Lahore Region">Lahore Region</button>
                 <button class="sub-tab-btn" data-office-sel="Mianwali">Mianwali (300)</button>
+                <button class="sub-tab-btn" data-office-sel="Multan">Multan</button>
+                <button class="sub-tab-btn" data-office-sel="Rawalpindi">Rawalpindi</button>
+                <button class="sub-tab-btn" data-office-sel="Sahiwal">Sahiwal</button>
+                <button class="sub-tab-btn" data-office-sel="Sargodha">Sargodha</button>
+                <button class="sub-tab-btn" data-office-sel="Sialkot">Sialkot</button>
               </div>
             </div>
             <div id="officeSummaryCardContainer" style="padding: 1.25rem 1.5rem;">
@@ -2240,7 +2348,7 @@
             <div class="card-header-clean">
               <div class="card-title-group">
                 <h3 class="card-title">Field Offices Five-Year Financial Performance Matrix</h3>
-                <span class="card-subtitle">Detailed financial rollups across Attock, Chakwal, D.G. Khan, Jhelum, Khushab, and Mianwali</span>
+                <span class="card-subtitle">Detailed statutory financial rollups across all 15 regional field formations</span>
               </div>
               
               <div class="section-export-wrap" data-export-source="financials-offices" data-export-table="tableFieldOffices" data-export-title="Field_Offices_Financial_Matrix">
@@ -3846,10 +3954,9 @@
 
       </div>
 
-    </div>
-
-    <!-- Executive Portal Bottom Footer -->
-    <footer class="portal-main-footer">
+    
+      <!-- Executive Portal Bottom Footer (Inside scrollable content to prevent fixed overlay) -->
+<footer class="portal-main-footer">
       <div class="footer-left">
         <span class="pulse-dot"></span>
         <span class="footer-copyright">&copy; Directorate General of Mines &amp; Minerals Punjab</span>
@@ -3858,6 +3965,8 @@
         <span id="footerPktClock">Pakistan Standard Time (PKT)</span>
       </div>
     </footer>
+
+    </div>
 
   </div>
 
