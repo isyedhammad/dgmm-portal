@@ -618,24 +618,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const breadcrumbTitle = document.getElementById("activeBreadcrumbTitle");
 
     const tabMeta = {
-      "tab-overview": { section: "Executive Overview", title: "Overview" },
-      "tab-cadastre": { section: "Cadastre Intelligence", title: "Cadastre" },
-      "tab-admin": { section: "Administration & Establishment", title: "Administration" },
-      "tab-lsm": { section: "Mineral Operations", title: "Large-Scale" },
-      "tab-sma": { section: "Mineral Operations", title: "Small-Scale" },
-      "tab-mm": { section: "Mineral Operations", title: "Minor" },
-      "tab-rules": { section: "Regulatory Framework", title: "Rules" },
-      "tab-map": { section: "Spatial Intelligence", title: "Map" },
-      "tab-financials": { section: "Fiscal Intelligence", title: "Revenue" },
-      "tab-royalty-calculator": { section: "Fiscal Intelligence", title: "Royalty Calculator" },
-      "tab-epa": { section: "Environmental Approvals", title: "EPA" },
-      "tab-appeals": { section: "Judicial Oversight", title: "Appeals" },
-      "tab-inspections": { section: "Field Operations", title: "Inspections" }
+      "tab-overview": { section: "Administration", title: "Summary Dashboard" },
+      "tab-admin": { section: "Administration", title: "Staff & Formations" },
+      "tab-lsm": { section: "Licensing", title: "Large Scale Mining" },
+      "tab-sma": { section: "Licensing", title: "Small Scale Mining" },
+      "tab-mm": { section: "Licensing", title: "Minor Minerals" },
+      "tab-cadastre": { section: "Licensing", title: "Cadastre Concession Registry" },
+      "tab-financials": { section: "Financials", title: "Revenue & Royalties" },
+      "tab-royalty-calculator": { section: "Financials", title: "Statutory Royalty Calculator" },
+      "tab-inspections": { section: "Monitoring", title: "Field Inspections" },
+      "tab-epa": { section: "Monitoring", title: "EPA Environmental Clearances" },
+      "tab-appeals": { section: "Monitoring", title: "Appellate Authority" },
+      "tab-rules": { section: "Laws", title: "Statutes & Mining Rules" },
+      "tab-map": { section: "Live Mineral Map", title: "Spatial GIS & Satellite Intelligence" }
     };
 
     function activateTab(tabId) {
       window.activateTab = activateTab;
       navLinks.forEach(l => l.classList.remove("active"));
+      document.querySelectorAll(".nav-dropdown-toggle").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".sidebar-submenu .submenu-item").forEach(s => s.classList.remove("active"));
+
       const activeBtn = document.querySelector(`.nav-link[data-tab="${tabId}"]`);
       if (activeBtn) activeBtn.classList.add("active");
 
@@ -645,10 +648,61 @@ document.addEventListener("DOMContentLoaded", () => {
 
       state.activeTab = tabId;
 
-      // Ensure Licensing dropdown is open if navigating to LSM, SSM, or MM
+      // 1. Administration (Overview or Admin)
+      const adminWrap = document.getElementById("dropdownAdminWrap");
+      const btnAdmin = document.getElementById("navBtnAdmin");
+      if (tabId === "tab-overview" || tabId === "tab-admin") {
+        if (adminWrap) adminWrap.classList.add("open");
+        if (btnAdmin) btnAdmin.classList.add("active");
+        if (tabId === "tab-overview") document.getElementById("menuItemAdminOverview")?.classList.add("active");
+        if (tabId === "tab-admin") document.getElementById("menuItemAdminStaff")?.classList.add("active");
+      }
+
+      // 2. Licensing (LSM, SSM, MM, Cadastre)
       const licWrap = document.getElementById("dropdownLicensingWrap");
-      if (licWrap && (tabId === "tab-lsm" || tabId === "tab-sma" || tabId === "tab-mm")) {
-        licWrap.classList.add("open");
+      const btnLic = document.getElementById("navBtnLicensing");
+      if (tabId === "tab-lsm" || tabId === "tab-sma" || tabId === "tab-mm" || tabId === "tab-cadastre") {
+        if (licWrap) licWrap.classList.add("open");
+        if (btnLic) btnLic.classList.add("active");
+        if (tabId === "tab-lsm") document.getElementById("navBtnLsm")?.classList.add("active");
+        if (tabId === "tab-sma") document.getElementById("navBtnSma")?.classList.add("active");
+        if (tabId === "tab-mm") document.getElementById("navBtnMm")?.classList.add("active");
+        if (tabId === "tab-cadastre") document.getElementById("navBtnCadastre")?.classList.add("active");
+      }
+
+      // 3. Financials (Revenue, Royalty Calculator)
+      const finWrap = document.getElementById("dropdownFinancialsWrap");
+      const btnFin = document.getElementById("navBtnFinancials");
+      if (tabId === "tab-financials" || tabId === "tab-royalty-calculator") {
+        if (finWrap) finWrap.classList.add("open");
+        if (btnFin) btnFin.classList.add("active");
+        if (tabId === "tab-financials") document.getElementById("menuItemFinancialsRevenue")?.classList.add("active");
+        if (tabId === "tab-royalty-calculator") document.getElementById("menuItemFinancialsCalc")?.classList.add("active");
+      }
+
+      // 4. Monitoring (Inspections, EPA, Appeals)
+      const monWrap = document.getElementById("dropdownMonitoringWrap");
+      const btnMon = document.getElementById("navBtnMonitoring");
+      if (tabId === "tab-inspections" || tabId === "tab-epa" || tabId === "tab-appeals") {
+        if (monWrap) monWrap.classList.add("open");
+        if (btnMon) btnMon.classList.add("active");
+        if (tabId === "tab-inspections") document.getElementById("menuItemMonitoringInspections")?.classList.add("active");
+        if (tabId === "tab-epa") document.getElementById("menuItemMonitoringEpa")?.classList.add("active");
+        if (tabId === "tab-appeals") document.getElementById("menuItemMonitoringAppeals")?.classList.add("active");
+      }
+
+      // 5. Laws (Rules & Acts)
+      const lawsWrap = document.getElementById("dropdownLawsWrap");
+      const btnLaws = document.getElementById("navBtnLaws");
+      if (tabId === "tab-rules") {
+        if (lawsWrap) lawsWrap.classList.add("open");
+        if (btnLaws) btnLaws.classList.add("active");
+      }
+
+      // 6. Live Mineral Map
+      const btnMap = document.getElementById("navBtnMap");
+      if (tabId === "tab-map") {
+        if (btnMap) btnMap.classList.add("active");
       }
 
       if (tabMeta[tabId]) {
@@ -664,6 +718,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       renderActiveTab();
     }
+    window.activateTab = activateTab;
 
     navLinks.forEach(link => {
       link.addEventListener("click", () => {
@@ -707,7 +762,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Licensing Master Dropdown Submenu
+    // 1. Administration Dropdown Submenu
+    const adminWrap = document.getElementById("dropdownAdminWrap");
+    const btnAdmin = document.getElementById("navBtnAdmin");
+    if (btnAdmin && adminWrap) {
+      btnAdmin.addEventListener("click", () => {
+        adminWrap.classList.toggle("open");
+      });
+    }
+
+    // 2. Licensing Master Dropdown Submenu
     const licensingWrap = document.getElementById("dropdownLicensingWrap");
     const btnLicensing = document.getElementById("navBtnLicensing");
     if (btnLicensing && licensingWrap) {
@@ -862,12 +926,30 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Relevant Rules & Acts Dropdown Submenu
-    const rulesWrap = document.getElementById("dropdownRulesWrap");
-    const btnRules = document.getElementById("navBtnRules");
-    if (btnRules && rulesWrap) {
-      btnRules.addEventListener("click", () => {
-        rulesWrap.classList.toggle("open");
+    // 3. Financials Dropdown Submenu
+    const financialsWrap = document.getElementById("dropdownFinancialsWrap");
+    const btnFinancials = document.getElementById("navBtnFinancials");
+    if (btnFinancials && financialsWrap) {
+      btnFinancials.addEventListener("click", () => {
+        financialsWrap.classList.toggle("open");
+      });
+    }
+
+    // 4. Monitoring Dropdown Submenu
+    const monitoringWrap = document.getElementById("dropdownMonitoringWrap");
+    const btnMonitoring = document.getElementById("navBtnMonitoring");
+    if (btnMonitoring && monitoringWrap) {
+      btnMonitoring.addEventListener("click", () => {
+        monitoringWrap.classList.toggle("open");
+      });
+    }
+
+    // 5. Laws Dropdown Submenu
+    const lawsWrap = document.getElementById("dropdownLawsWrap") || document.getElementById("dropdownRulesWrap");
+    const btnLaws = document.getElementById("navBtnLaws") || document.getElementById("navBtnRules");
+    if (btnLaws && lawsWrap) {
+      btnLaws.addEventListener("click", () => {
+        lawsWrap.classList.toggle("open");
       });
     }
 
@@ -3402,6 +3484,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // SPATIAL GIS MINERAL MAP & CADASTRE MULTIPOLYGON RENDERER
   // -------------------------------------------------------------
   let cadastreGeoJsonLayer = null;
+  let activeBaseLayerKey = "google-hybrid";
+  let gisBaseLayers = {};
 
   function renderMap() {
     if (!window.L) return;
@@ -3417,12 +3501,97 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       window.punjabMapInstance = mapInstance;
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution: '&copy; Government of the Punjab | Mines & Minerals Department',
-        maxZoom: 18
-      }).addTo(mapInstance);
+      const baseLayers = {
+        "google-hybrid": L.tileLayer("https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", {
+          subdomains: ['0', '1', '2', '3'],
+          maxZoom: 20,
+          attribution: '&copy; Google Earth Hybrid Imagery | DGMM Punjab GIS'
+        }),
+        "google-satellite": L.tileLayer("https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", {
+          subdomains: ['0', '1', '2', '3'],
+          maxZoom: 20,
+          attribution: '&copy; Google Satellite | DGMM Punjab GIS'
+        }),
+        "google-terrain": L.tileLayer("https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", {
+          subdomains: ['0', '1', '2', '3'],
+          maxZoom: 20,
+          attribution: '&copy; Google Geological Terrain & Relief | DGMM Punjab GIS'
+        }),
+        "esri-sentinel": L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+          maxZoom: 19,
+          attribution: '&copy; Sentinel-2 / ESRI World Earth Observation | DGMM Punjab GIS'
+        }),
+        "opentopo": L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {
+          subdomains: ['a', 'b', 'c'],
+          maxZoom: 17,
+          attribution: '&copy; OpenTopoMap Geological Contours & Relief'
+        }),
+        "osm": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: '&copy; OpenStreetMap Cartography'
+        })
+      };
+      gisBaseLayers = baseLayers;
+      window.gisBaseLayers = baseLayers;
+
+      // Add default Google Hybrid satellite layer
+      baseLayers["google-hybrid"].addTo(mapInstance);
+      activeBaseLayerKey = "google-hybrid";
 
       polygonLayersGroup = L.layerGroup().addTo(mapInstance);
+
+      // Native Leaflet Layer Switcher Control
+      L.control.layers({
+        "🛰️ Google Hybrid": baseLayers["google-hybrid"],
+        "🌍 Google Satellite": baseLayers["google-satellite"],
+        "⛰️ Geological Terrain": baseLayers["google-terrain"],
+        "🛰️ Sentinel-2 / ESRI": baseLayers["esri-sentinel"],
+        "🗺️ Topo Contours": baseLayers["opentopo"],
+        "🗺️ Street Cartography": baseLayers["osm"]
+      }, {
+        "Mining Concessions & Blocks": polygonLayersGroup
+      }, { position: "topright" }).addTo(mapInstance);
+
+      // Basemap switcher helper
+      window.switchGisBaseMap = function(key) {
+        if (!gisBaseLayers[key] || !mapInstance) return;
+        Object.values(gisBaseLayers).forEach(layer => {
+          if (mapInstance.hasLayer(layer)) {
+            mapInstance.removeLayer(layer);
+          }
+        });
+        gisBaseLayers[key].addTo(mapInstance);
+        activeBaseLayerKey = key;
+        if (polygonLayersGroup && polygonLayersGroup.eachLayer) {
+          polygonLayersGroup.eachLayer(l => {
+            if (l.bringToFront) l.bringToFront();
+          });
+        }
+        document.querySelectorAll(".basemap-pill").forEach(p => {
+          p.classList.toggle("active", p.getAttribute("data-basemap") === key);
+        });
+      };
+
+      // Basemap Pills Click Listeners
+      document.querySelectorAll(".basemap-pill").forEach(pill => {
+        pill.addEventListener("click", () => {
+          const bKey = pill.getAttribute("data-basemap");
+          if (bKey) window.switchGisBaseMap(bKey);
+        });
+      });
+
+      // Synchronize when toggled from Leaflet native control
+      mapInstance.on("baselayerchange", (e) => {
+        for (const [key, layer] of Object.entries(gisBaseLayers)) {
+          if (layer === e.layer) {
+            activeBaseLayerKey = key;
+            document.querySelectorAll(".basemap-pill").forEach(p => {
+              p.classList.toggle("active", p.getAttribute("data-basemap") === key);
+            });
+            break;
+          }
+        }
+      });
 
       // Listeners for Cadastre Layer Switcher
       document.getElementById("btnLayerCadastreBlocks")?.addEventListener("click", () => {

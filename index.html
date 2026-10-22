@@ -48,31 +48,43 @@
     <!-- Navigation Menu with Division Tabs -->
     <nav class="sidebar-nav">
       
-      <!-- Summary Dashboard -->
-      <button class="nav-link active" data-tab="tab-overview" id="navBtnOverview">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-chart-pie"></i></span>
-          <span>Summary Dashboard</span>
+      <!-- 1. ADMINISTRATION -->
+      <div class="nav-dropdown-wrap open" id="dropdownAdminWrap">
+        <div class="nav-link nav-dropdown-toggle active" id="navBtnAdmin" style="cursor: pointer;">
+          <div class="nav-link-content">
+            <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;"><i class="fa-solid fa-users-gear"></i></span>
+            <span style="font-weight: 700;">Administration</span>
+          </div>
+          <div class="nav-meta-wrap">
+            <span class="nav-pill pill-neutral" style="background: rgba(10, 98, 56, 0.18); color: #0A6238; font-weight: 800;">575</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
         </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">Live</span>
+        <div class="sidebar-submenu" id="submenuAdmin">
+          <button class="submenu-item active" data-tab="tab-overview" id="menuItemAdminOverview">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-chart-pie" style="color: #0A6238;"></i>
+              <span>Summary Dashboard</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">Live</span>
+            </div>
+          </button>
+          <button class="submenu-item" data-tab="tab-admin" id="menuItemAdminStaff">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-id-card-clip" style="color: #4B5563;"></i>
+              <span>Staff &amp; Formations</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">575 Posts</span>
+            </div>
+          </button>
         </div>
-      </button>
+      </div>
 
-      <!-- Administration Division -->
-      <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-users-gear"></i></span>
-          <span>Administration Division</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">575</span>
-        </div>
-      </button>
-
-      <!-- Licensing Master Division (LSM, SSM, MM) -->
-      <div class="nav-dropdown-wrap open" id="dropdownLicensingWrap">
-        <div class="nav-link nav-dropdown-toggle active" id="navBtnLicensing" style="cursor: pointer;">
+      <!-- 2. LICENSING -->
+      <div class="nav-dropdown-wrap" id="dropdownLicensingWrap">
+        <div class="nav-link nav-dropdown-toggle" id="navBtnLicensing" style="cursor: pointer;">
           <div class="nav-link-content">
             <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;"><i class="fa-solid fa-stamp"></i></span>
             <span style="font-weight: 700;">Licensing</span>
@@ -84,7 +96,7 @@
         </div>
         <div class="sidebar-submenu" id="submenuLicensing">
           
-          <!-- 1. Large Scale Mining with Submenu -->
+          <!-- Large Scale Mining with Submenu -->
           <div class="nav-dropdown-wrap" id="dropdownLsmWrap" style="margin-bottom: 2px;">
             <div class="submenu-item submenu-dropdown-toggle" data-tab="tab-lsm" id="navBtnLsm">
               <div class="submenu-item-content">
@@ -108,7 +120,7 @@
             </div>
           </div>
 
-          <!-- 2. Small Scale Mining with Multi-Tier Dropdowns -->
+          <!-- Small Scale Mining with Multi-Tier Dropdowns -->
           <div class="nav-dropdown-wrap open" id="dropdownSmaWrap" style="margin-bottom: 2px;">
             <div class="submenu-item submenu-dropdown-toggle" data-tab="tab-sma" id="navBtnSma">
               <div class="submenu-item-content">
@@ -181,7 +193,7 @@
             </div>
           </div>
 
-          <!-- 3. Minor Minerals -->
+          <!-- Minor Minerals -->
           <div class="submenu-item" data-tab="tab-mm" id="navBtnMm" style="cursor: pointer;">
             <div class="submenu-item-content">
               <i class="fa-solid fa-cubes-stacked" style="color: #D97706;"></i>
@@ -192,25 +204,113 @@
             </div>
           </div>
 
+          <!-- Cadastre Division & Registry -->
+          <div class="submenu-item" data-tab="tab-cadastre" id="navBtnCadastre" style="cursor: pointer;">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-satellite-dish" style="color: #0A6238;"></i>
+              <span>Cadastre Concession Registry</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill pill-cadastre">1,676</span>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <!-- 4. Relevant Rules & Acts -->
-      <div class="nav-dropdown-wrap" id="dropdownRulesWrap">
-        <div class="nav-link nav-dropdown-toggle" data-tab="tab-rules" id="navBtnRules">
+      <!-- 3. FINANCIALS -->
+      <div class="nav-dropdown-wrap" id="dropdownFinancialsWrap">
+        <div class="nav-link nav-dropdown-toggle" id="navBtnFinancials" style="cursor: pointer;">
           <div class="nav-link-content">
-            <span class="nav-icon-box"><i class="fa-solid fa-scale-balanced"></i></span>
-            <span>Relevant Rules &amp; Acts</span>
+            <span class="nav-icon-box" style="background: rgba(217, 119, 6, 0.15); color: #B45309;"><i class="fa-solid fa-coins"></i></span>
+            <span style="font-weight: 700;">Financials</span>
+          </div>
+          <div class="nav-meta-wrap">
+            <span class="nav-pill pill-neutral" style="background: rgba(217, 119, 6, 0.18); color: #B45309; font-weight: 800;">Rs 4.74B</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
+        </div>
+        <div class="sidebar-submenu" id="submenuFinancials">
+          <button class="submenu-item" data-tab="tab-financials" id="menuItemFinancialsRevenue">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-receipt" style="color: #059669;"></i>
+              <span>Revenue &amp; Royalties</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">Ledger</span>
+            </div>
+          </button>
+          <button class="submenu-item" data-tab="tab-royalty-calculator" id="menuItemFinancialsCalc">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-calculator" style="color: #D97706;"></i>
+              <span>Royalty Calculator</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill" style="background: rgba(217, 119, 6, 0.15); color: #B45309; font-weight: 700;">PMCR 2002</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. MONITORING -->
+      <div class="nav-dropdown-wrap" id="dropdownMonitoringWrap">
+        <div class="nav-link nav-dropdown-toggle" id="navBtnMonitoring" style="cursor: pointer;">
+          <div class="nav-link-content">
+            <span class="nav-icon-box" style="background: rgba(37, 99, 235, 0.15); color: #1D4ED8;"><i class="fa-solid fa-binoculars"></i></span>
+            <span style="font-weight: 700;">Monitoring</span>
+          </div>
+          <div class="nav-meta-wrap">
+            <span class="nav-pill pill-neutral" style="background: rgba(37, 99, 235, 0.18); color: #1D4ED8; font-weight: 800;">Field</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
+        </div>
+        <div class="sidebar-submenu" id="submenuMonitoring">
+          <button class="submenu-item" data-tab="tab-inspections" id="menuItemMonitoringInspections">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-clipboard-check" style="color: #2563EB;"></i>
+              <span>Field Inspections</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">342 Cases</span>
+            </div>
+          </button>
+          <button class="submenu-item" data-tab="tab-epa" id="menuItemMonitoringEpa">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-seedling" style="color: #059669;"></i>
+              <span>EPA Clearances</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">151 Cases</span>
+            </div>
+          </button>
+          <button class="submenu-item" data-tab="tab-appeals" id="menuItemMonitoringAppeals">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-gavel" style="color: #D97706;"></i>
+              <span>Appellate Authority</span>
+            </div>
+            <div class="submenu-meta-wrap">
+              <span class="submenu-pill">187 Appeals</span>
+            </div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. LAWS -->
+      <div class="nav-dropdown-wrap" id="dropdownLawsWrap">
+        <div class="nav-link nav-dropdown-toggle" id="navBtnLaws" style="cursor: pointer;">
+          <div class="nav-link-content">
+            <span class="nav-icon-box" style="background: rgba(147, 51, 234, 0.15); color: #7E22CE;"><i class="fa-solid fa-scale-balanced"></i></span>
+            <span style="font-weight: 700;">Laws</span>
           </div>
           <div class="nav-meta-wrap">
             <span class="nav-pill pill-rules">2 Acts</span>
             <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
           </div>
         </div>
-        <div class="sidebar-submenu" id="submenuRules">
+        <div class="sidebar-submenu" id="submenuLaws">
           <button class="submenu-item active" data-rules-tab="pmcr2002" id="menuItemRulesPmcr">
             <div class="submenu-item-content">
-              <i class="fa-solid fa-book-bookmark"></i>
+              <i class="fa-solid fa-book-bookmark" style="color: #7E22CE;"></i>
               <span>PMCR 2002</span>
             </div>
             <div class="submenu-meta-wrap">
@@ -219,7 +319,7 @@
           </button>
           <button class="submenu-item" data-rules-tab="act2025" id="menuItemRulesAct">
             <div class="submenu-item-content">
-              <i class="fa-solid fa-landmark-dome"></i>
+              <i class="fa-solid fa-landmark-dome" style="color: #2563EB;"></i>
               <span>M&amp;M Act 2025</span>
             </div>
             <div class="submenu-meta-wrap">
@@ -228,7 +328,7 @@
           </button>
           <button class="submenu-item" data-rules-tab="matrix" id="menuItemRulesMatrix">
             <div class="submenu-item-content">
-              <i class="fa-solid fa-code-compare"></i>
+              <i class="fa-solid fa-code-compare" style="color: #059669;"></i>
               <span>Comparative Matrix</span>
             </div>
             <div class="submenu-meta-wrap">
@@ -238,80 +338,14 @@
         </div>
       </div>
 
-      <!-- Cadastre Division & Registry -->
-      <button class="nav-link" data-tab="tab-cadastre" id="navBtnCadastre">
-        <div class="nav-link-content">
-          <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.12); color: #0a6238;"><i class="fa-solid fa-satellite-dish"></i></span>
-          <span>Cadastre</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-cadastre">1,676</span>
-        </div>
-      </button>
-
-      <!-- Spatial Intelligence: GIS Mineral Map -->
+      <!-- 6. LIVE MINERAL MAP -->
       <button class="nav-link" data-tab="tab-map" id="navBtnMap">
         <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-map-location-dot"></i></span>
-          <span>GIS Mineral Map</span>
+          <span class="nav-icon-box" style="background: rgba(16, 185, 129, 0.15); color: #059669;"><i class="fa-solid fa-earth-asia"></i></span>
+          <span style="font-weight: 700;">Live Mineral Map</span>
         </div>
         <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">1,260</span>
-        </div>
-      </button>
-
-      <!-- Financials & Royalty Rollup -->
-      <button class="nav-link" data-tab="tab-financials" id="navBtnFinancials">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-coins"></i></span>
-          <span>Revenue &amp; Royalties</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">Rs 4.74B</span>
-        </div>
-      </button>
-
-      <!-- Statutory Royalty Calculator (Dedicated Tab Below Revenue) -->
-      <button class="nav-link" data-tab="tab-royalty-calculator" id="navBtnRoyaltyCalculator">
-        <div class="nav-link-content">
-          <span class="nav-icon-box" style="color: #D97706;"><i class="fa-solid fa-calculator"></i></span>
-          <span>Royalty Calculator</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral" style="background: rgba(217, 119, 6, 0.15); color: #B45309; font-weight: 700;">PMCR 2002</span>
-        </div>
-      </button>
-
-      <!-- EPA Clearances -->
-      <button class="nav-link" data-tab="tab-epa" id="navBtnEpa">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-seedling"></i></span>
-          <span>EPA Clearances</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">151</span>
-        </div>
-      </button>
-
-      <!-- Appellate Authority -->
-      <button class="nav-link" data-tab="tab-appeals" id="navBtnAppeals">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-gavel"></i></span>
-          <span>Appellate Authority</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">187</span>
-        </div>
-      </button>
-
-      <!-- Inspection & Monitoring -->
-      <button class="nav-link" data-tab="tab-inspections" id="navBtnInspections">
-        <div class="nav-link-content">
-          <span class="nav-icon-box"><i class="fa-solid fa-clipboard-check"></i></span>
-          <span>Inspections</span>
-        </div>
-        <div class="nav-meta-wrap">
-          <span class="nav-pill pill-neutral">Field</span>
+          <span class="nav-pill pill-neutral" style="background: rgba(16, 185, 129, 0.18); color: #065F46; font-weight: 800;">1,260</span>
         </div>
       </button>
 
@@ -1333,6 +1367,37 @@
 
           <!-- Split View: Mineral Legend Table + Interactive Map Viewport -->
           <!-- Official Cadastre Spatial Layer Switcher -->
+          <!-- Satellite & Geological Relief Basemap Switcher -->
+          <div class="map-basemap-selector-bar">
+            <span class="basemap-bar-label">
+              <i class="fa-solid fa-earth-americas" style="color: #2563EB;"></i> Imagery &amp; Terrain:
+            </span>
+            <button class="basemap-pill active" id="btnBasemapGoogleHybrid" data-basemap="google-hybrid" title="Google Earth Satellite with Roads, Borders &amp; Labels">
+              <i class="fa-solid fa-satellite"></i>
+              <span>Google Hybrid</span>
+            </button>
+            <button class="basemap-pill" id="btnBasemapGoogleSat" data-basemap="google-satellite" title="Pure Google Earth High-Resolution Satellite View">
+              <i class="fa-solid fa-globe"></i>
+              <span>Google Satellite</span>
+            </button>
+            <button class="basemap-pill" id="btnBasemapGoogleTerrain" data-basemap="google-terrain" title="Geological Relief, Mountain Ridges &amp; Elevation Contours">
+              <i class="fa-solid fa-mountain"></i>
+              <span>Geological Terrain</span>
+            </button>
+            <button class="basemap-pill" id="btnBasemapEsriSentinel" data-basemap="esri-sentinel" title="Sentinel-2 / ESRI World Earth Observation Satellite">
+              <i class="fa-solid fa-satellite-dish"></i>
+              <span>Sentinel-2 / ESRI</span>
+            </button>
+            <button class="basemap-pill" id="btnBasemapOpenTopo" data-basemap="opentopo" title="OpenTopo Geological Elevation Contours &amp; Hillshading">
+              <i class="fa-solid fa-layer-group"></i>
+              <span>Topo Contours</span>
+            </button>
+            <button class="basemap-pill" id="btnBasemapOsm" data-basemap="osm" title="Standard Street Map Cartography">
+              <i class="fa-solid fa-map"></i>
+              <span>Street Map</span>
+            </button>
+          </div>
+
           <div class="map-layer-selector-bar">
             <button class="layer-pill active" id="btnLayerCadastreBlocks" data-layer="cadastre">
               <i class="fa-solid fa-shapes"></i>

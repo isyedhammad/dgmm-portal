@@ -5552,6 +5552,65 @@ body.dark-mode .cadastre-progress-track {
   color: #FDE68A;
 }
 
+/* Basemap Imagery & Geological Relief Selector Bar */
+.map-basemap-selector-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem 0.85rem;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+
+.basemap-bar-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 0.25rem;
+}
+
+.basemap-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.38rem 0.85rem;
+  font-size: 0.76rem;
+  font-weight: 600;
+  border-radius: 18px;
+  border: 1px solid var(--card-border);
+  background: var(--canvas-bg);
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.basemap-pill:hover {
+  background: var(--card-bg-hover, rgba(255, 255, 255, 0.08));
+  color: var(--text-main);
+  border-color: var(--card-border-hover);
+  transform: translateY(-1px);
+}
+
+.basemap-pill.active {
+  background: #0284C7;
+  border-color: #0369A1;
+  color: #FFFFFF;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+  font-weight: 700;
+}
+
+.basemap-pill.active i {
+  color: #BAE6FD;
+}
+
 /* ===================================================================
    OFFICIAL CADASTRE REGISTRY EXPLORER TAB (tab-cadastre)
    =================================================================== */
