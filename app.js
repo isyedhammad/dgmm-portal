@@ -618,8 +618,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const breadcrumbTitle = document.getElementById("activeBreadcrumbTitle");
 
     const tabMeta = {
-      "tab-overview": { section: "Administration", title: "Summary Dashboard" },
-      "tab-admin": { section: "Administration", title: "Staff & Formations" },
+      "tab-overview": { section: "Executive Command Center", title: "Summary Dashboard" },
+      "tab-admin": { section: "Administration Wing", title: "Staff Roster & 15 Field Formations" },
       "tab-lsm": { section: "Licensing", title: "Large Scale Mining" },
       "tab-sma": { section: "Licensing", title: "Small Scale Mining" },
       "tab-mm": { section: "Licensing", title: "Minor Minerals" },
@@ -648,14 +648,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       state.activeTab = tabId;
 
-      // 1. Administration (Overview or Admin)
-      const adminWrap = document.getElementById("dropdownAdminWrap");
-      const btnAdmin = document.getElementById("navBtnAdmin");
-      if (tabId === "tab-overview" || tabId === "tab-admin") {
-        if (adminWrap) adminWrap.classList.add("open");
-        if (btnAdmin) btnAdmin.classList.add("active");
-        if (tabId === "tab-overview") document.getElementById("menuItemAdminOverview")?.classList.add("active");
-        if (tabId === "tab-admin") document.getElementById("menuItemAdminStaff")?.classList.add("active");
+      // Summary Dashboard (Standalone Top-Level)
+      if (tabId === "tab-overview") {
+        document.getElementById("navBtnOverview")?.classList.add("active");
+      }
+
+      // 1. Administration (Standalone Top-Level)
+      if (tabId === "tab-admin") {
+        document.getElementById("navBtnAdmin")?.classList.add("active");
       }
 
       // 2. Licensing (LSM, SSM, MM, Cadastre)
@@ -759,15 +759,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (sidebar.classList.contains("sidebar-collapsed")) {
           toggleCollapse();
         }
-      });
-    }
-
-    // 1. Administration Dropdown Submenu
-    const adminWrap = document.getElementById("dropdownAdminWrap");
-    const btnAdmin = document.getElementById("navBtnAdmin");
-    if (btnAdmin && adminWrap) {
-      btnAdmin.addEventListener("click", () => {
-        adminWrap.classList.toggle("open");
       });
     }
 

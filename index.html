@@ -48,39 +48,29 @@
     <!-- Navigation Menu with Division Tabs -->
     <nav class="sidebar-nav">
       
+      <!-- SUMMARY DASHBOARD (STANDALONE EXECUTIVE COMMAND CENTER) -->
+      <button class="nav-link active" data-tab="tab-overview" id="navBtnOverview">
+        <div class="nav-link-content">
+          <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;"><i class="fa-solid fa-chart-pie"></i></span>
+          <span style="font-weight: 700;">Summary Dashboard</span>
+        </div>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral" style="background: rgba(16, 185, 129, 0.18); color: #065F46; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
+            <span class="live-pulse-dot" style="width: 6px; height: 6px; background: #10B981; border-radius: 50%;"></span>Live
+          </span>
+        </div>
+      </button>
+
       <!-- 1. ADMINISTRATION -->
-      <div class="nav-dropdown-wrap open" id="dropdownAdminWrap">
-        <div class="nav-link nav-dropdown-toggle active" id="navBtnAdmin" style="cursor: pointer;">
-          <div class="nav-link-content">
-            <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.15); color: #0A6238;"><i class="fa-solid fa-users-gear"></i></span>
-            <span style="font-weight: 700;">Administration</span>
-          </div>
-          <div class="nav-meta-wrap">
-            <span class="nav-pill pill-neutral" style="background: rgba(10, 98, 56, 0.18); color: #0A6238; font-weight: 800;">575</span>
-            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
-          </div>
+      <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
+        <div class="nav-link-content">
+          <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.12); color: #0A6238;"><i class="fa-solid fa-users-gear"></i></span>
+          <span style="font-weight: 700;">Administration</span>
         </div>
-        <div class="sidebar-submenu" id="submenuAdmin">
-          <button class="submenu-item active" data-tab="tab-overview" id="menuItemAdminOverview">
-            <div class="submenu-item-content">
-              <i class="fa-solid fa-chart-pie" style="color: #0A6238;"></i>
-              <span>Summary Dashboard</span>
-            </div>
-            <div class="submenu-meta-wrap">
-              <span class="submenu-pill">Live</span>
-            </div>
-          </button>
-          <button class="submenu-item" data-tab="tab-admin" id="menuItemAdminStaff">
-            <div class="submenu-item-content">
-              <i class="fa-solid fa-id-card-clip" style="color: #4B5563;"></i>
-              <span>Staff &amp; Formations</span>
-            </div>
-            <div class="submenu-meta-wrap">
-              <span class="submenu-pill">575 Posts</span>
-            </div>
-          </button>
+        <div class="nav-meta-wrap">
+          <span class="nav-pill pill-neutral">575 Posts</span>
         </div>
-      </div>
+      </button>
 
       <!-- 2. LICENSING -->
       <div class="nav-dropdown-wrap" id="dropdownLicensingWrap">
@@ -423,7 +413,66 @@
            ===================================================== -->
       <div class="tab-pane active" id="tab-overview">
 
-        <!-- 6-Card Clickable Hero KPI Ribbon -->
+        <!-- EXECUTIVE OPERATIONS & FISCAL COMMAND HERO BANNER -->
+        <div class="executive-hero-banner">
+          <div class="hero-content-left">
+            <div class="hero-badge-row">
+              <span class="hero-live-pill"><span class="hero-pulse"></span> PUNJAB MINING SECTOR RADAR • FY 2026-27</span>
+              <span class="hero-cadastre-badge"><i class="fa-solid fa-satellite-dish"></i> 100% Digital Cadastre</span>
+            </div>
+            <h2 class="hero-title">Provincial Mining Concession &amp; Fiscal Command</h2>
+            <p class="hero-subtitle">
+              Unified executive telemetry tracking <strong>1,808 active concessions</strong>, <strong>15 regional field offices</strong>, <strong>5.45M concession acres</strong>, and <strong>PKR 33.78 Billion</strong> provincial realized mineral economy across all 36 districts of Punjab.
+            </p>
+            <div class="hero-actions-row">
+              <button class="hero-action-btn primary clickable-card" data-nav-target="tab-map">
+                <i class="fa-solid fa-earth-asia"></i>
+                <span>Explore Live GIS Map</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button class="hero-action-btn secondary clickable-card" data-nav-target="tab-financials">
+                <i class="fa-solid fa-coins"></i>
+                <span>Fiscal Ledger</span>
+              </button>
+              <button class="hero-action-btn secondary clickable-card" data-nav-target="tab-royalty-calculator">
+                <i class="fa-solid fa-calculator"></i>
+                <span>Royalty Calculator</span>
+              </button>
+            </div>
+          </div>
+          <div class="hero-telemetry-col">
+            <div class="telemetry-stat-card">
+              <div class="telemetry-icon-box"><i class="fa-solid fa-building-flag"></i></div>
+              <div class="telemetry-info">
+                <span class="telemetry-val">15</span>
+                <span class="telemetry-lbl">Regional Formations</span>
+              </div>
+            </div>
+            <div class="telemetry-stat-card">
+              <div class="telemetry-icon-box"><i class="fa-solid fa-map-location"></i></div>
+              <div class="telemetry-info">
+                <span class="telemetry-val">36</span>
+                <span class="telemetry-lbl">Districts Monitored</span>
+              </div>
+            </div>
+            <div class="telemetry-stat-card">
+              <div class="telemetry-icon-box"><i class="fa-solid fa-vector-square"></i></div>
+              <div class="telemetry-info">
+                <span class="telemetry-val">5.45M</span>
+                <span class="telemetry-lbl">Concession Acres</span>
+              </div>
+            </div>
+            <div class="telemetry-stat-card">
+              <div class="telemetry-icon-box"><i class="fa-solid fa-shield-halved"></i></div>
+              <div class="telemetry-info">
+                <span class="telemetry-val">99.8%</span>
+                <span class="telemetry-lbl">LSM Collection Rate</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 6-CARD CLICKABLE HERO KPI RIBBON (EXACT SQUARE SHAPE) -->
         <div class="kpi-grid summary-hero-ribbon" style="display: grid; grid-template-columns: repeat(6, 1fr); gap: 1rem; margin-bottom: 1.75rem;">
           
           <!-- Card 1: Active Mining Concessions (1,808) -> tab-sma -->
@@ -435,11 +484,17 @@
               </div>
             </div>
             <div class="kpi-value">1,808</div>
+            <div class="kpi-mini-bar">
+              <div class="kpi-mini-fill" style="width: 84.8%; background: linear-gradient(90deg, #10B981, #059669);"></div>
+            </div>
             <div class="kpi-subtext">
               <span class="kpi-badge kpi-badge-emerald"><i class="fa-solid fa-circle-check"></i> 84.8% Active</span>
               <span>126 LSM • 1,172 SSM • 510 MM</span>
             </div>
-            
+            <div class="kpi-card-cue">
+              <span>Explore</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
           </div>
 
           <!-- Card 2: Provincial Revenue & Royalties -> tab-financials -->
@@ -451,11 +506,17 @@
               </div>
             </div>
             <div class="kpi-value">PKR 33.78B</div>
+            <div class="kpi-mini-bar">
+              <div class="kpi-mini-fill" style="width: 39.2%; background: linear-gradient(90deg, #F59E0B, #D97706);"></div>
+            </div>
             <div class="kpi-subtext">
-              <span class="kpi-badge kpi-badge-gold"><i class="fa-solid fa-scale-balanced"></i> 39.2% Due Collection</span>
+              <span class="kpi-badge kpi-badge-gold"><i class="fa-solid fa-scale-balanced"></i> 39.2% Due Realized</span>
               <span>Target: Rs 115.05B • Sec: Rs 18.33B</span>
             </div>
-            
+            <div class="kpi-card-cue">
+              <span>Fiscal Console</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
           </div>
 
           <!-- Card 3: Spatial GIS Boundaries -> tab-map -->
@@ -467,11 +528,17 @@
               </div>
             </div>
             <div class="kpi-value">825 Blocks</div>
+            <div class="kpi-mini-bar">
+              <div class="kpi-mini-fill" style="width: 100%; background: linear-gradient(90deg, #3B82F6, #2563EB);"></div>
+            </div>
             <div class="kpi-subtext">
               <span class="kpi-badge kpi-badge-blue"><i class="fa-solid fa-map-location-dot"></i> 41 Upcoming Auctions</span>
               <span>5.45M Acres • 1,260 Polygons</span>
             </div>
-            
+            <div class="kpi-card-cue">
+              <span>Interactive GIS</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
           </div>
 
           <!-- Card 4: Official Cadastre Registry -> tab-cadastre -->
@@ -483,11 +550,17 @@
               </div>
             </div>
             <div class="kpi-value">1,676 Titles</div>
+            <div class="kpi-mini-bar">
+              <div class="kpi-mini-fill" style="width: 59.3%; background: linear-gradient(90deg, #0A6238, #15803D);"></div>
+            </div>
             <div class="kpi-subtext">
               <span class="kpi-badge kpi-badge-emerald" style="background: rgba(10, 98, 56, 0.12); color: #0A6238;"><i class="fa-solid fa-file-contract"></i> 994 Valid Titles</span>
               <span>1,434 Active Applications</span>
             </div>
-            
+            <div class="kpi-card-cue">
+              <span>Cadastre Portal</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
           </div>
 
           <!-- Card 5: Human Capital & Field Formations -> tab-admin -->
@@ -499,11 +572,17 @@
               </div>
             </div>
             <div class="kpi-value">575 Staff</div>
+            <div class="kpi-mini-bar">
+              <div class="kpi-mini-fill" style="width: 69.7%; background: linear-gradient(90deg, #A855F7, #7C3AED);"></div>
+            </div>
             <div class="kpi-subtext">
               <span class="kpi-badge kpi-badge-purple"><i class="fa-solid fa-building-user"></i> 401 Filled (69.7%)</span>
-              <span>Headquarters (224) &amp; 16 Field Offices</span>
+              <span>Headquarters (224) &amp; 15 Field Formations</span>
             </div>
-            
+            <div class="kpi-card-cue">
+              <span>Staff Roster</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
           </div>
 
           <!-- Card 6: Field Monitoring & Inspections -> tab-inspections -->
@@ -515,11 +594,82 @@
               </div>
             </div>
             <div class="kpi-value">342 Audited</div>
+            <div class="kpi-mini-bar">
+              <div class="kpi-mini-fill" style="width: 100%; background: linear-gradient(90deg, #06B6D4, #0891B2);"></div>
+            </div>
             <div class="kpi-subtext">
               <span class="kpi-badge kpi-badge-blue" style="background: rgba(14, 111, 116, 0.12); color: #0E6F74;"><i class="fa-solid fa-shield-halved"></i> Field Audited</span>
               <span>Demarcation &amp; Safety Tracking</span>
             </div>
-            
+            <div class="kpi-card-cue">
+              <span>Audits &amp; Logs</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- STRATEGIC CADASTRE INTELLIGENCE & TELEMETRY STRIP -->
+        <div class="strategic-highlights-grid">
+          
+          <!-- Highlight 1: Reserve Valuation Apex -->
+          <div class="strategic-highlight-card" style="border-left: 4px solid #10B981;">
+            <div class="sh-header">
+              <div class="sh-icon-wrap" style="background: rgba(16, 185, 129, 0.12); color: #059669;">
+                <i class="fa-solid fa-gem"></i>
+              </div>
+              <div class="sh-title-wrap">
+                <span class="sh-tag">51.6% Provincial Concentration</span>
+                <h4 class="sh-title">Sargodha &amp; Attock Mineral Apex</h4>
+              </div>
+            </div>
+            <p class="sh-desc">
+              Together, <strong>Sargodha (Rs 9.42B)</strong> and <strong>Attock (Rs 7.97B)</strong> command over half of Punjab's entire evaluated mineral reserve wealth. Attock achieves provincial peak intensity at <strong>Rs 176,991 / Acre yield</strong>.
+            </p>
+            <div class="sh-meta-row">
+              <span class="sh-pill"><i class="fa-solid fa-chart-line"></i> Rs 17.39B Valuation</span>
+              <span class="sh-pill"><i class="fa-solid fa-cubes-stacked"></i> Sandstone &amp; Limestone</span>
+            </div>
+          </div>
+
+          <!-- Highlight 2: Strategic Cement Manufacturing LSM Corridor -->
+          <div class="strategic-highlight-card" style="border-left: 4px solid #2563EB;">
+            <div class="sh-header">
+              <div class="sh-icon-wrap" style="background: rgba(37, 99, 235, 0.12); color: #2563EB;">
+                <i class="fa-solid fa-industry"></i>
+              </div>
+              <div class="sh-title-wrap">
+                <span class="sh-tag" style="background: rgba(37, 99, 235, 0.1); color: #2563EB;">99.84% Due Recovery</span>
+                <h4 class="sh-title">LSM Cement Quarry Backbone</h4>
+              </div>
+            </div>
+            <p class="sh-desc">
+              5 major cement producers (<strong>Fauji, Bestway, DG Khan, Maple Leaf, Gharibwal</strong>) operate 18 core quarry leases generating <strong>Rs 7.30B realized receipts</strong>, secured by <strong>Rs 18.33B in statutory bank guarantees</strong>.
+            </p>
+            <div class="sh-meta-row">
+              <span class="sh-pill"><i class="fa-solid fa-shield-check"></i> Rs 18.33B Bank Guarantees</span>
+              <span class="sh-pill"><i class="fa-solid fa-check-double"></i> 75 Mining Leases</span>
+            </div>
+          </div>
+
+          <!-- Highlight 3: Upcoming E-Auction Pipeline -->
+          <div class="strategic-highlight-card" style="border-left: 4px solid #F59E0B;">
+            <div class="sh-header">
+              <div class="sh-icon-wrap" style="background: rgba(245, 158, 11, 0.12); color: #D97706;">
+                <i class="fa-solid fa-gavel"></i>
+              </div>
+              <div class="sh-title-wrap">
+                <span class="sh-tag" style="background: rgba(245, 158, 11, 0.1); color: #D97706;">ERP Rs 1.48 Billion</span>
+                <h4 class="sh-title">Minor Mineral Public E-Auctions</h4>
+              </div>
+            </div>
+            <p class="sh-desc">
+              <strong>41 strategic survey blocks</strong> ready for multi-round competitive e-auctioning across Chenab, Ravi, Jhelum, and Indus riverbeds and Salt Range sandstone quarries, expanding provincial fiscal yields.
+            </p>
+            <div class="sh-meta-row">
+              <span class="sh-pill"><i class="fa-solid fa-cubes"></i> 41 Auction Blocks</span>
+              <span class="sh-pill"><i class="fa-solid fa-layer-group"></i> 510 Total Provincial Blocks</span>
+            </div>
           </div>
 
         </div>
