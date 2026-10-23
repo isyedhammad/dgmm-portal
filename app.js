@@ -459,6 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
       acreage: 100,
       deadRentRate: 1000,
       isAuctioned: false,
+      noPenalty: false,
       year: 2026,
       period: "JAN_JUN",
       assessmentDate: "2026-10-22",
@@ -7182,6 +7183,13 @@ function renderInspections() {
       recalculateRoyaltyAssessment(false);
     });
 
+    // 3b. No Penalty Option Toggle
+    document.getElementById("calcNoPenalty")?.addEventListener("change", (e) => {
+      state.calculator.noPenalty = e.target.checked;
+      syncCalculatorInputsFromState();
+      recalculateRoyaltyAssessment(false);
+    });
+
     // 4. Year Selector
     document.getElementById("calcYear")?.addEventListener("change", (e) => {
       state.calculator.year = parseInt(e.target.value, 10) || 2026;
@@ -7289,6 +7297,39 @@ function renderInspections() {
         aucBadge.style.background = "rgba(16, 185, 129, 0.12)";
         aucBadge.style.color = "#059669";
         aucBadge.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Non-Auctioned: Direct Royalty Applies';
+      }
+    }
+
+    const isNoPen = document.getElementById("calcNoPenalty");
+    if (isNoPen) isNoPen.checked = !!c.noPenalty;
+
+    const penBadge = document.getElementById("calcPenaltyStatusBadge");
+    if (penBadge) {
+      if (c.noPenalty) {
+        penBadge.className = "badge-status-pill badge-process";
+        penBadge.style.background = "rgba(16, 185, 129, 0.15)";
+        penBadge.style.color = "#059669";
+        penBadge.innerHTML = '<i class="fa-solid fa-circle-check"></i> No Penalty Option Active (0% Delay Penalty)';
+      } else {
+        penBadge.className = "badge-status-pill badge-granted";
+        penBadge.style.background = "rgba(217, 119, 6, 0.12)";
+        penBadge.style.color = "#D97706";
+        penBadge.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> Statutory Penalty Active (1% pre-2026 / 10% post-2026)';
+      }
+    }
+
+    const penPill = document.getElementById("calcPenaltyPill");
+    if (penPill) {
+      if (c.noPenalty) {
+        penPill.className = "badge-status-pill badge-process";
+        penPill.style.background = "rgba(16, 185, 129, 0.15)";
+        penPill.style.color = "#059669";
+        penPill.innerHTML = '<i class="fa-solid fa-circle-check"></i> Penalty: Waived (0%)';
+      } else {
+        penPill.className = "badge-status-pill badge-granted";
+        penPill.style.background = "rgba(217, 119, 6, 0.12)";
+        penPill.style.color = "#D97706";
+        penPill.innerHTML = '<i class="fa-solid fa-scale-balanced"></i> Statutory Penalty Applied';
       }
     }
 
@@ -7402,6 +7443,7 @@ function renderInspections() {
       acres: Number(c.acreage) || 0,
       deadRentRateHalfYearly: Number(c.deadRentRate) || 0,
       isAuctioned: !!c.isAuctioned,
+      noPenalty: !!c.noPenalty,
       period: c.period,
       year: Number(c.year) || 2026,
       monthlyProduction: c.monthlyProduction,
@@ -7444,7 +7486,9 @@ function renderInspections() {
       }
 
       if (rateLblCell) {
-        if (m.monthsDelayed > 0) {
+        if (c.noPenalty) {
+          rateLblCell.innerHTML = '<span class="badge-status-pill badge-process" style="font-size:0.68rem; padding:1px 6px; background: rgba(16, 185, 129, 0.15); color: #059669;">Waived (0%)</span>';
+        } else if (m.monthsDelayed > 0) {
           rateLblCell.innerHTML = c.year >= 2026
             ? '<span class="badge-status-pill badge-vacant" style="font-size:0.68rem; padding:1px 6px;">10% / mo</span>'
             : '<span class="badge-status-pill badge-process" style="font-size:0.68rem; padding:1px 6px;">1% / mo</span>';
@@ -7454,8 +7498,12 @@ function renderInspections() {
       }
 
       if (penCell) {
-        penCell.textContent = m.penaltyCalculated > 0 ? formatPKR(m.penaltyCalculated) : "-";
-        penCell.style.color = m.penaltyCalculated > 0 ? "#DC2626" : "#64748B";
+        if (c.noPenalty) {
+          penCell.innerHTML = '<span style="color: #059669; font-weight: 600; font-size: 0.78rem;">Rs 0 (Waived)</span>';
+        } else {
+          penCell.textContent = m.penaltyCalculated > 0 ? formatPKR(m.penaltyCalculated) : "-";
+          penCell.style.color = m.penaltyCalculated > 0 ? "#DC2626" : "#64748B";
+        }
       }
 
       if (totCell) {
@@ -7478,7 +7526,10 @@ function renderInspections() {
     if (elTotalRoy) elTotalRoy.textContent = res.isAuctioned ? "EXEMPT" : formatPKR(res.totalRoyalty);
     if (elTotalPaid) elTotalPaid.textContent = formatPKR(res.totalPaid);
     if (elTotalArr) elTotalArr.textContent = formatPKR(totalArrears);
-    if (elTotalPen) elTotalPen.textContent = formatPKR(res.totalPenalty);
+    if (elTotalPen) {
+      elTotalPen.textContent = c.noPenalty ? "PKR 0 (Waived)" : formatPKR(res.totalPenalty);
+      elTotalPen.style.color = c.noPenalty ? "#059669" : "#DC2626";
+    }
     if (elTotalDem) elTotalDem.textContent = formatPKR(totalDemand);
 
     // 3. Update Step 3 Comparison & Whichever is Higher
@@ -7577,12 +7628,20 @@ function renderInspections() {
     // 5. Update Financial Demand & Recovery Ledger
     const sumPrincipal = document.getElementById("calcSumPrincipal");
     const sumPenalty = document.getElementById("calcSumPenalty");
+    const sumPenaltyNote = document.getElementById("calcSumPenaltyNote");
     const sumPaid = document.getElementById("calcSumPaid");
     const sumNetBalance = document.getElementById("calcSumNetBalance");
     const sumStatus = document.getElementById("calcSumBalanceStatus");
 
     if (sumPrincipal) sumPrincipal.textContent = formatPKR(res.whicheverIsHigher.amount);
-    if (sumPenalty) sumPenalty.textContent = formatPKR(res.totalPenalty);
+    if (sumPenalty) {
+      sumPenalty.textContent = c.noPenalty ? "PKR 0 (Waived)" : formatPKR(res.totalPenalty);
+      sumPenalty.style.color = c.noPenalty ? "#059669" : "#DC2626";
+    }
+    if (sumPenaltyNote) {
+      sumPenaltyNote.textContent = c.noPenalty ? "Penalty Waived (0% Option Active)" : "1% pre-2026 / 10% post-2026";
+      sumPenaltyNote.style.color = c.noPenalty ? "#059669" : "#64748B";
+    }
     if (sumPaid) sumPaid.textContent = `- ${formatPKR(res.totalPaid)}`;
     if (sumNetBalance) sumNetBalance.textContent = formatPKR(res.netBalancePayable);
 
@@ -7713,6 +7772,7 @@ function renderInspections() {
       acreage: 120,
       deadRentRate: 1000,
       isAuctioned: false,
+      noPenalty: false,
       year: 2026,
       period: "JAN_JUN",
       assessmentDate: "2026-10-22",
@@ -7725,6 +7785,7 @@ function renderInspections() {
   }
 
   function resetCalculator() {
+    state.calculator.noPenalty = false;
     state.calculator.monthlyProduction = [0, 0, 0, 0, 0, 0];
     state.calculator.monthlyPayments = [0, 0, 0, 0, 0, 0];
     syncCalculatorInputsFromState();
@@ -7775,7 +7836,7 @@ function renderInspections() {
       ["Mineral Extracted (Auto-Fetched):", res.mineral, "Notified Royalty Rate (July 2024):", `PKR ${res.royaltyRatePerTon} / Ton`],
       ["Leased Acreage (Auto-Fetched):", `${res.acres} Acres`, "Notified Dead Rent Rate:", `PKR ${res.deadRentRateHalfYearly} / Acre / 6-Mo`],
       ["Royalty Auction Status:", res.isAuctioned ? "AUCTION CONTRACT (Direct Royalty Waived)" : "DIRECT PRODUCTION ROYALTY APPLIES", "Assessment Cycle:", `${res.period} ${res.year}`],
-      ["Statutory Penalty Basis:", "1% per month prior to 2026; 10% per month since 01/01/2026", "Audit Cutoff Date:", state.calculator.assessmentDate],
+      ["Statutory Penalty Basis:", res.noPenalty ? "WAIVED (0% Option Active)" : "1% per month prior to 2026; 10% per month since 01/01/2026", "Audit Cutoff Date:", state.calculator.assessmentDate],
       [],
       ["6-MONTH MONTH-WISE PRODUCTION & PAYMENT LEDGER"],
       ["Month", "Statutory Due Date", "Production (Metric Tons)", "Notified Rate (Rs/Ton)", "Royalty Assessed (PKR)", "Deposited Credits (PKR)", "Arrears Principal (PKR)", "Delay (Months)", "Statutory Penalty (PKR)", "Total Month Demand (PKR)"]
@@ -7852,7 +7913,7 @@ function renderInspections() {
       ["Branch", res.branch, "District", res.district],
       ["Mineral", res.mineral, "Royalty Rate (PKR/Ton)", res.royaltyRatePerTon],
       ["Acreage", res.acres, "Dead Rent Rate (PKR/Acre)", res.deadRentRateHalfYearly],
-      ["Auctioned", res.isAuctioned ? "YES" : "NO", "Cycle", `${res.period} ${res.year}`],
+      ["Auctioned", res.isAuctioned ? "YES" : "NO", "No Penalty Option", res.noPenalty ? "ACTIVE (0% WAIVED)" : "INACTIVE (STATUTORY)", "Cycle", `${res.period} ${res.year}`],
       [],
       ["Month", "Due Date", "Production (Tons)", "Royalty Rate", "Royalty (PKR)", "Paid (PKR)", "Arrears (PKR)", "Delay (Mo)", "Penalty (PKR)", "Total Demand (PKR)"]
     ];
@@ -7924,7 +7985,7 @@ function renderInspections() {
         <td style="text-align: right; color: #059669;">Rs. ${m.paidAmount.toLocaleString()}</td>
         <td style="text-align: right; color: ${m.arrears > 0 ? '#DC2626' : '#64748B'};">${m.arrears > 0 ? 'Rs. ' + m.arrears.toLocaleString() : '-'}</td>
         <td style="text-align: center;">${m.monthsDelayed > 0 ? m.monthsDelayed + ' mo' : '-'}</td>
-        <td style="text-align: right; color: #DC2626;">${m.penaltyCalculated > 0 ? 'Rs. ' + m.penaltyCalculated.toLocaleString() : '-'}</td>
+        <td style="text-align: right; color: ${res.noPenalty ? '#059669' : '#DC2626'};">${res.noPenalty ? '<span style="color:#059669; font-weight:600;">Rs 0 (Waived)</span>' : (m.penaltyCalculated > 0 ? 'Rs. ' + m.penaltyCalculated.toLocaleString() : '-')}</td>
         <td style="text-align: right; font-weight: 700;">Rs. ${m.totalMonthlyDemand.toLocaleString()}</td>
       </tr>
     `).join("");
@@ -8019,7 +8080,7 @@ function renderInspections() {
             <td class="label">Auctioned Rights:</td>
             <td>${res.isAuctioned ? 'YES — Royalty Auction Contract (Direct Royalty Waived)' : 'NO — Direct Statutory Monthly Production Royalty'}</td>
             <td class="label">Statutory Penalty Basis:</td>
-            <td>1% per month prior to 2026; 10% per month since 01/01/2026</td>
+            <td>${res.noPenalty ? '<strong style="color: #059669;">WAIVED (0% No Penalty Option Active)</strong>' : '1% per month prior to 2026; 10% per month since 01/01/2026'}</td>
           </tr>
         </table>
 
@@ -8051,7 +8112,7 @@ function renderInspections() {
               <td style="text-align: right; color: #059669;">Rs. ${res.totalPaid.toLocaleString()}</td>
               <td style="text-align: right; color: #DC2626;">Rs. ${res.monthlyBreakdown.reduce((s, m) => s + m.arrears, 0).toLocaleString()}</td>
               <td style="text-align: center;">-</td>
-              <td style="text-align: right; color: #DC2626;">Rs. ${res.totalPenalty.toLocaleString()}</td>
+              <td style="text-align: right; color: ${res.noPenalty ? '#059669' : '#DC2626'};">${res.noPenalty ? 'Rs. 0 (Waived)' : 'Rs. ' + res.totalPenalty.toLocaleString()}</td>
               <td style="text-align: right; color: #065F46;">Rs. ${res.monthlyBreakdown.reduce((s, m) => s + m.totalMonthlyDemand, 0).toLocaleString()}</td>
             </tr>
           </tfoot>
@@ -8081,7 +8142,7 @@ function renderInspections() {
           </div>
           <div class="summary-box">
             <div class="summary-box-lbl">Accrued Default Penalty</div>
-            <div class="summary-box-val" style="color: #DC2626;">Rs. ${res.totalPenalty.toLocaleString()}</div>
+            <div class="summary-box-val" style="color: ${res.noPenalty ? '#059669' : '#DC2626'};">${res.noPenalty ? 'Rs. 0 (Waived)' : 'Rs. ' + res.totalPenalty.toLocaleString()}</div>
           </div>
           <div class="summary-box">
             <div class="summary-box-lbl">Less Verified Credits</div>

@@ -300,6 +300,27 @@ async function runLocalQA() {
           results.loadedAcres = document.getElementById('calcDisplayAcres')?.innerText;
         }
 
+        // 9. Test No Penalty Option Toggle
+        const noPenToggle = document.getElementById('calcNoPenalty');
+        results.noPenaltyExists = !!noPenToggle;
+        results.noPenaltyDefaultUnchecked = noPenToggle ? !noPenToggle.checked : false;
+
+        if (noPenToggle) {
+          noPenToggle.checked = true;
+          noPenToggle.dispatchEvent(new Event('change', { bubbles: true }));
+
+          results.noPenaltyBadgeActive = document.getElementById('calcPenaltyStatusBadge')?.innerText.includes('No Penalty Option Active');
+          results.noPenaltyPillActive = document.getElementById('calcPenaltyPill')?.innerText.includes('Waived (0%)');
+          results.noPenaltySumText = document.getElementById('calcSumPenalty')?.innerText;
+          results.noPenaltySumNote = document.getElementById('calcSumPenaltyNote')?.innerText;
+          results.noPenaltyTotalCell = document.getElementById('calcTotalPenaltyCell')?.innerText;
+
+          // Toggle back off to verify restoration
+          noPenToggle.checked = false;
+          noPenToggle.dispatchEvent(new Event('change', { bubbles: true }));
+          results.noPenaltyBadgeRestored = document.getElementById('calcPenaltyStatusBadge')?.innerText.includes('Statutory Penalty Active');
+        }
+
         return results;
       })()
     `);

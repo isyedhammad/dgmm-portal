@@ -60,6 +60,7 @@ function calculateRoyaltyAssessment(params) {
     acres = 100,
     deadRentRateHalfYearly = 1000,
     isAuctioned = false,
+    noPenalty = false, // When true, waives all delay penalties (0% penalty)
     period = "JAN_JUN", // "JAN_JUN" | "JUL_DEC"
     year = 2026,
     monthlyProduction = [0, 0, 0, 0, 0, 0], // Metric tons for the 6 months
@@ -117,26 +118,30 @@ function calculateRoyaltyAssessment(params) {
       monthsDelayed = Math.ceil(diffMs / (1000 * 60 * 60 * 24 * 30.4375));
       if (monthsDelayed < 1) monthsDelayed = 1;
 
-      // Penalty Rule:
-      // "1% per month penalty until 2025 and 10% per month since 01/01/2026"
-      const transitionDate = new Date(Date.UTC(2026, 0, 1)); // 01/01/2026
+      if (!noPenalty) {
+        // Penalty Rule:
+        // "1% per month penalty until 2025 and 10% per month since 01/01/2026"
+        const transitionDate = new Date(Date.UTC(2026, 0, 1)); // 01/01/2026
 
-      let monthsPre2026 = 0;
-      let monthsPost2026 = 0;
+        let monthsPre2026 = 0;
+        let monthsPost2026 = 0;
 
-      // Iterate through each month of delay to assign correct rate
-      for (let m = 0; m < monthsDelayed; m++) {
-        const curDelayedDate = new Date(dueDate.getTime() + m * (30.4375 * 24 * 60 * 60 * 1000));
-        if (curDelayedDate < transitionDate) {
-          monthsPre2026++;
-        } else {
-          monthsPost2026++;
+        // Iterate through each month of delay to assign correct rate
+        for (let m = 0; m < monthsDelayed; m++) {
+          const curDelayedDate = new Date(dueDate.getTime() + m * (30.4375 * 24 * 60 * 60 * 1000));
+          if (curDelayedDate < transitionDate) {
+            monthsPre2026++;
+          } else {
+            monthsPost2026++;
+          }
         }
-      }
 
-      const penaltyPre2026 = arrears * (0.01 * monthsPre2026);
-      const penaltyPost2026 = arrears * (0.10 * monthsPost2026);
-      penaltyAmount = Math.round(penaltyPre2026 + penaltyPost2026);
+        const penaltyPre2026 = arrears * (0.01 * monthsPre2026);
+        const penaltyPost2026 = arrears * (0.10 * monthsPost2026);
+        penaltyAmount = Math.round(penaltyPre2026 + penaltyPost2026);
+      } else {
+        penaltyAmount = 0;
+      }
     }
 
     totalPenalty += penaltyAmount;
@@ -195,6 +200,7 @@ function calculateRoyaltyAssessment(params) {
     acres: Number(acres),
     deadRentRateHalfYearly: Number(deadRentRateHalfYearly),
     isAuctioned,
+    noPenalty: !!noPenalty,
     period: period === "JAN_JUN" ? "1st January - 30th June" : "1st July - 31st December",
     year,
     monthlyBreakdown,
