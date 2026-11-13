@@ -620,6 +620,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tabMeta = {
       "tab-overview": { section: "Executive Command Center", title: "Summary Dashboard" },
+      "tab-analytics": { section: "Statistical & Econometric Analysis", title: "Analytics Module" },
       "tab-admin": { section: "Administration Wing", title: "Staff Roster & 15 Field Formations" },
       "tab-lsm": { section: "Licensing", title: "Large Scale Mining" },
       "tab-sma": { section: "Licensing", title: "Small Scale Mining" },
@@ -704,6 +705,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const btnMap = document.getElementById("navBtnMap");
       if (tabId === "tab-map") {
         if (btnMap) btnMap.classList.add("active");
+      }
+
+      // 7. Analytics
+      const analyticsWrap = document.getElementById("dropdownAnalyticsWrap");
+      const btnAnalytics = document.getElementById("navBtnAnalytics");
+      if (tabId === "tab-analytics") {
+        if (analyticsWrap) analyticsWrap.classList.add("open");
+        if (btnAnalytics) btnAnalytics.classList.add("active");
+        if (window.DGMM_ANALYTICS_UI) window.DGMM_ANALYTICS_UI.init();
       }
 
       if (tabMeta[tabId]) {
@@ -933,6 +943,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (btnMonitoring && monitoringWrap) {
       btnMonitoring.addEventListener("click", () => {
         monitoringWrap.classList.toggle("open");
+      });
+    }
+
+    // Analytics Dropdown Submenu
+    const analyticsWrap = document.getElementById("dropdownAnalyticsWrap");
+    const btnAnalytics = document.getElementById("navBtnAnalytics");
+    if (btnAnalytics && analyticsWrap) {
+      btnAnalytics.addEventListener("click", () => {
+        analyticsWrap.classList.toggle("open");
       });
     }
 
@@ -1767,6 +1786,9 @@ document.addEventListener("DOMContentLoaded", () => {
       case "tab-overview":
         renderOverviewCharts();
         renderCadastreMatrix();
+        break;
+      case "tab-analytics":
+        if (window.DGMM_ANALYTICS_UI) window.DGMM_ANALYTICS_UI.renderActivePage();
         break;
       case "tab-lsm":
         renderLsm();

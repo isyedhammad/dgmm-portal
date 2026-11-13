@@ -61,7 +61,72 @@
         </div>
       </button>
 
-      <!-- 1. ADMINISTRATION -->
+            <!-- ANALYTICS SECTION (TOP-LEVEL MENU ITEM WITH 7 MODELS & PAGES) -->
+      <div class="nav-dropdown-wrap" id="dropdownAnalyticsWrap">
+        <div class="nav-link nav-dropdown-toggle" id="navBtnAnalytics" data-tab="tab-analytics" style="cursor: pointer;">
+          <div class="nav-link-content">
+            <span class="nav-icon-box" style="background: rgba(14, 165, 233, 0.15); color: #0284C7;"><i class="fa-solid fa-chart-line"></i></span>
+            <span style="font-weight: 700;">Analytics</span>
+          </div>
+          <div class="nav-meta-wrap">
+            <span class="nav-pill pill-neutral" style="background: rgba(14, 165, 233, 0.18); color: #0284C7; font-weight: 800;">7 Models</span>
+            <i class="fa-solid fa-chevron-down nav-dropdown-arrow"></i>
+          </div>
+        </div>
+        <div class="sidebar-submenu" id="submenuAnalytics">
+          <button class="submenu-item active" data-analytics-page="page-a" id="menuItemAnalyticsPageA">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-gauge-high" style="color: #0284C7;"></i>
+              <span>Executive Dashboard</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">870 Blocks</span></div>
+          </button>
+          <button class="submenu-item" data-analytics-page="page-b" id="menuItemAnalyticsPageB">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-industry" style="color: #2563EB;"></i>
+              <span>Large Scale Mining</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">ML &amp; EL</span></div>
+          </button>
+          <button class="submenu-item" data-analytics-page="page-c" id="menuItemAnalyticsPageC">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-trowel-bricks" style="color: #059669;"></i>
+              <span>Small Scale Mining</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">1,172 Titles</span></div>
+          </button>
+          <button class="submenu-item" data-analytics-page="page-d" id="menuItemAnalyticsPageD">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-cubes-stacked" style="color: #D97706;"></i>
+              <span>Minor Minerals</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">510 Units</span></div>
+          </button>
+          <button class="submenu-item" data-analytics-page="page-e" id="menuItemAnalyticsPageE">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-map-location-dot" style="color: #7E22CE;"></i>
+              <span>District Yield</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">36 Dists</span></div>
+          </button>
+          <button class="submenu-item" data-analytics-page="page-f" id="menuItemAnalyticsPageF">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-gem" style="color: #DB2777;"></i>
+              <span>Mineral Economics</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">23 Minerals</span></div>
+          </button>
+          <button class="submenu-item" data-analytics-page="page-g" id="menuItemAnalyticsPageG">
+            <div class="submenu-item-content">
+              <i class="fa-solid fa-square-root-variable" style="color: #DC2626;"></i>
+              <span>Statistical Models</span>
+            </div>
+            <div class="submenu-meta-wrap"><span class="submenu-pill">10 Models</span></div>
+          </button>
+        </div>
+      </div>
+
+<!-- 1. ADMINISTRATION -->
       <button class="nav-link" data-tab="tab-admin" id="navBtnAdmin">
         <div class="nav-link-content">
           <span class="nav-icon-box" style="background: rgba(10, 98, 56, 0.12); color: #0A6238;"><i class="fa-solid fa-users-gear"></i></span>
@@ -4223,6 +4288,1417 @@
       </div>
 
     
+      <!-- =========================================================
+     ANALYTICS TAB: STATISTICAL ANALYSIS & ECONOMETRIC MODELLING
+     ========================================================= -->
+<div class="tab-pane" id="tab-analytics">
+  
+  <!-- Analytics Master Header & Toolbar -->
+  <div class="analytics-top-bar">
+    <div>
+      <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.25rem;">
+        <span class="badge-status-pill badge-granted" style="background: rgba(14, 165, 233, 0.15); color: #0284C7; font-weight: 800;">
+          <i class="fa-solid fa-chart-line"></i> Advanced Analytics Wing
+        </span>
+        <span class="badge-status-pill badge-process" style="background: rgba(5, 150, 105, 0.12); color: #059669; font-weight: 700;">
+          <i class="fa-solid fa-calculator"></i> Empirical Econometrics
+        </span>
+      </div>
+      <h2 style="font-size: 1.45rem; font-weight: 800; color: var(--text-main); margin: 0 0 0.25rem 0;">
+        Statistical Analysis &amp; Econometric Intelligence Console
+      </h2>
+      <p style="font-size: 0.81rem; color: var(--text-muted); margin: 0;">
+        Comprehensive empirical analysis across 870 inventory blocks, 1,172 SSM titles, 102 LSM concessions, and 156 pending applications.
+      </p>
+    </div>
+
+    <!-- Export Toolbar -->
+    <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+      <button class="btn-page" id="btnExportAnalyticsPdf" style="background: #FFFFFF; color: #DC2626; font-weight: 700; border: 1px solid #FECACA;">
+        <i class="fa-solid fa-file-pdf"></i> Export PDF (A4 Landscape)
+      </button>
+      <button class="btn-page" id="btnExportAnalyticsExcel" style="background: #FFFFFF; color: #065F46; font-weight: 700; border: 1px solid #A7F3D0;">
+        <i class="fa-solid fa-file-excel"></i> Export Excel (.xlsx)
+      </button>
+      <button class="btn-page" id="btnExportAnalyticsCsv" style="background: #FFFFFF; color: #0284C7; font-weight: 700; border: 1px solid #BAE6FD;">
+        <i class="fa-solid fa-file-csv"></i> Download CSV
+      </button>
+    </div>
+  </div>
+
+  <!-- Sub-Page Navigation Pills -->
+  <div style="margin-bottom: 1.25rem;">
+    <div class="analytics-nav-pills">
+      <button class="analytics-nav-pill active" data-page="page-a">
+        <i class="fa-solid fa-gauge-high"></i>
+        <span>Executive Dashboard</span>
+        <span class="pill-badge">870 Blocks</span>
+      </button>
+      <button class="analytics-nav-pill" data-page="page-b">
+        <i class="fa-solid fa-industry"></i>
+        <span>Large Scale Mining</span>
+        <span class="pill-badge">ML &amp; EL</span>
+      </button>
+      <button class="analytics-nav-pill" data-page="page-c">
+        <i class="fa-solid fa-trowel-bricks"></i>
+        <span>Small Scale Mining</span>
+        <span class="pill-badge">1,172 Titles</span>
+      </button>
+      <button class="analytics-nav-pill" data-page="page-d">
+        <i class="fa-solid fa-cubes-stacked"></i>
+        <span>Minor Minerals</span>
+        <span class="pill-badge">510 Units</span>
+      </button>
+      <button class="analytics-nav-pill" data-page="page-e">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>District Yield</span>
+        <span class="pill-badge">36 Dists</span>
+      </button>
+      <button class="analytics-nav-pill" data-page="page-f">
+        <i class="fa-solid fa-gem"></i>
+        <span>Mineral Economics</span>
+        <span class="pill-badge">23 Minerals</span>
+      </button>
+      <button class="analytics-nav-pill" data-page="page-g">
+        <i class="fa-solid fa-square-root-variable"></i>
+        <span>Statistical Models</span>
+        <span class="pill-badge">10 Models</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Global Filter & Setting Controls -->
+  <div class="analytics-filter-card">
+    <div class="analytics-filter-grid">
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-layer-group"></i> Category</label>
+        <select class="filter-select" id="analyticsFilterCategory">
+          <option value="ALL">All Categories (LSM / SSM / MM)</option>
+          <option value="LSM">Large Scale Mining (LSM)</option>
+          <option value="SSM">Small Scale Mining (SSM)</option>
+          <option value="MM">Minor Minerals (MM)</option>
+        </select>
+      </div>
+
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-location-dot"></i> District (36)</label>
+        <select class="filter-select" id="analyticsFilterDistrict">
+          <option value="ALL">All 36 Districts of Punjab</option>
+        </select>
+      </div>
+
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-gem"></i> Mineral (23)</label>
+        <select class="filter-select" id="analyticsFilterMineral">
+          <option value="ALL">All 23 Mineral Commodities</option>
+        </select>
+      </div>
+
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-shapes"></i> Formation Type</label>
+        <select class="filter-select" id="analyticsFilterBlockType">
+          <option value="ALL">All Types (Blocks &amp; Zones)</option>
+          <option value="Block">Land Blocks Only</option>
+          <option value="Zone">River-Bed Zones Only</option>
+        </select>
+      </div>
+
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-traffic-light"></i> Status</label>
+        <select class="filter-select" id="analyticsFilterStatus">
+          <option value="ALL">All Statuses (Granted &amp; Vacant)</option>
+          <option value="Granted">Granted Titles Only</option>
+          <option value="Vacant">Vacant Blocks Only</option>
+        </select>
+      </div>
+
+      <!-- Per-Acre View Toggle (Rule 2) -->
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-ruler-combined"></i> Per-Acre View (Rule 2)</label>
+        <div class="analytics-per-acre-toggle-group">
+          <button class="analytics-per-acre-btn active" data-mode="blocks" title="Blocks Only (Default): Excludes river zones to prevent area dilution">Blocks Only</button>
+          <button class="analytics-per-acre-btn" data-mode="all" title="All-In (6,180 PKR/ac): Blended average of blocks and river zones">All-In</button>
+          <button class="analytics-per-acre-btn" data-mode="zones" title="Zones Only: River-bed extraction zones">Zones Only</button>
+        </div>
+      </div>
+
+      <!-- As-of Date Setting (Rule 5) -->
+      <div class="analytics-filter-item">
+        <label class="analytics-filter-label"><i class="fa-solid fa-calendar-check"></i> As-of Date (Rule 46(3))</label>
+        <input type="date" class="smart-input" id="analyticsAsOfDate" value="2026-11-13" style="padding: 0.38rem 0.65rem; font-size: 0.8rem;">
+      </div>
+
+      <!-- Reset Button -->
+      <div class="analytics-filter-item" style="justify-content: flex-end;">
+        <button class="btn-page" id="btnResetAnalyticsFilters" style="height: 38px;">
+          <i class="fa-solid fa-rotate-left"></i> Reset Filters
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mandatory Statutory Caveat Notice -->
+  <div class="analytics-caveat-banner">
+    <i class="fa-solid fa-shield-halved" style="font-size: 1.25rem; color: #D97706; margin-top: 2px;"></i>
+    <div>
+      <strong>Statutory Data Caveats &amp; Methodological Notes:</strong>
+      <ul>
+        <li><strong>Reserve price is an accounting revenue proxy:</strong> Reserve price represents expected minimum bidding valuation pursuant to gazette notices; it is not realised treasury revenue.</li>
+        <li><strong>Operative Bid:</strong> "Operative bid" is utilized as the auction price benchmark; confirmation of administrative definitions should be verified with the Revenue Branch.</li>
+        <li><strong>Geographic Area Skew:</strong> River-bed zones account for ~96% of monitored acreage. Per-acre metrics must not be conflated between land blocks and river sand zones.</li>
+        <li><strong>Statutory Tenure (PMCR 2002 Rule 46(3)):</strong> Under Rule 46(3), concessions operating past nominal calendar expiry with active renewal applications remain legally in force and are designated "Past expiry date, listed in force".</li>
+        <li><strong>Exploration Licences Scope:</strong> Valid ELs (27) are isolated for active analysis; cancelled, expired, or surrendered exploration licences (25) are strictly excluded from all counts and models.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Dynamic Insights Strip (3-5 plain-English observations) -->
+  <div class="analytics-insights-container" id="analyticsInsightsContainer">
+    <!-- Populated dynamically by analytics_ui.js -->
+  </div>
+
+  <!-- =========================================================
+       PAGE A: EXECUTIVE DASHBOARD
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-a">
+    
+    <!-- Primary KPI Cards Row -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+      <div class="kpi-card kpi-accent-blue" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-cubes"></i> Total Blocks &amp; Leases</div>
+        <div class="kpi-value" id="kpiTotalBlocks" style="font-size: 1.75rem;">870</div>
+        <span class="kpi-card-cue" style="color: #64748B;">510 MM + 360 SSM Blocks</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-gold" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-map"></i> Leased Acreage</div>
+        <div class="kpi-value" id="kpiTotalArea" style="font-size: 1.75rem;">5,446,909 ac</div>
+        <span class="kpi-card-cue" style="color: #64748B;">5.45 Million Gross Acres</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-green" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-coins"></i> Total Reserve Price</div>
+        <div class="kpi-value" id="kpiTotalReserve" style="font-size: 1.75rem;">PKR 33.66B</div>
+        <span class="kpi-card-cue" style="color: #059669;">Revenue Proxy (Expected)</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-amber" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-chart-line-up"></i> Avg Reserve / Acre</div>
+        <div class="kpi-value" id="kpiAvgReservePerAcre" style="font-size: 1.75rem;">PKR 114,421</div>
+        <div class="kpi-card-cue" id="kpiAvgReservePerAcreSub">Blocks Only (Default)</div>
+      </div>
+
+      <div class="kpi-card kpi-accent-teal" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-circle-check"></i> Occupancy Rate</div>
+        <div class="kpi-value" id="kpiOccupancy" style="font-size: 1.75rem;">84.8%</div>
+        <span class="kpi-card-cue" id="kpiOccupancySub" style="color: #059669;">738 Granted / 132 Vacant</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-purple" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-gavel"></i> Upcoming Pipeline</div>
+        <div class="kpi-value" id="kpiUpcomingPipeline" style="font-size: 1.75rem;">104</div>
+        <span class="kpi-card-cue" style="color: #D97706;">Scheduled for Auction</span>
+      </div>
+    </div>
+
+    <!-- Secondary KPI Tiles Row -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+      <div class="kpi-card" style="border-radius: 10px; padding: 0.95rem 1.1rem; background: var(--canvas-bg);">
+        <span style="font-size: 0.72rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Blocks-Only Reserve / Acre</span>
+        <div style="font-size: 1.25rem; font-weight: 800; color: #0F172A; margin-top: 3px;" id="kpiBlocksReservePerAcre">PKR 114,421</div>
+        <small style="color: #64748B;">619 Land blocks (excl. river zones)</small>
+      </div>
+
+      <div class="kpi-card" style="border-radius: 10px; padding: 0.95rem 1.1rem; background: var(--canvas-bg);">
+        <span style="font-size: 0.72rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Share of Area in Zones</span>
+        <div style="font-size: 1.25rem; font-weight: 800; color: #B45309; margin-top: 3px;" id="kpiZonesShare">96.3%</div>
+        <small style="color: #64748B;">5.25M acres in river-bed zones</small>
+      </div>
+
+      <div class="kpi-card" style="border-radius: 10px; padding: 0.95rem 1.1rem; background: var(--canvas-bg);">
+        <span style="font-size: 0.72rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Median Reserve per Block</span>
+        <div style="font-size: 1.25rem; font-weight: 800; color: #047857; margin-top: 3px;" id="kpiMedianReserve">PKR 6.96M</div>
+        <small style="color: #64748B;">50th Percentile benchmark</small>
+      </div>
+
+      <div class="kpi-card" style="border-radius: 10px; padding: 0.95rem 1.1rem; background: var(--canvas-bg);">
+        <span style="font-size: 0.72rem; color: #64748B; font-weight: 700; text-transform: uppercase;">Vacant Blocks Reserve (At Risk)</span>
+        <div style="font-size: 1.25rem; font-weight: 800; color: #DC2626; margin-top: 3px;" id="kpiVacantReserve">PKR 5.55B</div>
+        <small style="color: #64748B;">132 unsold inventory blocks</small>
+      </div>
+    </div>
+
+    <!-- Footnote for Rule 3 -->
+    <div style="font-size: 0.73rem; color: #64748B; font-style: italic; margin-bottom: 1.25rem;" id="kpiExcludedFootnote">
+      * Per-acre ratios exclude 85 zero-area and 21 zero-reserve blocks pursuant to Rule 3.
+    </div>
+
+    <!-- Page A Charts Grid (2x2) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.25rem;">
+      <!-- Chart 1: Occupancy Donut -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Block Inventory Occupancy by Branch</h4>
+            <span class="chart-subtitle">Distribution of Granted vs. Vacant concessions across MM &amp; SSM</span>
+          </div>
+          <div class="chart-download-btns">
+            <span class="chart-badge-n">n = 870</span>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageA_OccupancyDonut', 'Occupancy_Donut')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageA_OccupancyDonut', 'Occupancy_Donut')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageA_OccupancyDonut"></canvas>
+        </div>
+        <div class="chart-footer-source">
+          <span>Source: DGMM Punjab Master Concession Registry</span>
+          <span>Units: Blocks / Concessions</span>
+        </div>
+      </div>
+
+      <!-- Chart 2: Titles in Force by Category -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Titles in Force by Category</h4>
+            <span class="chart-subtitle">Statutory titles actively operating across provincial mining divisions</span>
+          </div>
+          <div class="chart-download-btns">
+            <span class="chart-badge-n">n = 1,732</span>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageA_TitlesCategory', 'Titles_In_Force')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageA_TitlesCategory', 'Titles_In_Force')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageA_TitlesCategory"></canvas>
+        </div>
+        <div class="chart-footer-source">
+          <span>Source: DGMM Licensing Directorate</span>
+          <span>Units: Legal Titles</span>
+        </div>
+      </div>
+
+      <!-- Chart 3: Top 10 Districts by Reserve Price -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Top 10 Districts by Reserve Price</h4>
+            <span class="chart-subtitle">Provincial revenue proxy concentration across key mineral districts</span>
+          </div>
+          <div class="chart-download-btns">
+            <span class="chart-badge-n">Top 10</span>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageA_TopDistricts', 'Top10_Districts_Reserve')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageA_TopDistricts', 'Top10_Districts_Reserve')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageA_TopDistricts"></canvas>
+        </div>
+        <div class="chart-footer-source">
+          <span>Source: DGMM Revenue &amp; Cadastre Records</span>
+          <span>Units: PKR Billions</span>
+        </div>
+      </div>
+
+      <!-- Chart 4: Upcoming Auctions by Mineral -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Upcoming Auction Pipeline by Commodity</h4>
+            <span class="chart-subtitle">Scheduled auctions by mineral category (104 pipeline blocks)</span>
+          </div>
+          <div class="chart-download-btns">
+            <span class="chart-badge-n">n = 104</span>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageA_UpcomingMinerals', 'Upcoming_Auctions_Mineral')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageA_UpcomingMinerals', 'Upcoming_Auctions_Mineral')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageA_UpcomingMinerals"></canvas>
+        </div>
+        <div class="chart-footer-source">
+          <span>Source: DGMM Gazette Auction Schedules</span>
+          <span>Units: Blocks Scheduled</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       PAGE B: LARGE SCALE MINING (LSM)
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-b" style="display: none;">
+    
+    <!-- LSM KPI Cards Row -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+      <div class="kpi-card kpi-accent-blue" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-industry"></i> Mining Leases (ML)</div>
+        <div class="kpi-value" id="kpiLsmML" style="font-size: 1.75rem;">75</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Industrial &amp; Cement Leases</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-teal" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-compass-drafting"></i> Valid Exploration (EL)</div>
+        <div class="kpi-value" id="kpiLsmEL" style="font-size: 1.75rem;">27</div>
+        <span class="kpi-card-cue" style="color: #059669;">Excl. 25 Cancelled / Terminated</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-gold" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-map-marked"></i> Total LSM Acreage</div>
+        <div class="kpi-value" id="kpiLsmArea" style="font-size: 1.75rem;">124,186 ac</div>
+        <span class="kpi-card-cue" style="color: #64748B;">ML &amp; Valid EL Combined</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-green" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-chart-area"></i> Average Lease Area</div>
+        <div class="kpi-value" id="kpiLsmAvgArea" style="font-size: 1.75rem;">1,217 ac</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Mean Acreage per Concession</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-amber" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-hourglass-half"></i> Past Expiry (Rule 46(3))</div>
+        <div class="kpi-value" id="kpiLsmPastExpiry" style="font-size: 1.75rem;">18.6%</div>
+        <span class="kpi-card-cue" style="color: #D97706;">In Force Pending Renewal</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-purple" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-inbox"></i> Pending Applications</div>
+        <div class="kpi-value" id="kpiLsmPending" style="font-size: 1.75rem;">156</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Active Application Dossiers</span>
+      </div>
+    </div>
+
+    <!-- LSM Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">LSM Leased Area by Mineral</h4>
+            <span class="chart-subtitle">Acreage allocated to industrial mineral commodities</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageB_AreaMineral', 'LSM_Area_Mineral')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageB_AreaMineral', 'LSM_Area_Mineral')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageB_AreaMineral"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">LSM Concessions by Regional District</h4>
+            <span class="chart-subtitle">Distribution of large-scale concessions across field formations</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageB_LeasesDistrict', 'LSM_Leases_District')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageB_LeasesDistrict', 'LSM_Leases_District')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageB_LeasesDistrict"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">LSM Expiry Wall (Stacked ML / EL)</h4>
+            <span class="chart-subtitle">Concession maturity schedule by expiry year</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageB_ExpiryWall', 'LSM_Expiry_Wall')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageB_ExpiryWall', 'LSM_Expiry_Wall')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageB_ExpiryWall"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Top 5 Corporate Holders by Area</h4>
+            <span class="chart-subtitle">Industrial conglomerate area share &amp; HHI concentration</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageB_TopHolders', 'LSM_Top_Holders')"><i class="fa-solid fa-camera"></i> PNG</button>
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartCSV('chartPageB_TopHolders', 'LSM_Top_Holders')"><i class="fa-solid fa-file-csv"></i> CSV</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageB_TopHolders"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Exploration Licence Lifecycle Funnel</h4>
+            <span class="chart-subtitle">Progression from exploration to statutory mining lease</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageB_ElFunnel', 'EL_Funnel')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageB_ElFunnel"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Pending Applications Ageing Histogram</h4>
+            <span class="chart-subtitle">Pendency distribution across 156 unprocessed applications</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageB_PendingAgeing', 'Pending_Ageing')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageB_PendingAgeing"></canvas>
+        </div>
+      </div>
+    </div>
+
+        <!-- LSM Active Title Register Table (Mining Leases & Valid Exploration Licences) -->
+    <div class="card-section" style="margin-bottom: 1.5rem;">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-file-contract"></i> LSM Concession & Exploration Register (75 ML + 27 Valid EL)</h3>
+          <span class="card-subtitle">Complete statutory cadastre inventory of in-force Large Scale Mining titles (excluding cancelled/expired ELs)</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableLsmRegister">
+          <thead>
+            <tr>
+              <th>Sr</th>
+              <th>Type</th>
+              <th>Lease / Lic Ref</th>
+              <th>Grantee / Company Name</th>
+              <th>District</th>
+              <th>Mineral</th>
+              <th>Area (Acres)</th>
+              <th>Grant Date</th>
+              <th>Expiry Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableLsmRegisterBody">
+            <!-- Populated by analytics_ui.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- LSM Pending Applications Register Table -->
+    <div class="card-section">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-inbox"></i> LSM Pending Applications Register (Sorted by Age)</h3>
+          <span class="card-subtitle">Showing oldest unprocessed applications subject to statutory clearance</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableLsmPending">
+          <thead>
+            <tr>
+              <th>Sr</th>
+              <th>App #</th>
+              <th>Applicant Name</th>
+              <th>Mineral</th>
+              <th>District</th>
+              <th>Area</th>
+              <th>App Date</th>
+              <th>Age (Pendency)</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="tableLsmPendingBody">
+            <!-- Populated by analytics_ui.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       PAGE C: SMALL SCALE MINING (SSM)
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-c" style="display: none;">
+    
+    <!-- SSM KPI Tiles Row -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+      <div class="kpi-card kpi-accent-blue" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-file-contract"></i> Total SSM Titles</div>
+        <div class="kpi-value" id="kpiSsmTitles" style="font-size: 1.75rem;">1,172</div>
+        <span class="kpi-card-cue" style="color: #64748B;">1,040 ML + 132 PL</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-gold" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-map"></i> Leased Acreage</div>
+        <div class="kpi-value" id="kpiSsmArea" style="font-size: 1.75rem;">284,510 ac</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Capped at 100k ac (Rule 4)</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-green" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-chart-area"></i> Average Area / Title</div>
+        <div class="kpi-value" id="kpiSsmAvgArea" style="font-size: 1.75rem;">243 ac</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Per Concession Average</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-purple" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-users"></i> Unique Concessionaires</div>
+        <div class="kpi-value" id="kpiSsmHolders" style="font-size: 1.75rem;">789</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Distinct Titleholders</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-amber" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-gavel"></i> Auction Mode Share</div>
+        <div class="kpi-value" id="kpiSsmAuctionShare" style="font-size: 1.75rem;">23.9%</div>
+        <span class="kpi-card-cue" style="color: #D97706;">280 Auctioned Titles</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-teal" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-file-lines"></i> Application Share</div>
+        <div class="kpi-value" id="kpiSsmAppShare" style="font-size: 1.75rem;">76.1%</div>
+        <span class="kpi-card-cue" style="color: #059669;">892 Application Mode</span>
+      </div>
+    </div>
+
+    <!-- SSM Auction Economics Card -->
+    <div class="card-section" style="margin-bottom: 1.25rem;">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-coins"></i> SSM Auction Economics: Premium Ratio (Operative Bid / Reserve Price)</h3>
+          <span class="card-subtitle">Statistical distribution of auction clearing premiums across competitive concessions</span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin-bottom: 1rem;">
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Mean Premium</div>
+          <div class="model-stat-val" id="statPremMean" style="color: #0284C7;">2.55x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Median (P50)</div>
+          <div class="model-stat-val" id="statPremMedian" style="color: #059669;">1.17x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">25th Percentile</div>
+          <div class="model-stat-val" id="statPremP25">1.04x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">75th Percentile</div>
+          <div class="model-stat-val" id="statPremP75">2.31x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">90th Percentile</div>
+          <div class="model-stat-val" id="statPremP90">5.00x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Competitive (>1x)</div>
+          <div class="model-stat-val" id="statPremCompetitive" style="color: #059669;">78.5%</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SSM Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+      <!-- Chart 1: Grants per Year by Mode (Policy Shift) -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">SSM Grants by Year: Mode Shift Analysis</h4>
+            <span class="chart-subtitle">Historical transition from Application Mode to Competitive Auction</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageC_GrantsByYear', 'SSM_Grants_By_Year')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageC_GrantsByYear"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 2: Top 15 Holders Pareto -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Top 15 SSM Holders Pareto Analysis</h4>
+            <span class="chart-subtitle">Cumulative area share held by leading small scale concessionaires</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageC_Top15Holders', 'SSM_Top15_Holders')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageC_Top15Holders"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 3: Tenure Status under Rule 46(3) -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Tenure Status Audit (PMCR 2002 Rule 46(3))</h4>
+            <span class="chart-subtitle">Concessions active vs past calendar expiry protected by law</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageC_TenureStatus', 'SSM_Tenure_Status')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageC_TenureStatus"></canvas>
+        </div>
+      </div>
+
+      <!-- Chart 4: Premium by Mineral -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Median Auction Premium by Mineral</h4>
+            <span class="chart-subtitle">Clearing premium multiple over statutory reserve price</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageC_PremiumMineral', 'SSM_Premium_Mineral')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageC_PremiumMineral"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- SSM Data Quality & Cadastre Integrity Checks Table -->
+    <div class="card-section" style="margin-top: 1.5rem;">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-triangle-exclamation" style="color: #D97706;"></i> SSM Cadastre Integrity & Data Validation Audit</h3>
+          <span class="card-subtitle">Automated diagnostics flagging anomalous tenure records: Expiry before grant, missing dates, and duplicate holder keys</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableSsmDataChecks">
+          <thead>
+            <tr>
+              <th>Sr</th>
+              <th>Audit Issue</th>
+              <th>Title / Ref</th>
+              <th>Grantee / Holder</th>
+              <th>District</th>
+              <th>Mineral</th>
+              <th>Grant Date</th>
+              <th>Expiry Date</th>
+              <th>Remedial Note</th>
+            </tr>
+          </thead>
+          <tbody id="tableSsmDataChecksBody">
+            <!-- Populated by analytics_ui.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       PAGE D: MINOR MINERALS
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-d" style="display: none;">
+    
+    <!-- MM KPI Cards Row (Blocks vs Zones Separately Everywhere) -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+      <div class="kpi-card kpi-accent-blue" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-cubes-stacked"></i> Total MM Units</div>
+        <div class="kpi-value" id="kpiMmTotalUnits" style="font-size: 1.75rem;">510</div>
+        <span class="kpi-card-cue" style="color: #64748B;">458 Granted / 52 Vacant</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-green" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-circle-check"></i> Granted Units</div>
+        <div class="kpi-value" id="kpiMmGranted" style="font-size: 1.75rem;">458</div>
+        <span class="kpi-card-cue" style="color: #059669;">89.8% Occupancy</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-amber" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-circle-xmark"></i> Vacant Units</div>
+        <div class="kpi-value" id="kpiMmVacant" style="font-size: 1.75rem;">52</div>
+        <span class="kpi-card-cue" style="color: #D97706;">Available for Tender</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-teal" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-mountain"></i> Land Blocks Area</div>
+        <div class="kpi-value" id="kpiMmBlocksArea" style="font-size: 1.75rem;">197,024 ac</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Hard-rock quarries</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-purple" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-water"></i> River Zones Area</div>
+        <div class="kpi-value" id="kpiMmZonesArea" style="font-size: 1.75rem;">5,247,794 ac</div>
+        <span class="kpi-card-cue" style="color: #B45309;">96.3% of Provincial Area</span>
+      </div>
+
+      <div class="kpi-card kpi-accent-gold" style="border-radius: 12px; padding: 1.1rem;">
+        <div class="kpi-label"><i class="fa-solid fa-tags"></i> Blocks Reserve / Acre</div>
+        <div class="kpi-value" id="kpiMmBlocksPerAcre" style="font-size: 1.75rem;">PKR 114,421</div>
+        <span class="kpi-card-cue" style="color: #0284C7;">Land block density</span>
+      </div>
+
+      <div class="kpi-card" style="border-radius: 12px; padding: 1.1rem; background: var(--canvas-bg); border: 1px solid var(--card-border);">
+        <div class="kpi-label"><i class="fa-solid fa-water"></i> Zones Reserve / Acre</div>
+        <div class="kpi-value" id="kpiMmZonesPerAcre" style="font-size: 1.75rem;">PKR 2,842</div>
+        <span class="kpi-card-cue" style="color: #64748B;">Diluted river zone average</span>
+      </div>
+
+      <div class="kpi-card" style="border-radius: 12px; padding: 1.1rem; background: var(--canvas-bg); border: 1px solid var(--card-border);">
+        <div class="kpi-label"><i class="fa-solid fa-gavel"></i> Mean Auction Premium</div>
+        <div class="kpi-value" id="kpiMmMeanPremium" style="font-size: 1.75rem;">2.28x</div>
+        <span class="kpi-card-cue" style="color: #059669;">Bid to reserve multiple</span>
+      </div>
+    </div>
+
+    <!-- MM Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">MM Occupancy by Regional District</h4>
+            <span class="chart-subtitle">Granted vs. Vacant distribution across top mineral districts</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageD_OccupancyDistrict', 'MM_Occupancy_District')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageD_OccupancyDistrict"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">MM Reserve Price Valuation by Mineral</h4>
+            <span class="chart-subtitle">Revenue proxy by commodity (Ordinary Sand, Sandstone, etc.)</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageD_ReserveMineral', 'MM_Reserve_Mineral')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageD_ReserveMineral"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Reconciliation Table (Disagreements between Meta Data and Minor Minerals tabs) -->
+    <div class="card-section">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-scale-unbalanced"></i> Minor Minerals vs. Meta Data Tab Discrepancy Reconciliation Table</h3>
+          <span class="card-subtitle">Audited variance across 45 blocks (12 status mismatches, 34 reserve price variances)</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableMmReconciliation">
+          <thead>
+            <tr>
+              <th>Block Code</th>
+              <th>Block Name</th>
+              <th>District</th>
+              <th>Mineral</th>
+              <th>Status Discrepancy</th>
+              <th>Meta Data Reserve</th>
+              <th>MM Tab Reserve</th>
+              <th>Variance (Diff)</th>
+            </tr>
+          </thead>
+          <tbody id="tableMmReconciliationBody">
+            <!-- Populated by analytics_ui.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       PAGE E: DISTRICT YIELD & LOCATION QUOTIENTS
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-e" style="display: none;">
+    
+    <!-- Master District Table -->
+    <div class="card-section" style="margin-bottom: 1.25rem;">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-map-location-dot"></i> Master District Mining Performance Ledger (All 36 Districts)</h3>
+          <span class="card-subtitle">Comprehensive provincial rollup ranked by total reserve price valuation</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableDistrictYield">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>District</th>
+              <th>Office</th>
+              <th>LSM ML</th>
+              <th>LSM EL</th>
+              <th>SSM ML</th>
+              <th>SSM PL</th>
+              <th>MM Granted</th>
+              <th>Total Titles</th>
+              <th>Inventory Blocks</th>
+              <th>Occupancy %</th>
+              <th>Reserve Price (PKR)</th>
+              <th>Rs/Acre (Blocks Only)</th>
+              <th>Upcoming Auct</th>
+            </tr>
+          </thead>
+          <tbody id="tableDistrictYieldBody">
+            <!-- Populated by analytics_ui.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Provincial District Reserve Valuation Ranking</h4>
+            <span class="chart-subtitle">Top 15 districts by reserve price revenue proxy</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageE_RankedBar', 'District_Ranked_Bar')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageE_RankedBar"></canvas>
+        </div>
+      </div>
+
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">District Yield Multi-Dimensional Bubble Matrix</h4>
+            <span class="chart-subtitle">Area (x) vs Reserve per Acre (y) vs Total Reserve (Bubble Size)</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageE_Bubble', 'District_Bubble_Matrix')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageE_Bubble"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Location Quotient Table -->
+    <div class="card-section">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-magnifying-glass-chart"></i> District Location Quotient (LQ) Specialization Matrix</h3>
+          <span class="card-subtitle">LQ = (District Share of Mineral) / (Punjab Share of Mineral). Values &gt; 1.25 (★) denote economic specialization</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableLocationQuotient">
+          <thead id="tableLocationQuotientHead"></thead>
+          <tbody id="tableLocationQuotientBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       PAGE F: MINERAL ECONOMICS & HEAT MATRIX
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-f" style="display: none;">
+    
+    <!-- Master Mineral Table -->
+    <div class="card-section" style="margin-bottom: 1.25rem;">
+      <div class="card-header-clean">
+        <div class="card-title-group">
+          <h3 class="card-title"><i class="fa-solid fa-gem"></i> Master Mineral Economics Ledger (23 Commodities)</h3>
+          <span class="card-subtitle">Comprehensive financial density, median reserve, and top producing districts</span>
+        </div>
+      </div>
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableMineralEconomics">
+          <thead>
+            <tr>
+              <th>Mineral Commodity</th>
+              <th>Total Titles</th>
+              <th>Granted / Vacant</th>
+              <th>Total Area</th>
+              <th>Total Reserve Price</th>
+              <th>Reserve / Acre (Blocks)</th>
+              <th>Median Reserve / Block</th>
+              <th>Mean Auction Premium</th>
+              <th>Leading District</th>
+            </tr>
+          </thead>
+          <tbody id="tableMineralEconomicsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Charts Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(440px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">Reserve per Acre by Mineral (Blocks Only)</h4>
+            <span class="chart-subtitle">Unit value density across key provincial minerals</span>
+          </div>
+          <div class="chart-download-btns">
+            <button class="chart-download-btn" onclick="window.DGMM_ANALYTICS_UI.downloadChartPNG('chartPageF_PerAcreMineral', 'PerAcre_Mineral')"><i class="fa-solid fa-camera"></i> PNG</button>
+          </div>
+        </div>
+        <div class="chart-viewport-wrap">
+          <canvas id="chartPageF_PerAcreMineral"></canvas>
+        </div>
+      </div>
+
+      <!-- District x Mineral Heat Matrix -->
+      <div class="analytics-chart-box">
+        <div class="chart-header-row">
+          <div class="chart-title-area">
+            <h4 class="chart-title">District &times; Mineral Spatial Cluster Heat Matrix</h4>
+            <span class="chart-subtitle">Density of concessions operating across regional formations</span>
+          </div>
+        </div>
+        <div class="table-scroll-container" style="max-height: 275px;">
+          <table class="table-clean" id="tableHeatMatrix" style="font-size: 0.76rem;">
+            <thead id="tableHeatMatrixHead"></thead>
+            <tbody id="tableHeatMatrixBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =========================================================
+       PAGE G: 10 STATISTICAL & ECONOMETRIC MODELS
+       ========================================================= -->
+  <div class="analytics-page-view" id="analyticsView_page-g" style="display: none;">
+    
+    <!-- Model 1: Distribution Analysis -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-chart-simple" style="color: #0284C7;"></i>
+        <span>Model 1: Reserve per Acre Parametric &amp; Non-Parametric Distribution</span>
+      </div>
+      <div class="model-header-desc">
+        Comprehensive statistical summary of Reserve per Acre for MM Blocks, MM River Zones, and SSM Blocks. Mean significantly higher than median reflects positive right-skewness induced by high-value industrial clusters.
+      </div>
+
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableDistributionModel">
+          <thead>
+            <tr>
+              <th>Sub-Category</th>
+              <th>n</th>
+              <th>Mean</th>
+              <th>Median</th>
+              <th>Std Dev</th>
+              <th>CV (s/x̄)</th>
+              <th>P25</th>
+              <th>P75</th>
+              <th>P90</th>
+              <th>Skewness</th>
+            </tr>
+          </thead>
+          <tbody id="tableDistributionModelBody"></tbody>
+        </table>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 1)</summary>
+        <div class="analytics-method-content">
+          $\text{Mean: } \bar{x} = \frac{1}{n} \sum_{i=1}^n x_i \qquad \text{Std Dev: } s = \sqrt{\frac{1}{n-1} \sum_{i=1}^n (x_i - \bar{x})^2} \qquad \text{CV: } \frac{s}{\bar{x}}$
+          $\text{Skewness: } g_1 = \frac{n}{(n-1)(n-2)} \sum_{i=1}^n \left(\frac{x_i - \bar{x}}{s}\right)^3$
+          <em>Note:</em> A positive skewness ($g_1 > 1.0$) demonstrates that a small percentage of high-priced quarries pull the mathematical mean far above the median clearing rate.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 2: Concentration (HHI & Gini) -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-chart-pie" style="color: #059669;"></i>
+        <span>Model 2: Market Concentration Analysis (HHI &amp; Gini Coefficient)</span>
+      </div>
+      <div class="model-header-desc">
+        Herfindahl-Hirschman Index (HHI) gauge and Lorenz Curve measuring provincial reserve price inequality across districts.
+      </div>
+
+      <div class="model-stats-row">
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">HHI (District Reserve)</div>
+          <div class="model-stat-val" id="statHhiReserve" style="color: #D97706;">1,467</div>
+          <small style="color: #059669; font-weight:700;">Moderate Concentration</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">HHI (District Titles)</div>
+          <div class="model-stat-val" id="statHhiTitles">784</div>
+          <small style="color: #059669;">Unconcentrated</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">HHI (Mineral Titles)</div>
+          <div class="model-stat-val" id="statHhiMineral">2,145</div>
+          <small style="color: #D97706;">Moderate</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">HHI (LSM Corporate Area)</div>
+          <div class="model-stat-val" id="statHhiLsm">1,820</div>
+          <small style="color: #D97706;">Moderate</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Gini Coefficient (G)</div>
+          <div class="model-stat-val" id="statGiniReserve" style="color: #DC2626;">0.667</div>
+          <small style="color: #DC2626; font-weight:700;">High Inequality</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Top 5 Districts Share</div>
+          <div class="model-stat-val" id="statTop5Share" style="color: #0F172A;">65.5%</div>
+          <small style="color: #64748B;">Reserve Dominance</small>
+        </div>
+      </div>
+
+      <!-- Lorenz Curve Chart -->
+      <div class="chart-viewport-wrap" style="height: 260px;">
+        <canvas id="chartModel2_LorenzCurve"></canvas>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 2)</summary>
+        <div class="analytics-method-content">
+          $HHI = \sum_{i=1}^n s_i^2 \qquad (s_i = \text{percentage market share})$
+          Thresholds: $HHI < 1,500$ (Unconcentrated), $1,500 \le HHI \le 2,500$ (Moderately Concentrated), $HHI > 2,500$ (Highly Concentrated).
+          $\text{Gini: } G = \frac{\sum_{i=1}^n \sum_{j=1}^n |y_i - y_j|}{2 n^2 \bar{y}}$
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 3: Pareto Analysis (80/20 Rule) -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-chart-column" style="color: #D97706;"></i>
+        <span>Model 3: Pareto Principle Analysis (80% Reserve Concentration)</span>
+      </div>
+      <div class="model-header-desc">
+        Identifies the "Vital Few" districts generating 80% of total provincial mining reserve valuation.
+      </div>
+
+      <div class="chart-viewport-wrap" style="height: 280px;">
+        <canvas id="chartModel3_Pareto"></canvas>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 3)</summary>
+        <div class="analytics-method-content">
+          Cumulative share $C_k = \frac{\sum_{i=1}^k R_i}{\sum_{i=1}^n R_i} \times 100\%$. The 80% line marks the transition between high-priority revenue formations and long-tail dispersed districts.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 4: Price-Size Econometric Regression -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-square-root-variable" style="color: #DC2626;"></i>
+        <span>Model 4: Log-Log Econometric Price-Size Elasticity Regression</span>
+      </div>
+      <div class="model-header-desc">
+        Model: $\ln(\text{Reserve Price}) = \alpha + \beta \ln(\text{Area})$. Tests whether physical block acreage governs concession valuation.
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+        <div style="background: var(--canvas-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem;">
+          <h5 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; color: #1D4ED8;">Minor Minerals (MM Blocks)</h5>
+          <div style="display: flex; gap: 1.5rem; margin-bottom: 0.5rem;">
+            <div><strong>Elasticity (b):</strong> <span id="statRegMM_b" style="color: #DC2626; font-weight:800;">-0.345</span></div>
+            <div><strong>R²:</strong> <span id="statRegMM_r2" style="font-weight:700;">0.045</span></div>
+            <div><strong>p-value:</strong> <span id="statRegMM_p" style="font-weight:700;">&lt; 0.001</span></div>
+          </div>
+          <div style="font-size: 0.77rem; color: #475569;" id="statRegMM_interpretation"></div>
+        </div>
+
+        <div style="background: var(--canvas-bg); border: 1px solid var(--card-border); border-radius: 8px; padding: 1rem;">
+          <h5 style="margin: 0 0 0.5rem 0; font-size: 0.88rem; color: #047857;">Small Scale Mining (SSM Blocks)</h5>
+          <div style="display: flex; gap: 1.5rem; margin-bottom: 0.5rem;">
+            <div><strong>Elasticity (b):</strong> <span id="statRegSSM_b" style="color: #DC2626; font-weight:800;">-0.327</span></div>
+            <div><strong>R²:</strong> <span id="statRegSSM_r2" style="font-weight:700;">0.050</span></div>
+            <div><strong>p-value:</strong> <span id="statRegSSM_p" style="font-weight:700;">&lt; 0.001</span></div>
+          </div>
+          <div style="font-size: 0.77rem; color: #475569;" id="statRegSSM_interpretation"></div>
+        </div>
+      </div>
+
+      <!-- Regression Scatter Chart -->
+      <div class="chart-viewport-wrap" style="height: 300px;">
+        <canvas id="chartModel4_RegressionScatter"></canvas>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Econometric Derivation (Model 4)</summary>
+        <div class="analytics-method-content">
+          $\ln(Y) = \alpha + \beta \ln(X) + \varepsilon \implies \frac{dY / Y}{dX / X} = \beta$
+          $\beta$ is the direct constant elasticity of price with respect to area. Because $\beta \approx -0.34$ and $R^2 \approx 0.05$, area explains only 5% of price variation. Concession value is driven by mineral grade, geological overburden, and haulage proximity rather than polygon surface area.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 5: Price Resistance (Granted vs Vacant) & Mann-Whitney U -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-scale-balanced" style="color: #7E22CE;"></i>
+        <span>Model 5: Price Resistance &amp; Non-Parametric Mann-Whitney U Test</span>
+      </div>
+      <div class="model-header-desc">
+        Evaluates whether unsold vacant blocks are priced above market clearing levels compared to cleared granted blocks.
+      </div>
+
+      <div class="model-stats-row">
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Granted Median / Acre</div>
+          <div class="model-stat-val" id="prGrantedMedAcre">PKR 7,500</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Vacant Median / Acre</div>
+          <div class="model-stat-val" id="prVacantMedAcre" style="color: #DC2626;">PKR 12,000</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Resistance Ratio / Acre</div>
+          <div class="model-stat-val" id="prRatioAcre" style="color: #DC2626;">1.60x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Granted Median / Block</div>
+          <div class="model-stat-val" id="prGrantedMedBlock">PKR 7.36M</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Vacant Median / Block</div>
+          <div class="model-stat-val" id="prVacantMedBlock" style="color: #DC2626;">PKR 15.0M</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Resistance Ratio / Block</div>
+          <div class="model-stat-val" id="prRatioBlock" style="color: #DC2626;">2.04x</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Mann-Whitney U</div>
+          <div class="model-stat-val" id="prMwuU">--</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">MWU z-score / p-val</div>
+          <div class="model-stat-val" id="prMwuP" style="color: #0284C7;">--</div>
+        </div>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 5)</summary>
+        <div class="analytics-method-content">
+          $U_1 = n_1 n_2 + \frac{n_1(n_1 + 1)}{2} - R_1 \qquad z = \frac{U - \frac{n_1 n_2}{2}}{\sqrt{\frac{n_1 n_2 (n_1 + n_2 + 1)}{12}}}$
+          A resistance ratio $> 1.0$ indicates that unsold inventory carries reserve hurdle rates higher than what market participants cleared in competitive auction.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 6: Auction Competition & Bid Dynamics -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-hand-holding-dollar" style="color: #059669;"></i>
+        <span>Model 6: Auction Competition &amp; Bid Correlation Dynamics</span>
+      </div>
+      <div class="model-header-desc">
+        Measures the correlation between clearing auction premiums and concession parameters (area, reserve price, grant year).
+      </div>
+
+      <div class="model-stats-row">
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Corr(Premium, Area)</div>
+          <div class="model-stat-val" id="statCorrArea">-0.082</div>
+          <small style="color: #64748B;">Near Zero Correlation</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Corr(Premium, Reserve)</div>
+          <div class="model-stat-val" id="statCorrReserve">-0.114</div>
+          <small style="color: #64748B;">Slight Inverse</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Corr(Premium, Grant Year)</div>
+          <div class="model-stat-val" id="statCorrYear">+0.245</div>
+          <small style="color: #059669;">Rising Competition</small>
+        </div>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 6)</summary>
+        <div class="analytics-method-content">
+          $r = \frac{\sum (x_i - \bar{x})(y_i - \bar{y})}{\sqrt{\sum (x_i - \bar{x})^2 \sum (y_i - \bar{y})^2}}$
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 7: Pipeline Value at Risk (Scenario Simulation Slider) -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-sliders" style="color: #0284C7;"></i>
+        <span>Model 7: Pipeline Value at Risk (VaR &amp; Scenario Simulation Slider)</span>
+      </div>
+      <div class="model-header-desc">
+        Dynamic scenario simulation estimating potential revenue yields across 104 upcoming auctions and 132 vacant blocks based on clearing multiples.
+      </div>
+
+      <!-- Slider Input -->
+      <div class="analytics-slider-wrap">
+        <label style="font-weight: 700; font-size: 0.85rem; color: var(--text-main); min-width: 220px;">
+          <i class="fa-solid fa-gauge"></i> Expected Auction Clearing Multiple:
+        </label>
+        <input type="range" id="pipelineVaRSlider" min="50" max="250" step="5" value="117">
+        <span id="pipelineVaRSliderVal" style="font-size: 1.15rem; font-weight: 800; color: #0284C7; min-width: 60px;">117%</span>
+      </div>
+
+      <div class="model-stats-row">
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Vacant Blocks Reserve</div>
+          <div class="model-stat-val" id="varVacantReserve">PKR 5.55B</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Upcoming Auction Reserve</div>
+          <div class="model-stat-val" id="varUpcomingReserve">PKR 4.12B</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Total Pipeline Reserve</div>
+          <div class="model-stat-val" id="varTotalPipeline">PKR 9.67B</div>
+        </div>
+        <div class="model-stat-box" style="border: 2px solid #0284C7; background: rgba(2, 132, 199, 0.05);">
+          <div class="model-stat-lbl" style="color: #0284C7;">Simulated Expected Yield</div>
+          <div class="model-stat-val" id="varSimulatedYield" style="color: #0284C7;">PKR 11.31B</div>
+        </div>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 7)</summary>
+        <div class="analytics-method-content">
+          $\text{Expected Yield} = \sum \text{Reserve}_i \times \text{Clearing Multiple}$
+          Conservative scenario assumes 85% discount clearance; Baseline employs historical empirical median multiple (117%); Optimistic models 150% competitive premium.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 8: Tenure & Renewal Exposure under Rule 46(3) -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-clock-rotate-left" style="color: #D97706;"></i>
+        <span>Model 8: Tenure &amp; Renewal Exposure Horizon (PMCR 2002 Rule 46(3))</span>
+      </div>
+      <div class="model-header-desc">
+        Categorizes concession exposure by months to expiry, isolating titles protected by Rule 46(3) renewal pendency versus upcoming renewal horizons.
+      </div>
+
+      <div class="model-stats-row">
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">Past Expiry (In Force)</div>
+          <div class="model-stat-val" id="tePastExpiryCount" style="color: #D97706;">--</div>
+          <small id="tePastExpiryArea" style="color: #64748B;">-- ac</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">0 - 12 Months (Critical)</div>
+          <div class="model-stat-val" id="te0to12Count" style="color: #DC2626;">--</div>
+          <small id="te0to12Area" style="color: #64748B;">-- ac</small>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">12 - 36 Months</div>
+          <div class="model-stat-val" id="te12to36Count">--</div>
+        </div>
+        <div class="model-stat-box">
+          <div class="model-stat-lbl">36+ Months Active</div>
+          <div class="model-stat-val" id="te36plusCount" style="color: #059669;">--</div>
+        </div>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Statutory Rule 46(3) Notice (Model 8)</summary>
+        <div class="analytics-method-content">
+          Under Rule 46(3) of PMCR 2002, where a concessionaire has submitted a timely renewal application, the lease shall remain in force until the licensing authority communicates an official order. These titles are not expired or illegal; they operate under legal continuity.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 9: Cumulative Grants Trend & Linear Slope -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-arrow-trend-up" style="color: #059669;"></i>
+        <span>Model 9: Historical Concession Grant Rate &amp; Growth Slope</span>
+      </div>
+      <div class="model-header-desc">
+        Annual grant trajectories from 1950 to 2026 showing inflection points and long-term provincial licensing momentum.
+      </div>
+
+      <div class="chart-viewport-wrap" style="height: 280px;">
+        <canvas id="chartModel9_GrantsTrend"></canvas>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 9)</summary>
+        <div class="analytics-method-content">
+          Cumulative Growth $Y_t = \sum_{i=1}^t N_i$. Trend line slope $\Delta N / \Delta t$ measures average annual net expansion of the provincial mining cadastre.
+        </div>
+      </details>
+    </div>
+
+    <!-- Model 10: Statistical Outlier Detection Table -->
+    <div class="analytics-model-card">
+      <div class="model-header-title">
+        <i class="fa-solid fa-triangle-exclamation" style="color: #DC2626;"></i>
+        <span>Model 10: Statistical Outlier Detection (Tukey's 1.5 &times; IQR Rule)</span>
+      </div>
+      <div class="model-header-desc">
+        Identifies extreme valuation and acreage anomalies exceeding upper and lower interquartile fences ($Q_3 + 1.5 \times IQR$).
+      </div>
+
+      <div class="table-scroll-container">
+        <table class="table-clean" id="tableOutliers">
+          <thead>
+            <tr>
+              <th>Block Code</th>
+              <th>Concession Name</th>
+              <th>District</th>
+              <th>Mineral</th>
+              <th>Area</th>
+              <th>Reserve / Acre</th>
+              <th>Outlier Anomaly Flag</th>
+            </tr>
+          </thead>
+          <tbody id="tableOutliersBody"></tbody>
+        </table>
+      </div>
+
+      <details class="analytics-method-drawer">
+        <summary><i class="fa-solid fa-calculator"></i> Method &amp; Mathematical Formulation (Model 10)</summary>
+        <div class="analytics-method-content">
+          $\text{IQR} = Q_3 - Q_1 \qquad \text{Fences: } [Q_1 - 1.5 \times \text{IQR}, \; Q_3 + 1.5 \times \text{IQR}]$
+          Observations outside these bounds are statistically anomalous and warrant field ground-truthing to verify survey coordinates or reserve valuation basis.
+        </div>
+      </details>
+    </div>
+
+  </div>
+
+</div>
+
+
       <!-- Executive Portal Bottom Footer (Inside scrollable content to prevent fixed overlay) -->
 <footer class="portal-main-footer">
       <div class="footer-left">
@@ -4467,6 +5943,8 @@
 <script src="rules_data.js"></script>
 
 <!-- Portal Application Controller -->
+<script src="analytics_service.js"></script>
+<script src="analytics_ui.js"></script>
 <script src="app.js"></script>
 
 

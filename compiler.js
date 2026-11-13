@@ -68,7 +68,7 @@ const upcomingAuctions = allBlocks.filter(b => b.inUpcomingAuction);
 
 // 2. LSM Mining Leases (75 granted industrial leases)
 const lsmLeasesRaw = parseSheet('LSM Mining Leases', 1);
-const lsmLeases = lsmLeasesRaw.filter(r => r['Company Name'] && r['Company Name'] !== 'Total').map(r => ({
+const lsmLeases = lsmLeasesRaw.filter(r => r['Company Name'] && String(r['Company Name']).trim() !== 'Total' && r['License Number']).map(r => ({
   srNo: r['Sr. No'] || '',
   company: r['Company Name'] || '',
   licenseNo: r['License Number'] || '',
@@ -194,6 +194,46 @@ const districtWiseSsm = districtWiseSsmRaw.filter(r => r['District'] && r['Distr
   total: parseInt(r['Total'] || 0) || 0
 }));
 
+// 8. Minor Minerals Sheet Enrichment & Reconciliation (Disagreements with Meta Data)
+const mmSheetRaw = parseSheet('Minor Minerals', 0);
+const mmReconciliation = [];
+
+mmBlocks.forEach(b => {
+  const match = mmSheetRaw.find(m => m['Block'] === b.code || m['Block'] === b.id || m['Block Name'] === b.name || m['Block'] == b.id);
+  if (match) {
+    b.operativeBid = parseFloat(match['Operative Bid'] || 0) || 0;
+    b.lessee = match['Lessee Name'] || b.lessee || '';
+    b.grantDate = formatExcelDate(match['Grant Date']) || b.grantDate || '';
+    b.expiryDate = formatExcelDate(match['Expiry Date']) || b.expiryDate || '';
+    b.concessionType = match['Concession Type'] || b.concessionType || 'Mining Lease';
+    
+    const sMeta = (b.status || '').trim();
+    const sMM = (match['Status'] || '').trim();
+    const pMeta = parseFloat(b.reservePrice || 0) || 0;
+    const pMM = parseFloat(match['Reserve Price'] || 0) || 0;
+    const statusMismatch = sMeta.toLowerCase() !== sMM.toLowerCase();
+    const priceMismatch = Math.abs(pMeta - pMM) > 0.01;
+    
+    if (statusMismatch || priceMismatch) {
+      mmReconciliation.push({
+        id: b.id,
+        code: b.code,
+        name: b.name || match['Block Name'],
+        district: b.district,
+        mineral: b.mineral,
+        metaStatus: sMeta,
+        mmStatus: sMM,
+        statusMismatch,
+        metaReserve: pMeta,
+        mmReserve: pMM,
+        priceMismatch,
+        priceDiff: pMeta - pMM,
+        operativeBid: b.operativeBid
+      });
+    }
+  }
+});
+
 // Read existing data.js to preserve EPA cases, Appeals cases, Map coordinates, 5-year financials
 const existingDataJsPath = path.join(__dirname, 'data.js');
 let existingData = {};
@@ -209,6 +249,8 @@ try {
 
 // Compile master DGM_DATA
 const compiledData = {
+  blockInventory: allBlocks,
+  allBlocks: allBlocks,
   meta: existingData.meta || {
     department: "Directorate General of Mines & Minerals",
     ministry: "Mines & Minerals Department, Government of the Punjab",
@@ -295,7 +337,8 @@ const compiledData = {
         totalReservePricePKR: mmBlocks.reduce((sum, b) => sum + (b.reservePrice || 0), 0)
       },
       blocks: mmBlocks,
-      upcomingAuctions: upcomingAuctions
+      upcomingAuctions: upcomingAuctions,
+      reconciliation: mmReconciliation
     }
   },
 
